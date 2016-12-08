@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="44dip"
+        android:gravity="center_vertical"
+        android:padding="0.0px" >
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/title_background" />
+
+        <TextView
+            style="@style/A1_Font"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingLeft="96.0dip"
+            android:paddingRight="96.0dip"
+            android:singleLine="true"
+            android:text="设置" />
+
+        <ImageButton
+            android:id="@+id/settingTitleBtnLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector"
+            android:includeFontPadding="false" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/update_password_setting"
+            android:padding="5dp"
+            android:clickable="true"
+            android:background="@drawable/month_sale_list_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:drawableRight="@drawable/triangle"
+            android:text="修改密码"/>
+
+        <TextView
+            android:id="@+id/gesture_password_update"
+            android:padding="5dp"
+            android:clickable="true"
+            android:background="@drawable/month_sale_list_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:drawableRight="@drawable/triangle"
+            android:text="手势密码修改"/>
+        <TextView
+            android:id="@+id/saoyisao"
+            android:padding="5dp"
+            android:clickable="true"
+            android:background="@drawable/month_sale_list_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:drawableRight="@drawable/triangle"
+            android:text="扫描二维码"/>
+
+        <TextView
+            android:id="@+id/suggest_textview"
+            android:padding="5dp"
+            android:clickable="true"
+            android:background="@drawable/month_sale_list_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:drawableRight="@drawable/triangle"
+            android:text="意见反馈"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/safeQuit"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/dialog_positive_btn_bg"
+            android:text="安全退出"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:focusable="false" />
+    </LinearLayout>
+
+</LinearLayout>

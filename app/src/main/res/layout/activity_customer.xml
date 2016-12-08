@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="#ffffff">
+    
+	<!-- hearder 头部标签布局 -->
+	<RelativeLayout
+        android:id="@+id/titlerelativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/title_bar"
+        android:gravity="center_vertical" >
+
+        <ImageView
+            android:id="@+id/Cuslist_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/about_showleft_selector" />
+
+		<com.bangware.shengyibao.utils.ClearEditText
+			android:id="@+id/filter_edit"
+			android:layout_width="215dp"
+			android:layout_height="30dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginTop="6dp"
+			android:singleLine="true"
+			android:background="@drawable/search_bar_edit_selector"
+			android:drawableLeft="@drawable/search_bar_icon_normal"
+			android:hint="@string/cus_list_edit"
+			android:padding="5dp"
+			android:textSize="15sp"/>
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerVertical="true"
+			android:layout_toRightOf="@+id/filter_edit"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:id="@+id/contactphonecall"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginLeft="5dp"
+				android:src="@drawable/icon_mobile_contact"/>
+
+			<TextView
+				android:id="@+id/queryBtn"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="18sp"
+				android:layout_marginTop="2dp"
+				android:layout_marginLeft="15dp"
+				android:layout_alignParentRight="true"
+				android:textColor="@drawable/textview_change_focus_color"
+				android:text="查询"/>
+		</LinearLayout>
+    </RelativeLayout>
+	
+	<LinearLayout
+        android:id="@+id/middlelinearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titlerelativelayout"
+		android:visibility="gone">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:background="@drawable/area_tab_linear_background"
+			android:paddingBottom="0.5dp"
+			android:paddingLeft="0dp"
+			android:paddingRight="0.5dp"
+			android:paddingTop="0dp" >
+
+			<TextView
+				android:id="@+id/nearby_title_textbtn"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/my_tab_background"
+				android:drawableRight="@drawable/ic_arrow_down_black"
+				android:clickable="true"
+				android:gravity="center_horizontal"
+				android:padding="10dp"
+				android:singleLine="true"
+				android:text="附近"
+				android:textColor="#666666" />
+		</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/area_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/Arealist_title_textbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/my_tab_background"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:clickable="true"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="全部地区"
+                android:textColor="#666666" />
+
+			<TextView
+				android:id="@+id/distance_titleId"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:padding="10dp"
+				android:visibility="gone"
+				android:text=""
+				android:textColor="#666666" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/area_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/DefaultSortlist_title_textbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/my_tab_background"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:clickable="true"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="默认排序"
+                android:textColor="#666666" />
+        </LinearLayout>
+	</LinearLayout>
+
+	<!--内容展示区域-->
+	<com.bangware.shengyibao.view.RefreshListView
+	    android:id="@+id/CustomerListView"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_below="@+id/middlelinearlayout"
+	    android:cacheColorHint="#00000000"
+	    android:listSelector="#00000000"  
+	    android:clickable="true"
+        android:divider="#cfcfcf"
+        android:dividerHeight="0.5dp"/>
+
+	<!--左侧按附近范围查询客户-->
+	<ListView
+		android:id="@+id/nearby_customer_toplist"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/middlelinearlayout"
+		android:background="#f4f4f4"
+		android:listSelector="#00000000"
+		android:divider="@null"
+		android:padding="10dp"
+		android:visibility="gone"
+		android:scrollbars="none" />
+
+	<!--右侧按时间、进货次数排序查询客户-->
+	<ListView
+		android:id="@+id/orderSort_listview"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/middlelinearlayout"
+		android:background="#f4f4f4"
+		android:listSelector="#00000000"
+		android:divider="@null"
+		android:padding="10dp"
+		android:visibility="gone"
+		android:scrollbars="none" />
+
+	<!--行政区域双向选择-->
+	<LinearLayout
+        android:id="@+id/Arealist_mainlist"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_below="@+id/middlelinearlayout"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <ListView
+            android:id="@+id/Arealist_onelist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:background="#F4F4F4"
+            android:divider="@null"
+            android:listSelector="@drawable/search_more_morelistselect"
+            android:scrollbars="none" />
+
+        <ListView
+            android:id="@+id/Arealist_twolist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="17"
+            android:background="#FFFFFF"
+            android:divider="@null"
+            android:listSelector="@drawable/search_more_morelistselect" />
+    </LinearLayout>
+
+
+	<com.baidu.mapapi.map.MapView
+		android:id="@+id/customer_list_map"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:visibility="invisible" >
+	</com.baidu.mapapi.map.MapView>
+
+</RelativeLayout>

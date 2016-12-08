@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="#fff"
+	android:orientation="vertical" >
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<!-- 左边 -->
+		<LinearLayout
+			android:id="@+id/sale_ranking_linearLayout"
+			android:layout_width="200dp"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:clickable="true"
+			android:background="@drawable/month_sale_list_bg"
+			android:gravity="center"
+			android:layout_weight="2">
+
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="3dp"
+				android:src="@drawable/icon_loading_bill"/>
+
+			<TextView
+				android:id="@+id/saler_person"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:text=""
+				android:padding="3dp"
+				android:textColor="@color/button_font_color"
+				android:textSize="14dp"/>
+
+			<TextView android:id="@+id/thismonth_saler_time"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:text=""
+				android:padding="3dp"
+				android:textColor="@color/button_font_color"
+				android:textSize="14sp" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:padding="3dp"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="销售排名"
+					android:textColor="@color/summary_font_color"
+					android:textSize="14dp" />
+				<TextView android:id="@+id/thismonth_saler_top"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:paddingLeft="2dp"
+					android:paddingRight="2dp"
+					android:paddingTop="0dp"
+					android:paddingBottom="0dp"
+					android:background="@drawable/saler_order_bg"
+					android:textColor="#ffffff"
+					android:textSize="14sp" />
+			</LinearLayout>
+
+			<!--<LinearLayout
+				android:id="@+id/customer_visit_linearLayout"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:gravity="center"
+				android:paddingTop="8dp"
+				android:clickable="true"
+				android:background="@drawable/month_sale_list_bg"
+				android:orientation="vertical">
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:src="@drawable/icon_customer_manager" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:text="客户拜访"
+					android:layout_marginTop="10dp"
+					android:textColor="@color/button_font_color"
+					android:textSize="16dp" />
+			</LinearLayout>-->
+
+		</LinearLayout>
+		<View android:layout_width="0.1dp"  android:layout_height="match_parent"  android:background="#c4c4c4" />
+		<!-- 右边 -->
+		<LinearLayout
+		    android:id="@+id/month_list_right"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:gravity="center_vertical"
+			android:layout_marginRight="3dp"
+			android:layout_weight="3">
+			<!-- 右边第一行 -->
+			<LinearLayout
+				android:id="@+id/quick_billing"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:clickable="true"
+				android:background="@drawable/month_sale_list_bg"
+				android:layout_gravity="center_vertical"
+				android:orientation="horizontal">
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:src="@drawable/icon_qulick_billing" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="快速开单"
+					android:layout_marginLeft="3dp"
+					android:textColor="@color/button_font_color"
+					android:textSize="16dp" />
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="7dp"
+					android:layout_gravity="center"
+					android:layout_weight="9"
+					android:orientation="vertical">
+
+				</LinearLayout>
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:src="@drawable/right" />
+			</LinearLayout>
+
+			<!-- 右边第二行 -->
+			<LinearLayout
+			    android:id="@+id/saler_mycustomer"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:clickable="true"
+				android:background="@drawable/month_sale_list_bg"
+				android:layout_gravity="center_vertical"
+				android:orientation="horizontal">
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:src="@drawable/icon_mycustomer" />
+				<TextView
+				    android:layout_width="wrap_content"
+				    android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="我的客户"
+					android:layout_marginLeft="3dp"
+					android:textColor="@color/button_font_color"
+					android:textSize="16dp" />
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dp"
+					android:layout_marginTop="6dp"
+					android:layout_weight="9"
+					android:orientation="vertical">
+					<TextView android:id="@+id/customer_quantity"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:text=""
+					    android:textColor="@color/summary_font_color"
+					    android:textSize="14dp" />
+					<TextView
+					    android:id="@+id/thismonth_customer_summary"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:text=""
+					    android:textColor="@color/summary_font_color"
+					    android:textSize="14dp" />
+				</LinearLayout>	
+				<ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/right" />
+			</LinearLayout>
+			<!-- 右边第三行 -->
+			<LinearLayout
+			    android:id="@+id/add_customer"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:clickable="true"
+				android:background="@drawable/month_sale_list_bg"
+				android:orientation="horizontal">
+				<!-- 图文 -->
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:layout_marginTop="5dp"
+					android:src="@drawable/icon_addcustomer" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="新增客户"
+					android:layout_marginLeft="3dp"
+					android:textColor="@color/button_font_color"
+					android:textSize="16dp" />
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="7dp"
+					android:layout_gravity="center"
+					android:layout_weight="9"
+					android:orientation="vertical">
+
+				</LinearLayout>
+				<ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/right" />
+			</LinearLayout>
+
+			<!-- 右边第四行 -->
+			<LinearLayout
+				android:id="@+id/customer_contact"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:clickable="true"
+				android:background="@drawable/month_sale_list_bg"
+				android:orientation="horizontal">
+				<!-- 图文 -->
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:layout_marginTop="5dp"
+					android:src="@drawable/icon_customer_contact" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="客户联系人"
+					android:layout_marginLeft="3dp"
+					android:textColor="@color/button_font_color"
+					android:textSize="16dp" />
+
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="9"></LinearLayout>
+
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:src="@drawable/right" />
+
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
+	<View android:layout_width="wrap_content"  android:layout_height="4dp"  android:background="#e0e0e0" />
+</LinearLayout>

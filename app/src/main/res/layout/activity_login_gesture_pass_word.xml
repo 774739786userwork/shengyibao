@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_picture"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip" >
+
+    <TextView
+        android:id="@+id/login_toast"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:text="请绘制手势密码"
+        android:textSize="18sp"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/canvas_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dip"
+        android:gravity="center"
+        android:text=""
+        android:textSize="16sp"/>
+
+    <com.bangware.shengyibao.utils.gesture.locus.LocusPassWordView
+        android:id="@+id/mLocusPassWordView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    </com.bangware.shengyibao.utils.gesture.locus.LocusPassWordView>
+
+    <TextView
+        android:id="@+id/clear_gesture_pwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="忘记手势密码？"
+        android:layout_gravity="center|bottom"
+        android:textSize="18sp"
+        android:textColor="@drawable/textview_change_focus_color"
+        android:layout_marginBottom="20dp"/>
+    <Button
+        android:id="@+id/tvNoSetPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:textColor="@android:color/black"
+        android:text="开始绘制"
+        android:visibility="gone" >
+    </Button>
+
+</FrameLayout>

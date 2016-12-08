@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="#ffffff"
+	android:orientation="vertical" >
+
+	<View android:layout_width="wrap_content"  android:layout_height="4dp"  android:background="#e0e0e0" />
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:baselineAligned="true"
+		android:orientation="horizontal"
+		android:layout_marginBottom="5dp">
+		<ImageView
+			android:id="@+id/main_icon_mine"
+			android:layout_width="wrap_content"
+			android:layout_height="20dp"
+			android:layout_marginLeft="5dp"
+			android:src="@drawable/icon_calendar_time" />
+		<TextView
+		    android:id="@+id/sale_date"
+		    android:layout_width="wrap_content"
+		    android:layout_height="match_parent"
+		    android:gravity="bottom"
+			android:layout_marginLeft="5dp"
+		    android:text=""
+		    android:textColor="@color/button_font_color"
+		    android:textSize="16dp" />
+		<TextView
+		    android:id="@+id/today_sale_sum"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:gravity="right|center"
+		    android:text=""
+		    android:textColor="@color/summary_font_color"
+		    android:textSize="14dp" />
+	</LinearLayout>
+	<View android:layout_width="wrap_content"  android:layout_height="4dp"  android:background="#e0e0e0" />
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_gravity="center"
+	    android:paddingTop="8dp"
+	    android:background="#ffffff"
+	    android:paddingBottom="10dp"
+	    android:baselineAligned="true"
+	    android:gravity="center"
+	    android:orientation="horizontal" >
+		<LinearLayout
+		    android:id="@+id/loadingbill_layout"
+		    android:background="@drawable/grid_view_item_selector_xml"
+		    android:clickable="true"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:gravity="center"
+			android:layout_weight="1">
+			<ImageView
+				android:id="@+id/loadingbill_icon"
+				android:layout_width="40dp"
+				android:layout_height="45dp"
+				android:src="@drawable/icon_billing" />
+			<TextView
+			    android:id="@+id/loadingbill_count"
+			    android:layout_width="wrap_content"
+			    android:layout_height="match_parent"
+			    android:gravity="center"
+			    android:text="提货单"
+			    android:textColor="#000000"
+			    android:textSize="14dp" />
+		</LinearLayout>
+		<LinearLayout
+		    android:id="@+id/query_deliveryNote"
+			android:background="@drawable/grid_view_item_selector_xml"
+			android:clickable="true"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:gravity="center"
+			android:layout_weight="1">
+			<ImageView
+				android:id="@+id/deliverynote_icon"
+				android:layout_width="40dp"
+				android:layout_height="45dp"
+				android:src="@drawable/icon_delivery" />
+			<TextView
+			    android:id="@+id/deliverynote_count"
+			    android:layout_width="wrap_content"
+			    android:layout_height="match_parent"
+			    android:gravity="center"
+			    android:text="送货单"
+			    android:textColor="#000000"
+			    android:textSize="14dp" />
+		</LinearLayout>
+		<LinearLayout
+			android:id="@+id/purchase_linear"
+			android:background="@drawable/grid_view_item_selector_xml"
+			android:clickable="true"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:gravity="center"
+			android:layout_weight="1">
+			<ImageView
+				android:id="@+id/purchaseorder_icon"
+				android:layout_width="40dp"
+				android:layout_height="45dp"
+				android:src="@drawable/icon_purchase" />
+			<TextView
+			    android:id="@+id/purchaseorder_count"
+			    android:layout_width="wrap_content"
+			    android:layout_height="match_parent"
+			    android:gravity="center"
+			    android:text="订货单"
+			    android:textColor="#000000"
+			    android:textSize="14dp" />
+		</LinearLayout>
+		<LinearLayout
+				android:id="@+id/query_returnGoodsLayout"
+				android:background="@drawable/grid_view_item_selector_xml"
+				android:clickable="true"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:gravity="center"
+				android:layout_weight="1">
+				<ImageView
+					android:id="@+id/returnorder_icon"
+					android:layout_width="40dp"
+					android:layout_height="45dp"
+					android:src="@drawable/icon_daysaler_journals" />
+				<TextView
+					android:id="@+id/returnorder_count"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="日销售清单"
+					android:textColor="#000000"
+					android:textSize="14dp" />
+			 </LinearLayout>
+		</LinearLayout>
+	<View android:layout_width="wrap_content"  android:layout_height="4dp"  android:background="#e0e0e0" />
+</LinearLayout>

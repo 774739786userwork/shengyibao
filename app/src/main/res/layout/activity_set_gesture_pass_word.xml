@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_picture"
+    android:orientation="vertical"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:layout_centerHorizontal="true"
+        android:text="请绘制手势密码"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/setting_canvas_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dip"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
+
+    <com.bangware.shengyibao.utils.gesture.locus.LocusPassWordView
+        android:id="@+id/mSetLocusPassWordView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    </com.bangware.shengyibao.utils.gesture.locus.LocusPassWordView>
+
+    <Button
+        android:id="@+id/tvReset"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="15dip"
+        android:layout_marginLeft="15dip"
+        android:gravity="center"
+        android:paddingLeft="25dip"
+        android:paddingRight="25dip"
+        android:background="@drawable/dialog_negative_btn_bg"
+        android:text="重绘"
+        android:textSize="14.0sp"
+        android:textColor="@color/dialog_negative_text_color" />
+
+    <Button
+        android:id="@+id/tvSave"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dip"
+        android:layout_marginRight="15dip"
+        android:gravity="center"
+        android:paddingLeft="25dip"
+        android:paddingRight="25dip"
+        android:text="保存"
+        android:textSize="14.0sp"
+        android:background="@drawable/dialog_negative_btn_bg"
+        android:textColor="@color/dialog_negative_text_color" />
+</RelativeLayout>

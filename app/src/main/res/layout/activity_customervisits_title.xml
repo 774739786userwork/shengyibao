@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="0.0px" >
+
+	<LinearLayout
+        android:id="@+id/deliverynote_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="top"
+		android:orientation="horizontal"
+        android:background="@drawable/title_background"
+        android:padding="0.0dp">
+         <!-- 左边按钮 -->
+        <ImageButton
+            android:id="@+id/Visits_Goback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector"
+            android:gravity="center"
+            android:includeFontPadding="false" />
+
+        <TextView
+            android:id="@+id/Visits_Customer_Names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:layout_weight="1"
+            style="@style/A1_Font"
+            android:textSize="17sp"
+            android:layout_marginLeft="20dp"
+            android:text="请选择客户拜访"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+		<TextView
+			android:id="@+id/visits_commit"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+			android:layout_alignParentRight="true"
+			android:textColor="@drawable/textview_change_focus_color"
+			android:text="完成"
+			android:textSize="17sp"
+			style="@style/A1_Font"/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/Cuslist_customerType"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#000000"
+		android:alpha="0.25"
+		android:orientation="horizontal" >
+
+		<com.bangware.shengyibao.utils.ClearEditText
+			android:id="@+id/Visits_edits"
+			android:layout_width="wrap_content"
+			android:layout_height="30dp"
+			android:layout_marginTop="5dp"
+			android:layout_marginBottom="5dp"
+			android:layout_marginLeft="10dp"
+			android:inputType="number"
+			android:background="#ffffff"
+			android:drawableLeft="@drawable/search_bar_icon_normal"
+			android:hint="输入电话/手机号码查询"
+			android:layout_weight="1"
+			android:padding="5dp"
+			android:textSize="16sp"/>
+
+		<ImageView
+			android:id="@+id/Visitslist_textviews"
+			android:layout_width="25dp"
+			android:layout_height="25dp"
+			android:layout_marginRight="10dp"
+			android:layout_gravity="center"
+			android:layout_marginLeft="10dp"
+			android:src="@drawable/icon_mobile_contact"/>
+
+		<TextView
+			android:id="@+id/Visits_query_btns"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="18sp"
+			android:layout_alignParentRight="true"
+			android:layout_gravity="center"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			android:textColor="@drawable/textview_change_focus_color"
+			android:text="查询"/>
+	</LinearLayout>
+
+
+</LinearLayout>
