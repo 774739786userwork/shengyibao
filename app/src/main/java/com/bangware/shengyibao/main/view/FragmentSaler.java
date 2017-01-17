@@ -220,7 +220,7 @@ public class FragmentSaler extends Fragment implements MainView, VersionUpdateVi
 					startActivity(intent);
 					break;
 				case R.id.add_customer:
-					intent = new Intent(getActivity(), CustomerActivity.class);//AddCustomerActivity
+					intent = new Intent(getActivity(), AddCustomerActivity.class);
 					startActivity(intent);
 					break;
 				case R.id.customer_contact:
