@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="#ffffff">
+
+    <RelativeLayout
+        android:id="@+id/titlere_lativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/titlere_lativelayout"
+        android:background="@drawable/title_bar"
+        android:gravity="center_vertical" >
+
+        <ImageView
+            android:id="@+id/customercontactVisit_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector" />
+
+        <com.bangware.shengyibao.utils.ClearEditText
+            android:id="@+id/customercontactVisit_edit"
+            android:layout_width="280dp"
+            android:layout_height="30dp"
+            android:singleLine="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/search_bar_edit_selector"
+            android:drawableLeft="@drawable/search_bar_icon_normal"
+            android:hint="输入手机号码查询"
+            android:padding="5dp"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/customercontactVisitquery_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@drawable/textview_change_focus_color"
+            android:text="查询"/>
+    </RelativeLayout>
+
+    <com.bangware.shengyibao.view.RefreshListView
+        android:id="@+id/customercontactVisitquery_ListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/titlere_lativelayout"
+        android:cacheColorHint="#00000000"
+        android:clickable="true"
+        android:divider="#cfcfcf"
+        android:dividerHeight="0.5dp"
+        android:listSelector="#00000000" />
+</RelativeLayout>

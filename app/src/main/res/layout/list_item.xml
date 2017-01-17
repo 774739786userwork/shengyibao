@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="6dp" >
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textColor="#576B95"
+        android:textSize="18sp"
+        android:text="张三" />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text="content" />
+
+    <com.bangware.shengyibao.utils.OnScrollGridView.NoScrollGridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/content"
+        android:numColumns="3"
+        android:horizontalSpacing="4dip"
+        android:stretchMode="columnWidth"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:verticalSpacing="1dip" />
+
+</RelativeLayout>

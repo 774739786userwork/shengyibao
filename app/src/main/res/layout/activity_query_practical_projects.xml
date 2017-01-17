@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_query_practical_projects"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bangware.shengyibao.practicalprojects.view.QueryPracticalProjects">
+    <LinearLayout
+        android:id="@+id/deliverynote_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:background="@drawable/title_background"
+        android:padding="0.0dp">
+        <!-- 左边按钮 -->
+        <ImageButton
+            android:id="@+id/query_practicalprojects_Goback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector"
+            android:gravity="center"
+            android:includeFontPadding="false" />
+
+        <TextView
+            android:id="@+id/query_practicalprojects_Names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/A1_Font"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:layout_marginLeft="20dp"
+            android:text="查看案例"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/query_practicalprojects_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@drawable/textview_change_focus_color"
+            android:text="搜索"
+            android:textSize="17sp"
+            style="@style/A1_Font"/>
+    </LinearLayout>
+    <com.bangware.shengyibao.view.CasesRefreshListView
+        android:id="@+id/prctical_queryListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/line_layout"
+        android:cacheColorHint="#00000000"
+        android:listSelector="#00000000"
+        android:clickable="true"
+        android:divider="#cfcfcf"
+        android:dividerHeight="0.5dp"/>
+</LinearLayout>

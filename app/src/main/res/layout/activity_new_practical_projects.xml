@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_new_practical_projects"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bangware.shengyibao.practicalprojects.view.NewPracticalProjects">
+    <LinearLayout
+        android:id="@+id/deliverynote_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:background="@drawable/title_background"
+        android:padding="0.0dp">
+        <!-- 左边按钮 -->
+        <ImageButton
+            android:id="@+id/new_practicalprojects_Goback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector"
+            android:gravity="center"
+            android:includeFontPadding="false" />
+
+        <TextView
+            android:id="@+id/new_practicalprojects_Names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/A1_Font"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:layout_marginLeft="20dp"
+            android:text="新建案例"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/new_practicalprojects_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@drawable/textview_change_focus_color"
+            android:text="完成"
+            android:textSize="17sp"
+            style="@style/A1_Font"/>
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/gray" />
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/new_practicalprojects_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_ll_coners_stroke"
+            android:gravity="top"
+            android:hint="案例描述"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/gray" />
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/practicalprojects_frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/Visits_image"
+                android:layout_width="100dp"
+                android:layout_height="85dp"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/camera_selector" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="85dp"
+                android:text="上传照片"
+                android:gravity="bottom"
+                android:layout_marginLeft="20dp"
+                android:textColor="#666666"
+                android:id="@+id/textView" />
+        </FrameLayout>
+        <GridView
+            android:id="@+id/practicalprojects_caremaView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:horizontalSpacing="2dip"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="4dip"
+            android:layout_below="@+id/practicalprojects_frameLayout">
+        </GridView>
+    </RelativeLayout>
+</LinearLayout>

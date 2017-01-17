@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="6dp"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/white"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="6dp"
+    android:descendantFocusability="blocksDescendants">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/referee_time_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:text="时间"/>
+
+        <TextView
+            android:id="@+id/referee_content_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="内容"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/hearder_layout"
+            android:id="@+id/sound_referee_file">
+
+            <TextView
+                android:id="@+id/text_pictureReplace"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/chatto_bg"
+                android:textSize="15sp"
+                android:textColor="#ff000000"
+                android:gravity="left|center"
+                android:minHeight="50dp"
+                android:drawableRight="@drawable/chatto_voice_playing"/>
+
+            <TextView
+                android:id="@+id/recorded_time_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text=""/>
+
+        </LinearLayout>
+
+        <com.bangware.shengyibao.utils.OnScrollGridView.NoScrollGridView
+            android:id="@+id/image_referee_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="4dip"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="4dip">
+
+        </com.bangware.shengyibao.utils.OnScrollGridView.NoScrollGridView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="16sp"
+                android:text="推荐人信息"
+                android:drawableRight="@drawable/arrow_right"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#ffcccccc" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/visit_refereeName_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:layout_weight="1"
+                    android:text="姓名"/>
+
+                <TextView
+                    android:id="@+id/visit_refereeMobile_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:layout_weight="1"
+                    android:text="电话"/>
+
+                <TextView
+                    android:id="@+id/visit_refereeStatus_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/red"
+                    android:layout_weight="1"
+                    android:text="出单"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/owner_referee_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:text="业主信息"
+                    android:drawableRight="@drawable/arrow_right"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#ffcccccc" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/owner_refereeName_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="姓名"/>
+
+                    <TextView
+                        android:id="@+id/owner_refereeMobile_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="电话"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/owner_refereeAcreage_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="面积"/>
+
+                    <TextView
+                        android:id="@+id/owner_refereePrice_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="单价"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_edit_customer_record"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bangware.shengyibao.customervisits.view.EditCustomerRecordActivity">
+
+    <LinearLayout
+        android:id="@+id/deliverynote_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:background="@drawable/title_background"
+        android:padding="0.0dp">
+        <!-- 左边按钮 -->
+        <ImageButton
+            android:id="@+id/Ed_Visits_Goback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector"
+            android:gravity="center"
+            android:includeFontPadding="false" />
+
+        <TextView
+            android:id="@+id/Ed_Visits_Customer_Names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/A1_Font"
+            android:textSize="17sp"
+            android:layout_marginLeft="20dp"
+            android:text="湘阴建材"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/Ed_visits_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@drawable/textview_change_focus_color"
+            android:text="完成"
+            android:textSize="17sp"
+            style="@style/A1_Font"/>
+    </LinearLayout>
+
+    <!--语音播放文件布局  默认隐藏-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:id="@+id/Ed_sound_file">
+
+        <TextView
+            android:id="@+id/Ed_sound_content"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chatto_bg"
+            android:textSize="15sp"
+            android:textColor="#ff000000"
+            android:gravity="left|center"
+            android:minHeight="50dp"
+            android:drawableRight="@drawable/chatto_voice_playing"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/Ed_total_time_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="5"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/Ed_Visits_et"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/shape_ll_coners_stroke"
+        android:gravity="top"
+        android:hint="输入拜访总结"
+        android:freezesText="true"
+        android:paddingLeft="5dp"
+        android:maxHeight="80dp"/>
+
+    <!--拜访状态布局-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="拜访状态:"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/Ed_visit_type_spinner"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                style="@style/A1_Font"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+            </Spinner>
+            <TextView
+                android:id="@+id/visitStatus_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/black"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="25dp"
+                android:background="#ffcccccc"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"/>
+
+            <Spinner
+                android:id="@+id/Ed_issue_spinner"
+                android:layout_marginLeft="5dp"
+                android:visibility="gone"
+                android:layout_weight="1"
+                style="@style/A1_Font"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+            </Spinner>
+            <TextView
+                android:id="@+id/billingStatus_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/black"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="25dp"
+                android:background="#ffcccccc"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"/>
+
+            <Spinner
+                android:id="@+id/Ed_rate_spinner"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                style="@style/A1_Font"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+            </Spinner>
+
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"  android:layout_height="0.1dp"  android:background="#c4c4c4"
+        android:layout_marginTop="1dp"/>
+
+    <LinearLayout
+        android:id="@+id/Edit_ownerNameAndPhone_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <RelativeLayout android:id="@+id/Edit_rlLayout_ownerName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="业主姓名"
+                    android:textColor="#666666"/>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/Edit_view_owner"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:background="#ffcccccc"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@+id/Edit_rlLayout_ownerName"/>
+
+            <EditText android:id="@+id/edit_ownerName_et"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/Edit_view_owner"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="请输入业主姓名"
+                android:textSize="14sp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffcccccc" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <RelativeLayout android:id="@+id/Edit_rlLayout_ownerPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="业主电话"
+                    android:textColor="#666666"/>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/Edit_view_owner_phone"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:background="#ffcccccc"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@+id/Edit_rlLayout_ownerPhone"/>
+
+            <EditText
+                android:id="@+id/edit_ownerPhone_et"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/Edit_view_owner_phone"
+                android:background="@null"
+                android:inputType="number"
+                android:gravity="center_vertical"
+                android:hint="请输入业主电话"
+                android:textSize="14sp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffcccccc" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Edit_acreageAndPrice_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <RelativeLayout android:id="@+id/Edit_rlLayout_acreage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="施工面积"
+                    android:textColor="#666666"/>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/Edit_view_acreage"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:background="#ffcccccc"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@+id/Edit_rlLayout_acreage"/>
+
+            <EditText android:id="@+id/edit_acreage_et"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/Edit_view_acreage"
+                android:background="@null"
+                android:digits="1234567890."
+                android:inputType="numberDecimal"
+                android:numeric="decimal"
+                android:gravity="center_vertical"
+                android:hint="请输入施工面积"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/edit_acreage_et"
+                android:text="/m²"
+                android:textColor="#666666"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffcccccc" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <RelativeLayout android:id="@+id/Edit_rlLayout_unitPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="施工单价"
+                    android:textColor="#666666"/>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/Edit_view_unitPrice"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:background="#ffcccccc"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@+id/Edit_rlLayout_unitPrice"/>
+
+            <EditText android:id="@+id/edit_unit_et"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/Edit_view_unitPrice"
+                android:background="@null"
+                android:digits="1234567890."
+                android:inputType="numberDecimal"
+                android:numeric="decimal"
+                android:gravity="center_vertical"
+                android:hint="请输入单价"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/edit_unit_et"
+                android:text="元"
+                android:textColor="#666666"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffcccccc" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/Ed_Visits_rate"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="1dp"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_ll_coners_stroke"
+        android:gravity="top"
+        android:textSize="15sp"
+        android:hint="客户级别备注"
+        android:freezesText="true"
+        android:paddingLeft="5dp"
+        android:maxHeight="80dp"/>
+    <View
+        android:layout_width="match_parent"  android:layout_height="0.1dp"  android:background="#c4c4c4"
+        android:layout_marginTop="1dp"/>
+    <!--拍照显示布局-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/Ed_Visits_image"
+                android:layout_width="100dp"
+                android:layout_height="85dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/camera_selector" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="85dp"
+                android:text="上传照片"
+                android:gravity="bottom"
+                android:layout_marginLeft="30dp"
+                android:textColor="#666666"/>
+        </FrameLayout>
+
+        <GridView
+            android:id="@+id/Ed_caremaView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:layout_below="@+id/frameLayout">
+        </GridView>
+    </RelativeLayout>
+
+</LinearLayout>

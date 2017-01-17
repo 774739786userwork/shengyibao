@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:gravity="center_horizontal"
+     >
+<LinearLayout
+    android:background="@drawable/shape_product_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+  >
+    <TextView
+        android:id="@+id/disburden_pname"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="3dp"
+        android:layout_gravity="center"
+        android:text="商品名称"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+    <LinearLayout
+        android:layout_marginTop="35dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal"
+        >
+     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:text="库存:"/>
+        <TextView
+            android:id="@+id/disburden_Stock"
+            android:selectAllOnFocus="true"
+            android:layout_gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:text="0"
+            android:singleLine="true"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/disburden_Stock_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="包"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:textColor="#ff0000"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="卸货:"
+                android:id="@+id/textView2" />
+
+            <EditText
+                android:id="@+id/disburden_sum"
+                android:background="@drawable/bg_edittext"
+                android:selectAllOnFocus="true"
+                android:layout_width="48dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="center"
+                android:text=""
+                android:singleLine="true"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:numeric="integer"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/disburden_sum_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="包"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:textColor="#ff0000"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        >
+        <Button
+            android:id="@+id/disburden_dialog_cancelbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="31.0dip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="5.0dip"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/dialog_negative_btn_bg"
+            android:gravity="center"
+            android:paddingLeft="25.0dip"
+            android:paddingRight="25.0dip"
+            android:text="取消"
+            android:textColor="@color/dialog_negative_text_color"
+            android:textSize="14.0sp" />
+        <Button
+            android:id="@+id/disburden_dialog_okbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="31.0dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="0.0dip"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/dialog_positive_btn_bg"
+            android:gravity="center"
+            android:paddingLeft="25.0dip"
+            android:paddingRight="25.0dip"
+            android:text="确认"
+            android:textColor="@color/positive_text_color"
+            android:textSize="14.0sp" />
+       </RelativeLayout>
+</LinearLayout>
+</RelativeLayout>
