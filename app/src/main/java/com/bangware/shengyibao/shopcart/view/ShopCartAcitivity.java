@@ -169,6 +169,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		});
 
 		spinnerList.add("选车牌");
+
 		spinnerList.add("湘A00000");
 		spinnerList.add("湘A0DR39");
 		spinnerList.add("鄂AE5T20");
