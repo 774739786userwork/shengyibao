@@ -18,6 +18,7 @@ import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.activity.RemarkPopupWindow;
 import com.bangware.shengyibao.customer.model.entity.Contacts;
+import com.bangware.shengyibao.daysaleaccount.view.ChoiceSalerPersonActivity;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.view.BluetoothPrinterActivity;
 import com.bangware.shengyibao.shopcart.adapter.ShopCartGoodsListAdapter;
@@ -25,9 +26,13 @@ import com.bangware.shengyibao.shopcart.model.entity.Payment;
 import com.bangware.shengyibao.shopcart.model.entity.ShopCart;
 import com.bangware.shengyibao.shopcart.presenter.SettlementPresenter;
 import com.bangware.shengyibao.shopcart.presenter.impl.SettlementPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.NumberUtils;
+import com.nostra13.universalimageloader.utils.L;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -44,6 +49,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
+
 public class SettlementActivity extends BaseActivity implements SettlementView {
 	private CheckBox delete_small_count_checkbox;//抹零
 	private ImageView goBack;
@@ -51,7 +58,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 	public  static int flag=0;
 	private EditText settlement_totalAmount;
 	private TextView shopCart_remark,remark_textview,RemarkText,settlement_foregift;
-	private Button settlement_BuyBtn;
+	private Button settlement_BuyBtn,measurement_personBtn;
 	private ListView listView;
 	private ShopCart shopCart = null;
 	private TextView customer_Id,customer_contact,customer_mobile,customer_name,customer_address;
@@ -61,6 +68,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 	private SettlementPresenter presenter;
 	private Payment payment=new Payment(0,0,0,0);
 	private BigDecimal bd;
+	private User user;
 	private double small_change_amount;
 	//地理定位
 	private LocationClient mLocClient;
@@ -70,6 +78,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
     private BaiduMap mBaiduMap;
     private boolean isFirstLoc = true; // 是否首次定位
 	private String remark;
+	private String employeedId = "";
 	private Contacts contact;
 	private DeliveryNote delivery_Note;
 	private double receive_edit;
@@ -79,6 +88,9 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settlement);
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 
 		shopCart = (ShopCart) getIntent().getExtras().getSerializable("shopCart");
 		//接收送货单对象
@@ -127,6 +139,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 		settlement_summary = (TextView)findViewById(R.id.ShopCart_settlement_summary);
 		settlement_totalAmount =(EditText) findViewById(R.id.ShopCart_Settlement_TotalAmount);
 		settlement_BuyBtn=(Button)findViewById(R.id.ShopCart_Settlement_BuyBtn);
+		measurement_personBtn=(Button)findViewById(R.id.Choice_Saler_Person_Btn);//选择记量人
 		settlement_foregift=(TextView) findViewById(R.id.ShopCart_settlement_foregift);
 		listView = (ListView)findViewById(R.id.ShopCart_GoodsListView);
 
@@ -134,7 +147,12 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 		bd = new BigDecimal(shopCart.getTotalAmount());
 		bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
 		receive_edit=bd.doubleValue();
-
+		if(null != delivery_Note){
+			if (!delivery_Note.getRemember_employee_id().equals(user.getEmployee_id())) {
+				employeedId = delivery_Note.getRemember_employee_id();
+				measurement_personBtn.setText("记:"+delivery_Note.getRemember_employee_name());
+			}
+		}
 	}
 	/**
 	 * 初始化界面数据
@@ -189,6 +207,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 		goBack.setOnClickListener(myonclick);
 		shopCart_remark.setOnClickListener(myonclick);
 		settlement_BuyBtn.setOnClickListener(myonclick);
+		measurement_personBtn.setOnClickListener(myonclick);
 		//输入框监听输入值改变事件
 		settlement_totalAmount.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -317,7 +336,6 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
         // 退出时销毁定位
     	if (mLocClient != null)
         mLocClient.stop();
-		Log.e("1111111111-------->","onDestroy");
 		if (presenter!=null)
 		{
 			presenter.destroy();
@@ -348,6 +366,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 						loadingdialog.show();
 					}
 					break;
+				//结算确认  提交数据至后台
 				case R.id.ShopCart_Settlement_BuyBtn:
 					double receive_amount = NumberUtils.toDouble(settlement_totalAmount.getText().toString());
 					double unpaid_money =  shopCart.getTotalAmount()- receive_amount;
@@ -358,6 +377,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 					String lat_itude = latitude.getText().toString();
 					remark = RemarkText.getText().toString();
 					deliveryNote.setRemark(remark);
+					deliveryNote.setRemember_employee_id(employeedId);
 					deliveryNote.setPayment(payment);
 					deliveryNote.setSmallchange(small_change_amount);
 
@@ -379,7 +399,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 							deliveryNote.setLng(Double.valueOf(lng_itude));
 							///dialog text set 正在提交，请稍后
 								flag = 1;
-								presenter.doSave(deliveryNote);
+								presenter.doSave(user,deliveryNote);
 								settlement_BuyBtn.setClickable(false);
 								settlement_BuyBtn.setBackgroundColor(Color.GRAY);
 						}catch (Exception ex){
@@ -390,10 +410,18 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 					}
 
 					break;
+				//填写备注
 				case R.id.ShopCart_Remark:
 					Intent intent = new Intent(SettlementActivity.this, RemarkPopupWindow.class);
 					intent.putExtra("remark", remark);
 					startActivityForResult(intent, 1000);
+					break;
+				//选择记量人
+				case R.id.Choice_Saler_Person_Btn:
+					Intent intent_person = new Intent(SettlementActivity.this, ChoiceSalerPersonActivity.class);
+					intent_person.putExtra("employeeName",measurement_personBtn.getText().toString());
+					intent_person.putExtra("employeedId",employeedId);
+					startActivityForResult(intent_person,2000);
 					break;
 			}
 		}
@@ -425,6 +453,11 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
                 RemarkText.setText(remark);
         	}
         }
+		//回传获取记量人姓名
+		if (requestCode == 2000 && resultCode == 2001){
+			measurement_personBtn.setText("记："+data.getStringExtra("employeeName"));
+			employeedId = data.getStringExtra("employeedId");
+		}
     }
 
 	@Override

@@ -36,6 +36,16 @@
             android:text="您还未选择开单客户"
             android:singleLine="true"
             android:ellipsize="end"/>
+
+		<Spinner
+			android:id="@+id/carNumber_spinner"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true">
+
+		</Spinner>
+
 	</RelativeLayout>
 	<LinearLayout
 		android:id="@+id/Cuslist_customerType"
@@ -79,6 +89,4 @@
 			android:textColor="@drawable/textview_change_focus_color"
 			android:text="查询"/>
 	</LinearLayout>
-
-
 </LinearLayout>

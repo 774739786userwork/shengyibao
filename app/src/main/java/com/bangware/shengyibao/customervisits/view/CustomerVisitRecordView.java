@@ -12,5 +12,6 @@ import java.util.List;
 
 public interface CustomerVisitRecordView extends BaseView{
     void addCustomeVisitReocrd(List<VisitRecordBean> visitRecordBeanList);
+
     void loadDataFailure(String failureMessage);
 }

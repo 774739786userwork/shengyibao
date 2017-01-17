@@ -97,7 +97,7 @@
     <string name="cus_list_fans_finish_img">已收藏</string>
 
     <!-- 客户添加 -->
-    <string name="take_photo">拍照上传</string>
+    <string name="take_photo">上传图片</string>
     <string name="store_name">店名</string>
     <string name="store_name_edit">请输入店名</string>
     <string name="add_customer_address">地址</string>
@@ -141,7 +141,7 @@
     <string name="error_network">网络连接异常,初始化失败 请检查网络！</string>
     <string name="logining">程序在后台执行, 请查看日志！</string>
     <string name="setting_su">设置成功</string>
-
+    <string name="viewpager_indicator">%1$d/%2$d</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- 下拉框文本 -->
@@ -153,5 +153,10 @@
     <string-array name="issue">
         <item>未出单</item>
         <item>出单</item>
+    </string-array>
+    <string-array name="rate">
+        <item>A级</item>
+        <item>B级</item>
+        <item>C级</item>
     </string-array>
 </resources>

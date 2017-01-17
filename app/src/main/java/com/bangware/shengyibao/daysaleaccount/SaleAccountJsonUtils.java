@@ -1,6 +1,9 @@
 package com.bangware.shengyibao.daysaleaccount;
 
 
+import android.util.Log;
+
+import com.bangware.shengyibao.daysaleaccount.model.entity.ChoicePersonBean;
 import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountListBean;
 import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountProductBean;
 import com.bangware.shengyibao.model.Product;
@@ -12,6 +15,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
 /**
  * Created by ccssll on 2016/8/11.
@@ -79,5 +84,26 @@ public class SaleAccountJsonUtils {
             e.printStackTrace();
         }
         return productBeanList;
+    }
+
+    //业务员查询数据解析
+    public static List<ChoicePersonBean> getSalerPerson(String jsonData){
+        List<ChoicePersonBean> choicePersonlist = new ArrayList<ChoicePersonBean>();
+        try {
+            JSONObject Object = new JSONObject(jsonData);
+            JSONArray  jsonArray = Object.getJSONArray("data");
+            ChoicePersonBean choicePersonBean = null;
+            for (int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                choicePersonBean = new ChoicePersonBean();
+                choicePersonBean.setId(jsonObject.getString("id"));
+                choicePersonBean.setName(jsonObject.getString("name"));
+                choicePersonBean.setSortLetters(jsonObject.getString("pinyin"));
+                choicePersonlist.add(choicePersonBean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return choicePersonlist;
     }
 }

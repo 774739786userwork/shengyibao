@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:id="@+id/Stock_Lin"
     android:divider="@drawable/line_fenge"
     android:showDividers = "end"
     android:orientation="vertical" >
@@ -22,8 +23,28 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textSize="17sp"
+            android:ellipsize="end"
             android:textColor="#000000"
-            android:text="康佳通用瓷砖胶（满庭香系列）" >
+            android:layout_weight="1"
+            android:text="" >
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#919191"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:text="车库存：" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/stock_count_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="#FF0000"
+            android:textSize="16sp"
+            android:text="" >
         </TextView>
     </LinearLayout>
 
@@ -34,7 +55,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="3dp"
-        android:gravity="right"
+        android:gravity="left"
         android:orientation="horizontal" >
 
         <TextView
@@ -50,28 +71,50 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:textColor="#919191"
-            android:text="15kg/包" />
+            android:text="" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="40"
             android:gravity="right"
+            android:visibility="gone"
+            android:id="@+id/Lin_disburden"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#919191"
-                android:text="余：" >
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:text="卸货：" >
             </TextView>
 
             <TextView
-                android:id="@+id/stock_count_textview"
+                android:id="@+id/disburden"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:textColor="#FF0000"
                 android:textSize="16sp"
-                android:text="1包" >
+                android:text="" >
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#919191"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:text="余车：" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/surplus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="#FF0000"
+                android:textSize="16sp"
+                android:text="" >
             </TextView>
         </LinearLayout>
     </LinearLayout>

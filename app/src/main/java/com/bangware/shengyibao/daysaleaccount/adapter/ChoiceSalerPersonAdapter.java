@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.daysaleaccount.model.entity.ChoicePersonBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 
 import java.util.List;
 
@@ -68,11 +69,11 @@ public class ChoiceSalerPersonAdapter extends BaseAdapter implements SectionInde
         //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
         if(position == getPositionForSection(section)){
             viewHolder.tvLetter.setVisibility(View.VISIBLE);
-            viewHolder.tvLetter.setText(mContent.getSortLetters());
+            viewHolder.tvLetter.setText(mContent.getSortLetters().substring(0,1));
         }else{
             viewHolder.tvLetter.setVisibility(View.GONE);
         }
-        viewHolder.tvTitle.setText(this.list.get(position).getName());
+        viewHolder.tvTitle.setText(mContent.getName());
         return convertView;
     }
 
@@ -105,7 +106,6 @@ public class ChoiceSalerPersonAdapter extends BaseAdapter implements SectionInde
                 return i;
             }
         }
-
         return -1;
     }
 

@@ -1,5 +1,6 @@
 package com.bangware.shengyibao.customer.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -20,6 +21,7 @@ import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
 import com.bangware.shengyibao.customer.view.ShowImageActivity;
 import com.bangware.shengyibao.utils.CommonUtil;
+import com.bumptech.glide.Glide;
 
 
 /**
@@ -30,7 +32,7 @@ import com.bangware.shengyibao.utils.CommonUtil;
 public class CaremaAdapter extends BaseAdapter {
 	private Context context;
 	private int screenWidth; //屏幕宽度
-	private List<String> listCaremaName; //照片绝对路径
+	private ArrayList<String> listCaremaName; //照片绝对路径
 	private boolean candelete; //是否可删除
 	
 	@Override
@@ -60,7 +62,7 @@ public class CaremaAdapter extends BaseAdapter {
 			holder.imageView = (ImageView)view.findViewById(R.id.caremaImage);
 			
 			int imageWidth = screenWidth / Constants_Camera.MAX_NUM_COLUMNS;
-			int imageHeight = imageWidth * 3 / 2;
+			int imageHeight = imageWidth * 2 / 2;
 			
 			LayoutParams lparam = new LayoutParams(imageWidth, imageHeight);
 			holder.imageView.setLayoutParams(lparam);	
@@ -73,7 +75,8 @@ public class CaremaAdapter extends BaseAdapter {
 		holder.imageView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(context,ShowImageActivity.class);
-				intent.putExtra("ImageUrl", listCaremaName.get(index));
+				intent.putStringArrayListExtra("ImageUrl",listCaremaName);
+				intent.putExtra(ShowImageActivity.EXTRA_IMAGE_INDEX,index);
 				context.startActivity(intent);
 			}
 		});
@@ -127,7 +130,7 @@ public class CaremaAdapter extends BaseAdapter {
 		return view;
 	}
 	
-	public CaremaAdapter(Context context, int screenWidth, List<String> listCaremaName ,boolean candelete) {
+	public CaremaAdapter(Context context, int screenWidth, ArrayList<String> listCaremaName ,boolean candelete) {
 		super();
 		this.context = context;
 		this.screenWidth = screenWidth;

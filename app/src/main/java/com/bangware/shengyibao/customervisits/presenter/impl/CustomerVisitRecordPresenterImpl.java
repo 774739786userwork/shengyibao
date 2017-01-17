@@ -33,9 +33,9 @@ public class CustomerVisitRecordPresenterImpl implements CustomerVisitRecordPres
 
     //调用接口请求数据
     @Override
-    public void addVisitRecord(String show_type, int nPage, int nSpage) {
+    public void addVisitRecord(String show_type, User user, int nPage, int nSpage) {
         recordView.showLoading();
-        recordModel.loadVisitRecord(requestTag, AppContext.getInstance().getUser(),show_type,nPage,nSpage,this);
+        recordModel.loadVisitRecord(requestTag, user,show_type,nPage,nSpage,this);
     }
 
     //销毁请求队列
@@ -47,9 +47,7 @@ public class CustomerVisitRecordPresenterImpl implements CustomerVisitRecordPres
     //返回数据成功
     @Override
     public void onLoadDataSuccess(List<VisitRecordBean> recordList) {
-        if (recordList != null){
-            recordView.addCustomeVisitReocrd(recordList);
-        }
+        recordView.addCustomeVisitReocrd(recordList);
         recordView.hideLoading();
     }
 

@@ -5,6 +5,7 @@ import com.bangware.shengyibao.customer.model.CustomerModel;
 import com.bangware.shengyibao.customer.model.impl.CustomerModelImpl;
 import com.bangware.shengyibao.customer.presenter.CustomerMapLocationPresenter;
 import com.bangware.shengyibao.customer.presenter.OnCustomerMapLocationListener;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -23,10 +24,10 @@ public class CustomerMapLocationPresenterImpl implements
 	
 	
 	@Override
-	public void loadMapLocation(String customerId, String longitude,
-			String latitude,String location_address) {
+	public void loadMapLocation(User user,String customerId, String longitude,
+								String latitude, String location_address) {
 		// TODO Auto-generated method stub
-		mCustomerModel.customerMapLocation(requestTag, AppContext.getInstance().getUser(), customerId, longitude, latitude,location_address,this);
+		mCustomerModel.customerMapLocation(requestTag, user, customerId, longitude, latitude,location_address,this);
 	}
 
 	@Override

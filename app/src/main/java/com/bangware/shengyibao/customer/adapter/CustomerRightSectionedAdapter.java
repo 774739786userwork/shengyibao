@@ -2,6 +2,7 @@ package com.bangware.shengyibao.customer.adapter;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,13 @@ import com.bangware.shengyibao.customer.model.entity.CustomerTypes;
 import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.returngood.adapter.SectionedBaseAdapter;
 import com.bangware.shengyibao.returngood.model.entity.ProductsTypes;
+import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.NumberUtils;
 import com.bangware.shengyibao.utils.volley.ImageRequester;
 
 import java.util.List;
+
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
 /**
  * 基本功能：右侧Adapter
@@ -91,7 +96,10 @@ public class CustomerRightSectionedAdapter extends SectionedBaseAdapter {
         holder.CustomerBillingCountTextView.setText("进货金额"+rightArray[section][position].getPurchase_total_sum());
         if (rightArray[section][position].getContacts().size()>0) {
             holder.mainCustomerContactName_textview.setText(rightArray[section][position].getContacts().get(0).getName().trim());
-            holder.mainCustomerBillingItemPhone.setText(rightArray[section][position].getContacts().get(0).getMobile1().trim());
+
+            /**获取手机号码并用星号进行号码隐藏**/
+            String pNumber = rightArray[section][position].getContacts().get(0).getMobile1().trim();
+            holder.mainCustomerBillingItemPhone.setText(NumberUtils.goneTelephone(pNumber));
         }
         holder.mMainCustomerBillingTimeTextView.setText(rightArray[section][position].getLasttime());
         if(!holder.mMainCustomerBillingTimeTextView.getText().toString().isEmpty() && !holder.mMainCustomerBillingTimeTextView.getText().toString().equals("null")){

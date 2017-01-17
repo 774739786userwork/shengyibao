@@ -1,6 +1,8 @@
 package com.bangware.shengyibao.ladingbilling.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,9 @@ import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.ViewHolder;
+import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenGoods;
+import com.bangware.shengyibao.ladingbilling.presenter.StockPresenter;
 import com.bangware.shengyibao.model.Product;
 
 import java.util.List;
@@ -21,11 +26,13 @@ import java.util.List;
 public class StockQueryAdapter extends BaseAdapter{
     private List<Product> products_stocklist;
     private Context context;
+    private DisburdenBean bean;
     private LayoutInflater inflater;
 
-    public StockQueryAdapter(Context context,List<Product> products_stocklist) {
+    public StockQueryAdapter(Context context,List<Product> products_stocklist,StockPresenter presenter) {
         // TODO Auto-generated constructor stub
         super();
+        this.bean=presenter.getDisburdenBean();
         this.context=context;
         this.products_stocklist=products_stocklist;
     }
@@ -53,15 +60,36 @@ public class StockQueryAdapter extends BaseAdapter{
         TextView product_name = ViewHolder.get(convertView, R.id.productName_textview);
         TextView product_specifications = ViewHolder.get(convertView, R.id.specifications_textview);
         TextView product_stock = ViewHolder.get(convertView, R.id.stock_count_textview);
-        LinearLayout stock_linearlayout = ViewHolder.get(convertView,R.id.stock_linearlayout);
-        LinearLayout name_linearlayout = ViewHolder.get(convertView,R.id.name_linearlayout);
+        LinearLayout Stock_Lin=ViewHolder.get(convertView,R.id.Stock_Lin);
+        LinearLayout Lin_disburden=ViewHolder.get(convertView,R.id.Lin_disburden);
+        TextView disburden=ViewHolder.get(convertView,R.id.disburden);
+        TextView surplus=ViewHolder.get(convertView,R.id.surplus);
+         Product product=products_stocklist.get(position);
         if (products_stocklist.get(position).getStock() > 0){
-            product_name.setText(products_stocklist.get(position).getName());
-            product_specifications.setText(products_stocklist.get(position).getSpecifications());
-            product_stock.setText(String.valueOf(products_stocklist.get(position).getStock())+products_stocklist.get(position).getUnit());
+            product_name.setText(product.getName());
+            product_specifications.setText(product.getSpecifications());
+            product_stock.setText(String.valueOf(product.getStock())+product.getUnit());
         }else {
-            name_linearlayout.setVisibility(View.GONE);
-            stock_linearlayout.setVisibility(View.GONE);
+            Stock_Lin.setBackgroundColor(Color.LTGRAY);
+            product_name.setText(product.getName());
+            product_specifications.setText(product.getSpecifications());
+            product_stock.setText(String.valueOf(product.getStock())+product.getUnit());
+        }
+        Log.e("DisburdenGoods",""+bean.getGoods(product.getId()));
+
+        DisburdenGoods goods = bean.getGoods(product.getId());
+
+
+        if (goods!=null)
+        {
+            Lin_disburden.setVisibility(View.VISIBLE);
+           disburden.setText(String.valueOf(goods.getDisburden())+products_stocklist.get(position).getUnit());
+            String p=String.valueOf(goods.getDisburden());
+            Log.e("sdadsada",String.valueOf(goods.getDisburden())+String.valueOf(goods.getSurplus()));
+            surplus.setText(String.valueOf(goods.getSurplus())+products_stocklist.get(position).getUnit());
+        }else
+        {
+            Lin_disburden.setVisibility(View.GONE);
         }
         return convertView;
     }

@@ -29,6 +29,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -39,6 +40,10 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -51,6 +56,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,10 +80,18 @@ import com.bangware.shengyibao.config.Model;
 import com.bangware.shengyibao.customer.CustomerUtils;
 import com.bangware.shengyibao.customer.HttpUtils;
 import com.bangware.shengyibao.customer.adapter.CaremaAdapter;
+import com.bangware.shengyibao.customer.model.entity.Contacts;
 import com.bangware.shengyibao.customer.model.entity.CustomerShopType;
+import com.bangware.shengyibao.customercontacts.QuickBillingAdapter;
+import com.bangware.shengyibao.customercontacts.presenter.CustomerContactsPresenter;
+import com.bangware.shengyibao.customercontacts.presenter.impl.CustomerContactsPresenterImpl;
+import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
 import com.bangware.shengyibao.customercontacts.view.QueryQuickBilingActivity;
+import com.bangware.shengyibao.customervisits.view.CustomerVisits;
 import com.bangware.shengyibao.main.view.MainActivity;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.view.FlowLayoutActivity;
+import com.bangware.shengyibao.updateversion.service.UpdateVersionService;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
 
@@ -89,7 +103,7 @@ import com.bangware.shengyibao.utils.CommonUtil;
  */
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
-public class AddCustomerActivity extends BaseActivity {
+public class AddCustomerActivity extends BaseActivity implements CustomerContactsView {
 	//图片上传常量定义
 	private Context context;
 	private GridView caremaView; 					  //照片显示区域
@@ -99,11 +113,11 @@ public class AddCustomerActivity extends BaseActivity {
 	private String defaultPhotoAddress = null; //拍照生成默认照片的绝对路径
 	private String photoFolderAddress = null; //存放照片的文件夹
 	private String pztargetPath = null;
-	private List<String> listPhotoNames = null;
+	private ArrayList<String> listPhotoNames = null;
 	private CaremaAdapter cadapter = null;
 	private int screenWidth = 0; //屏幕宽度
-	//提交数据到后台的接口
-	private String actionUrl = Model.CUSTOMER_ADD_URL+"&token="+ AppContext.getInstance().getUser().getLogin_token();
+	private User user;
+
 	//各控件定义
 	private ImageView customer_add_back,upload_image;
 	private TextView btn_submit;
@@ -112,6 +126,12 @@ public class AddCustomerActivity extends BaseActivity {
 						city_edit,district_edit,street_edit,kind_ids_et;
 	private TextView type_et,add_saler_area,add_saler_area_id,add_regional_area;
 	private RelativeLayout relative_AddsalerArea,relative_AddRegionalArea,choice_shop_rllayout;
+	private LinearLayout exitis_linearLayout;
+	private CustomerContactsPresenter presenter;
+	private int nPage = 1;
+	private int nSpage = 10;
+	String phone = "";
+	private List<Contacts> contactslist = new ArrayList<Contacts>();
 
     // 定位相关
     private LocationClient mLocClient;
@@ -131,7 +151,9 @@ public class AddCustomerActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
 		setContentView(R.layout.activity_addcustomer);
 		context = this;
-		
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		init();
 		initview();
 		
@@ -179,6 +201,7 @@ public class AddCustomerActivity extends BaseActivity {
 		add_saler_area = (TextView) findViewById(R.id.add_saler_area);
 		add_saler_area_id = (TextView) findViewById(R.id.add_saler_area_id);
 		add_regional_area = (TextView) findViewById(R.id.add_regional_area);
+		exitis_linearLayout = (LinearLayout) findViewById(R.id.exitis_linearLayout);
 		
 		mMapView = (MapView) findViewById(R.id.addCustomer_bmapView); //获取百度地图控件实例
 		//图片默认地址
@@ -199,7 +222,8 @@ public class AddCustomerActivity extends BaseActivity {
 		}else{
 			photoFolderAddress = getIntent().getStringExtra("folderName");
 		}
-		
+
+		presenter=new CustomerContactsPresenterImpl(this);
 	}
 	
 	//相机拍照回调函数
@@ -288,9 +312,21 @@ public class AddCustomerActivity extends BaseActivity {
 		choice_shop_rllayout.setOnClickListener(clickLinstener);
 		relative_AddsalerArea.setOnClickListener(clickLinstener);
 		relative_AddRegionalArea.setOnClickListener(clickLinstener);
+
+		//监听输入框光标焦点的获取
+		mobile_et.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+				} else {
+					phone = mobile_et.getText().toString();
+					presenter.loadCustomerContacts(user, nPage, nSpage, phone, "","");
+				}
+			}
+		});
 	}
-	
-		
+
 	//自定义点击事件类实现点击接口
 	private class MyOnClickLinstener implements OnClickListener{
 		@Override
@@ -302,29 +338,29 @@ public class AddCustomerActivity extends BaseActivity {
 			//营销区域值回调
 			if(v.getId() == R.id.relative_AddsalerArea){
 				Intent intent = new Intent(AddCustomerActivity.this, CustomerSalerAreaActivity.class);
-				intent.putExtra("salerArea", add_saler_area.getText().toString());
-				intent.putExtra("salerAreaId", add_saler_area_id.getText().toString());
 				startActivityForResult(intent, 1000);
 			}
 			//行政区域值回调
 			if (v.getId() == R.id.relative_AddRegionalArea){
 				Intent intent = new Intent(AddCustomerActivity.this, ProvinceCityAreaActivity.class);
-				intent.putExtra("province_city_area",add_regional_area.getText().toString());
-				intent.putExtra("province",provice_edit.getText().toString());
-				intent.putExtra("city",city_edit.getText().toString());
-				intent.putExtra("district",district_edit.getText().toString());
 				startActivityForResult(intent, 1100);
 			}
 			//上传图片调用
 			if(v.getId() == R.id.upload_img) {
 				//申请6.0权限
 				if (Build.VERSION.SDK_INT >= 23) {
-					int checkSMSPermission = ContextCompat.checkSelfPermission(AddCustomerActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-					if (checkSMSPermission != PackageManager.PERMISSION_GRANTED) {
-						ActivityCompat.requestPermissions(AddCustomerActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_CAMERA);
+					int checkSMSPermission;
+					try {
+						checkSMSPermission = ContextCompat.checkSelfPermission(AddCustomerActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+						if (checkSMSPermission != PackageManager.PERMISSION_GRANTED) {
+							ActivityCompat.requestPermissions(AddCustomerActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_CAMERA);
+							return;
+						} else {
+							takePhoto();
+						}
+					} catch (RuntimeException e) {
+						showTipsDialog();
 						return;
-					} else {
-						takePhoto();
 					}
 				} else {
 					takePhoto();
@@ -333,8 +369,6 @@ public class AddCustomerActivity extends BaseActivity {
 			//店面类型及位置回调
 			if(v.getId() == R.id.choice_shop_rllayout) {
 				Intent intent = new Intent(AddCustomerActivity.this,FlowLayoutActivity.class);
-				intent.putExtra("myValue", type_et.getText().toString());
-				intent.putExtra("myKindId",kind_ids_et.getText().toString());
 				startActivityForResult(intent, 1200);
 			}
 			//提交
@@ -343,6 +377,27 @@ public class AddCustomerActivity extends BaseActivity {
 			}
 		}
 	}
+
+	//通过号码查询客户是否存在
+	@Override
+	public void doCustomerContactsLoadSuccess(List<Contacts> contacts) {
+		if(contacts.size() > 0){
+			contactslist.clear();
+			contactslist.addAll(contacts);
+			String query_mobile = "";
+			for (Contacts c: contacts) {
+				query_mobile = c.getMobile1();
+			}
+			if (query_mobile.equals(phone)){
+				exitis_linearLayout.setVisibility(View.VISIBLE);
+			}else {
+				exitis_linearLayout.setVisibility(View.GONE);
+			}
+		}else{
+			exitis_linearLayout.setVisibility(View.GONE);
+		}
+	}
+
 	//拍照调用
 	private void takePhoto(){
 		//验证sd卡是否可用
@@ -352,7 +407,7 @@ public class AddCustomerActivity extends BaseActivity {
 		}
 		//验证是否超出限制照片数量
 		if(listPhotoNames != null && listPhotoNames.size() >= Constants_Camera.MAX_PHOTO_SIZE){
-			Toast.makeText(context, "最多只允许拍摄" + Constants_Camera.MAX_PHOTO_SIZE + "张照片。", Toast.LENGTH_SHORT).show();
+			showToast("最多只允许拍摄" + Constants_Camera.MAX_PHOTO_SIZE + "张照片");
 			return;
 		}
 		//调用系统相机拍照
@@ -392,15 +447,18 @@ public class AddCustomerActivity extends BaseActivity {
 		String provice = provice_edit.getText().toString().trim();
 		String city = city_edit.getText().toString().trim();
 		String district = district_edit.getText().toString().trim();
-//		String street = street_edit.getText().toString().trim();
 		String lng = lng_edit.getText().toString().trim();
 		String lat = lat_edit.getText().toString().trim();
-		String linkman = link_man.getText().toString().trim();
 		String mobile_one = mobile_et.getText().toString().trim();
+		String linkman = link_man.getText().toString().trim();
 		String contact = contact_et.getText().toString().trim();
 		String mobile_two = mobile_two_et.getText().toString().trim();
 		System.out.print("正在发送请求！");
-		try {	
+
+		try {
+
+			//提交数据到后台的接口
+			 String actionUrl = Model.CUSTOMER_ADD_URL+"&token="+ user.getLogin_token();
 			HttpClient httpclient= new DefaultHttpClient();  
 		    HttpPost httpPost= new HttpPost(actionUrl);  
 
@@ -416,6 +474,7 @@ public class AddCustomerActivity extends BaseActivity {
 		    	showToast("请至少拍摄一张图片");
 		    	return false;
 		    }*/
+
 		    if(!"".equals(cus_store)){
 		    	mulentity.addPart("shop_name", new StringBody(cus_store,Charset.forName("UTF-8")));
 			}else{
@@ -468,14 +527,14 @@ public class AddCustomerActivity extends BaseActivity {
 				showToast("首要联系人姓名不能为空！");
 				return false;
 			}
-			   
-		    if(!"".equals(mobile_one) && isPhoneNumberValid(mobile_one)){
-		    	mulentity.addPart("mobile1", new StringBody(mobile_one));
+
+			if(!"".equals(mobile_one) && isPhoneNumberValid(mobile_one)){
+				mulentity.addPart("mobile1", new StringBody(mobile_one));
 			}else{
 				showToast("手机号码1不能为空或号码格式不正确!");
 				return false;
 			}
-		    
+
 		    if("".equals(mobile_two)){
 		    	mulentity.addPart("mobile2", new StringBody(mobile_two));
 			}else if(mobile_two.length() == 11 && !"".equals(mobile_two)){
@@ -486,14 +545,13 @@ public class AddCustomerActivity extends BaseActivity {
 			}
 			mulentity.addPart("telephone", new StringBody(customer_cell_phone));
 		    mulentity.addPart("method", new StringBody("addCustomersInfo",Charset.forName("UTF-8")));
-//		    mulentity.addPart("street", new StringBody(street,Charset.forName("UTF-8")));
 		    mulentity.addPart("Longitude", new StringBody(lng));
 		    mulentity.addPart("Latitude", new StringBody(lat));
 		    mulentity.addPart("contacts2", new StringBody(contact,Charset.forName("UTF-8")));
 		    mulentity.addPart("sale_area_id", new StringBody(saler_area_id,Charset.forName("UTF-8")));
-		    mulentity.addPart("employee_id", new StringBody(AppContext.getInstance().getUser().getEmployee_id()));
-		    mulentity.addPart("organization_id", new StringBody(AppContext.getInstance().getUser().getOrg_id()));
-		    mulentity.addPart("user_id",new StringBody(AppContext.getInstance().getUser().getUser_id()));
+		    mulentity.addPart("employee_id", new StringBody(user.getEmployee_id()));
+		    mulentity.addPart("organization_id", new StringBody(user.getOrg_id()));
+		    mulentity.addPart("user_id",new StringBody(user.getUser_id()));
 	        httpPost.setEntity(mulentity);  
 	        System.out.println("executing request " + httpPost.getRequestLine());
 	        
@@ -531,7 +589,6 @@ public class AddCustomerActivity extends BaseActivity {
 					showToast("返回内容为空！");
 				}
 		    }else{
-	        	loadingdialog.dismiss();
 	        	showToast("请求失败");
 	        }
 		}catch (Exception e) {

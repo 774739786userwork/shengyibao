@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,9 +35,13 @@ import com.bangware.shengyibao.deliverynote.presenter.impl.DeliveryNotePresenter
 import com.bangware.shengyibao.main.view.FragmentSaler;
 import com.bangware.shengyibao.main.view.MainActivity;
 import com.bangware.shengyibao.shopcart.view.ShopCartAcitivity;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.customdialog.CommonDialog;
 import com.bangware.shengyibao.utils.customdialog.CustomDialog;
+import com.bangware.shengyibao.utils.volley.DataRequest;
+
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
 /**
  * 送货单详情
@@ -56,17 +61,36 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 	private DeliveryNotePresenter notePresenter;
 	private DeliveryNote deliveryNote = null;
 	private Contacts contact=null;
-
+	private User user;
 	private CommonDialog customDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		if (savedInstanceState!=null) {
+			savedInstanceState.getSerializable("deliveryNote");
+			DataRequest.buildRequestQueue(this);
+		}
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_deliverynote_detail);
-		
+
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
+
 		init();
 		initView();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("deliveryNote",deliveryNote);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.getSerializable("deliveryNote");
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 	
 	private void init() {
@@ -91,7 +115,7 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 		contact.setName(deliveryNote.getContact_name());
 		contact.setMobile1(deliveryNote.getContact_phone());
 		notePresenter = new DeliveryNotePresenterImpl(this);
-		notePresenter.doLoadDetail(deliveryNote.getDelivery_id());
+		notePresenter.doLoadDetail(user,deliveryNote.getDelivery_id());
 		customer_id.setText(deliveryNote.getCustomer().getId());
 		shop_name.setText(deliveryNote.getCustomer().getName());
 		contact_name.setText(deliveryNote.getContact_name());
@@ -103,13 +127,14 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 		
 		detailAdapter = new DeliveryNoteDetailAdapter(this,noteGoodsList);
 		deliveryNoteDetail_ListView.setAdapter(detailAdapter);
-		date1= FragmentSaler.Date;
+
+		/*date1= FragmentSaler.Date;
 		date2=deliveryNote.getDelivery_date();
-		int result=date1.compareTo(date2);
+		result=date1.compareTo(date2);
 		if (result!=0) {
 			disuseBtn.setVisibility(View.GONE);
 			resetBtn.setVisibility(View.GONE);
-		}
+		}*/
 		if (deliveryNote.getFlag()==3)
 		{
 			disuseBtn.setVisibility(View.GONE);
@@ -162,7 +187,7 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 		}
 	}
 	//作废dialog
-	private  void showDialog(){
+	private void showDialog(){
 		customDialog = null;
 		int srceenW =  ((BaseActivity)this).getWindowManager().getDefaultDisplay().getWidth();
 			//联系人对话框
@@ -182,7 +207,7 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 					TimerTask task = new TimerTask() {
 						@Override
 						public void run() {
-							notePresenter.doAbort(deliveryNote.getDelivery_id());
+							notePresenter.doAbort(user,deliveryNote.getDelivery_id());
 							startActivity(intent); //执行
 						}
 					};
@@ -223,7 +248,8 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 			showToast("暂无送货单产品详情记录");
 		}
 	}
-	
+
+
 	public void onDestroy(){
 		if(notePresenter!=null)
 			notePresenter.destroy();

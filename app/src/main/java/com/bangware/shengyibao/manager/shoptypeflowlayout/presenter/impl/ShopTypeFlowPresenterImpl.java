@@ -9,6 +9,7 @@ import com.bangware.shengyibao.manager.shoptypeflowlayout.model.impl.ShopFlowMod
 import com.bangware.shengyibao.manager.shoptypeflowlayout.presenter.ShopFlowListener;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.presenter.ShopTypeFlowPresenter;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.view.ShopTypeFlowView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -42,9 +43,9 @@ public class ShopTypeFlowPresenterImpl implements ShopTypeFlowPresenter,ShopFlow
     }
 
     @Override
-    public void loadShopTypeData() {
+    public void loadShopTypeData(User user) {
         view.showLoading();
-        model.onLoadShopType(requestTag, AppContext.getInstance().getUser(),this);
+        model.onLoadShopType(requestTag, user,this);
     }
 
     @Override

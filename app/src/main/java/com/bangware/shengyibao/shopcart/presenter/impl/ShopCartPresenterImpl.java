@@ -16,6 +16,7 @@ import com.bangware.shengyibao.shopcart.model.impl.ShopCartModelImpl;
 import com.bangware.shengyibao.shopcart.presenter.ShopCartListener;
 import com.bangware.shengyibao.shopcart.presenter.ShopCartPresenter;
 import com.bangware.shengyibao.shopcart.view.ShopCartView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.NumberUtils;
 import com.bangware.shengyibao.utils.volley.DataRequest;
@@ -29,18 +30,17 @@ public class ShopCartPresenterImpl implements ShopCartPresenter {
 	
 	private String requestTag;
 	
-	public ShopCartPresenterImpl(ShopCartView shopCartView){
+	public ShopCartPresenterImpl(ShopCartView shopCartView,User user){
 		this.requestTag=REQUEST_TAG + System.currentTimeMillis();
 		this.shopCartView = shopCartView;
 		this.shopCartModel = new ShopCartModelImpl();
 		this.shopCart = new ShopCart();
-		this.shopCart.setUser(AppContext.getInstance().getUser());
+		this.shopCart.setUser(user);
 	}
 	@Override
-	public void loadStocks() {
-		AppContext appContext = AppContext.getInstance();
-		String salerId = appContext.getUser().getEmployee_id();
-		String token = appContext.getUser().getLogin_token();
+	public void loadStocks(User user) {
+		String salerId = user.getEmployee_id();
+		String token = user.getLogin_token();
 		Date date = new Date();
 		shopCartView.showLoading();
 		shopCartModel.loadStocks(requestTag, salerId, date, token, new ShopCartListenerImpl());

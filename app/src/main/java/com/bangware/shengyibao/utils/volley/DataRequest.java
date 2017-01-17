@@ -12,6 +12,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
+
 /**
  * Created by Administrator on 2015/2/6.
  */

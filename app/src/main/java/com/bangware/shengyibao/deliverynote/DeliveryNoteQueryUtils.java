@@ -1,11 +1,14 @@
 package com.bangware.shengyibao.deliverynote;
 
+import android.util.Log;
+
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteGoods;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteMonthQuery;
 import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.shopcart.model.entity.Payment;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,9 @@ public class DeliveryNoteQueryUtils {
 				deliveryInfo.setTotal_record(jsonObject.getInt("total_record"));
 				deliveryInfo.setTotalAmount(job.getDouble("total_sum"));
 				deliveryInfo.setDeliveryNote_product(job.getString("goods_str"));
+				deliveryInfo.setRemember_employee_name(job.getString("remember_employee_name"));
+				Log.e("deliveryInfo",deliveryInfo.getRemember_employee_name());
+				deliveryInfo.setRemember_employee_id(job.getString("remember_employee_id"));
 				customer = new Customer(job.getString("customer_id"),job.getString("shop_name"),job.getString("customer_address"),null);
 				deliveryInfo.setCustomer(customer);
 				deliveryInfo.setPayment(payment);

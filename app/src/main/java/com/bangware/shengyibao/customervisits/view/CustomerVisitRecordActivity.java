@@ -1,101 +1,102 @@
 package com.bangware.shengyibao.customervisits.view;
-
-import android.media.MediaPlayer;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
-import com.bangware.shengyibao.config.Model;
-import com.bangware.shengyibao.customervisits.adapter.CustomerVisitRecordAdapter;
-import com.bangware.shengyibao.customervisits.model.entity.VisitRecordBean;
-import com.bangware.shengyibao.customervisits.presenter.CustomerVisitRecordPresenter;
-import com.bangware.shengyibao.customervisits.presenter.impl.CustomerVisitRecordPresenterImpl;
-import com.bangware.shengyibao.view.OnRefreshListener;
-import com.bangware.shengyibao.view.RefreshListView;
-
-import java.io.IOException;
+import com.bangware.shengyibao.customervisits.fragment.CustomerVisitsFragment;
+import com.bangware.shengyibao.customervisits.fragment.RefereeFragment;
+import com.bangware.shengyibao.debtowed.adapter.FragmentAdapter;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 /**
  * 客户拜访记录
  */
-public class CustomerVisitRecordActivity extends BaseActivity implements OnRefreshListener,CustomerVisitRecordView,CustomerVisitRecordAdapter.Callback{
-    private ImageView back_img;
-    private TextView title_visits;
-    private RefreshListView lv;//列表listview
-    private CustomerVisitRecordAdapter recordAdapter = null;//拜访记录数据适配
-    /**
-     * 请求参数及数据接口访问
-     */
-    private CustomerVisitRecordPresenter visitRecordPresenter = null;
-    private int nPage = 1;
-    private int nSpage = 10;
-    private int pageSize;
-    public int totalSize = 0;
-    private List<VisitRecordBean> list = new ArrayList<VisitRecordBean>();
-    public static String[] Visit_DATE_SELECT = new String[]{"day", "week","month"};
+public class CustomerVisitRecordActivity extends FragmentActivity {
+    private ViewPager mPageVp;
 
-    private String day = "";
-    private String week = "";
-    private String month = "";
-    private boolean isPlay = false;//是否播放
-    private MediaPlayer mp;
+    private List<Fragment> mFragmentList = new ArrayList<Fragment>();
+    private FragmentAdapter mFragmentAdapter;
+
+    /**
+     * 切换的Fragment页面
+     */
+    private CustomerVisitsFragment mVisitFg;//客户拜访
+    private RefereeFragment mRefereeFg;//推荐人
+    /**
+     * Tab显示内容TextView
+     */
+    private TextView mTabVisitTv,mTabRefereeTv;
+    private TextView title_visits;
+    private LinearLayout mId_tab_chat_ll,mId_tab_friend_ll;
+
+    /**
+     * Tab的那个引导线
+     */
+    private ImageView mTabLineIv,back_img;
+
+    /**
+     * ViewPager的当前选中页
+     */
+    private int currentIndex;
+    /**
+     * 屏幕的宽度
+     */
+    private int screenWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_visit_record);
 
-        init();
+        findview();
         setListener();
+        initTabLineWidth();
     }
 
-    private void init(){
-        back_img = (ImageView) findViewById(R.id.visit_record_imageview);
-        lv = (RefreshListView) findViewById(R.id.visit_record_ListView);
+    /**
+     * 控件绑定
+     */
+    private void findview(){
+        mTabVisitTv = (TextView) this.findViewById(R.id.id_customerInfo_tv);
+        mTabRefereeTv = (TextView) this.findViewById(R.id.id_refereeInfo_tv);
+        mTabLineIv = (ImageView) this.findViewById(R.id.id_tab_line_iv);
+        back_img = (ImageView) this.findViewById(R.id.visit_record_imageview);
+        mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
         title_visits= (TextView) findViewById(R.id.title_visits);
-
-        //调P的实现类发起后台请求
-        visitRecordPresenter = new CustomerVisitRecordPresenterImpl(this);
+        mId_tab_chat_ll = (LinearLayout) findViewById(R.id.id_tab_chat_ll);
+        mId_tab_friend_ll = (LinearLayout) findViewById(R.id.id_tab_friend_ll);
 
         Bundle bundle = this.getIntent().getExtras();
-        if (bundle != null){
-            day = bundle.getString("time");
-            week = bundle.getString("time");
-            month = bundle.getString("time");
+        if (bundle != null) {
+            String time = bundle.getString("time");
 
-            if (day.equals(Visit_DATE_SELECT[0])){
+            if (time.equals("day")) {
                 title_visits.setText("今日拜访记录");
-                list.clear();
-                nPage = 1;
-                totalSize = nSpage;
-                visitRecordPresenter.addVisitRecord(day,nPage,nSpage);
-            }else if (week.equals(Visit_DATE_SELECT[1])){
+            }else if(time.equals("week")){
                 title_visits.setText("本周拜访记录");
-                list.clear();
-                nPage = 1;
-                totalSize = nSpage;
-                visitRecordPresenter.addVisitRecord(week,nPage,nSpage);
-            }else if (month.equals(Visit_DATE_SELECT[2])){
+            }else if(time.equals("month")){
                 title_visits.setText("本月拜访记录");
-                list.clear();
-                nPage = 1;
-                totalSize = nSpage;
-                visitRecordPresenter.addVisitRecord(month,nPage,nSpage);
             }
-
-            recordAdapter = new CustomerVisitRecordAdapter(this,list,this);
-            lv.setAdapter(recordAdapter);//将数据源添加到listview中
         }
     }
 
+    /**
+     * 点击事件绑定
+     */
     private void setListener(){
+        //返回键点击
         back_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,110 +104,123 @@ public class CustomerVisitRecordActivity extends BaseActivity implements OnRefre
             }
         });
 
-        //给item设置点击事件
-        /*lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mVisitFg = new CustomerVisitsFragment();
+        mFragmentList.add(mVisitFg);
+
+        mRefereeFg = new RefereeFragment();
+        mFragmentList.add(mRefereeFg);
+
+        mFragmentAdapter = new FragmentAdapter(this.getSupportFragmentManager(), mFragmentList);
+        mPageVp.setAdapter(mFragmentAdapter);
+
+        mId_tab_chat_ll.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showToast("listview点击事件"+i);
+            public void onClick(View view) {
+                mPageVp.setCurrentItem(0);
             }
-        });*/
-    }
+        });
 
-    //获取请求下来的数据
-    @Override
-    public void addCustomeVisitReocrd(List<VisitRecordBean> visitRecordBeanList) {
-        if (visitRecordBeanList.size() > 0 ){
-            list.addAll(visitRecordBeanList);
-            pageSize = list.get(0).getTotalPage();
-            recordAdapter.notifyDataSetChanged();
-        }else {
-            showToast("无拜访记录！");
-            recordAdapter.notifyDataSetChanged();
-        }
-        lv.hideFooterView();
-        lv.setOnRefreshListener(CustomerVisitRecordActivity.this);
-    }
-
-    @Override
-    public void loadDataFailure(String failureMessage) {
-
-    }
-
-    @Override
-    public void onDownPullRefresh() {
-
-    }
-
-    /**
-     * 下拉加载更多
-     */
-    @Override
-    public void onLoadingMore() {
-        nPage += 1;
-        if (totalSize >= pageSize){
-            lv.hideFooterView();
-            showToast("暂无更多数据！");
-            return;
-        }else {
-            if (day.equals(Visit_DATE_SELECT[0])){
-                visitRecordPresenter.addVisitRecord(day,nPage,nSpage);//今日
-            }else if (week.equals(Visit_DATE_SELECT[1])){
-                visitRecordPresenter.addVisitRecord(week,nPage,nSpage);//本周
-            }else if (month.equals(Visit_DATE_SELECT[2])){
-                visitRecordPresenter.addVisitRecord(month,nPage,nSpage);//本月
+        mId_tab_friend_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPageVp.setCurrentItem(1);
             }
-        }
-        totalSize += nSpage;
+        });
+        scrollItem();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (visitRecordPresenter != null){
-            visitRecordPresenter.destory();
-        }
-    }
+    private void scrollItem(){
+        //监听viewpager触屏滑动改变事件
+        mPageVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-    /**
-     * 回调语音播放
-     * @param pos
-     * @param v
-     * @param motionEvent
-     * @param which
-     * @return
-     */
-    @Override
-    public boolean onTouchEvent(int pos, View v, MotionEvent motionEvent,int which) {
-        switch (which){
-            case  R.id.text_pictureReplace:
-                TextView visit_voice = (TextView) v.findViewById(R.id.text_pictureReplace);
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (isPlay == false){
-                        visit_voice.setBackgroundResource(R.drawable.chatto_bg_pressed);
-                        mp = new MediaPlayer();
-                        try {
-                            mp.setDataSource(Model.HTTPURL+list.get(pos).getVisitContent());
-                            mp.prepare();
-                            mp.start();
+            /**
+             * state滑动中的状态 有三种状态（0，1，2） 1：正在滑动 2：滑动完毕 0：什么都没做。
+             */
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
-                            isPlay = true;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }else if (isPlay == true){
-                        visit_voice.setBackgroundResource(R.drawable.chatto_bg_pressed);
-                        isPlay = false;
-                        if(mp!=null){
-                            mp.stop();
-                            mp.release();
-                            mp=null;
-                        }
-                    }
-                }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    visit_voice.setBackgroundResource(R.drawable.chatto_bg_normal);
+            }
+
+            /**
+             * position :当前页面，及你点击滑动的页面 offset:当前页面偏移的百分比
+             * offsetPixels:当前页面偏移的像素位置
+             */
+            @Override
+            public void onPageScrolled(int position, float offset,
+                                       int offsetPixels) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
+                        .getLayoutParams();
+
+                Log.e("offset:", offset + "");
+                /**
+                 * 利用currentIndex(当前所在页面)和position(下一个页面)以及offset来
+                 * 设置mTabLineIv的左边距 滑动场景：
+                 * 记3个页面,
+                 * 从左到右分别为0,1,2
+                 * 0->1; 1->2; 2->1; 1->0
+                 */
+
+                if (currentIndex == 0 && position == 0)// 0->1
+                {
+                    lp.leftMargin = (int) (offset * (screenWidth * 1.0 / 2) + currentIndex
+                            * (screenWidth / 2));
+
+                } else if (currentIndex == 1 && position == 0) // 1->0
+                {
+                    lp.leftMargin = (int) (-(1 - offset)
+                            * (screenWidth * 1.0 / 2) + currentIndex
+                            * (screenWidth / 2));
+
+                } else if (currentIndex == 1 && position == 1) // 1->2
+                {
+                    lp.leftMargin = (int) (offset * (screenWidth * 1.0 / 2) + currentIndex
+                            * (screenWidth / 2));
+                } else if (currentIndex == 2 && position == 1) // 2->1
+                {
+                    lp.leftMargin = (int) (-(1 - offset)
+                            * (screenWidth * 1.0 / 2) + currentIndex
+                            * (screenWidth / 2));
                 }
-                break;
-        }
-        return true;
+                mTabLineIv.setLayoutParams(lp);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                resetTextView();
+                switch (position) {
+                    case 0:
+                        mTabVisitTv.setTextColor(Color.GRAY);
+                        break;
+                    case 1:
+                        mTabRefereeTv.setTextColor(Color.GRAY);
+                        break;
+                    default:
+                        break;
+                }
+                currentIndex = position;
+            }
+        });
+    }
+
+    /**
+     * 设置滑动条的宽度为屏幕的1/3(根据Tab的个数而定)
+     */
+    private void initTabLineWidth() {
+        DisplayMetrics dpMetrics = new DisplayMetrics();
+        getWindow().getWindowManager().getDefaultDisplay()
+                .getMetrics(dpMetrics);
+        screenWidth = dpMetrics.widthPixels;
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
+                .getLayoutParams();
+        lp.width = screenWidth / 2;
+        mTabLineIv.setLayoutParams(lp);
+    }
+
+    /**
+     * 重置颜色
+     */
+    private void resetTextView() {
+        mTabVisitTv.setTextColor(Color.BLACK);
+        mTabRefereeTv.setTextColor(Color.BLACK);
     }
 }

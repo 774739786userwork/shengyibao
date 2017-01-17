@@ -39,41 +39,28 @@
 				android:singleLine="true"
 				android:ellipsize="end"
 				android:paddingLeft="5dp"
-				android:paddingTop="4dp"
+				android:layout_marginTop="10dp"
 				android:textColor="#000000"
 				android:textStyle="bold"
 				android:textSize="16sp"
 				android:text="11" />
 
-			<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:paddingLeft="5dp"
-				android:paddingTop="0dp"
-				android:orientation="horizontal">
-
-				<TextView
-					android:id="@+id/mainCustomerContactName_textview"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#919191"
-					android:text="" />
-
-				<TextView android:id="@+id/mainCustomerBillingItemPhone"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#919191"
-					android:layout_marginLeft="3dp"
-					android:text="" />
-			</LinearLayout>
-
 			<TextView
-				android:id="@+id/mainCustomerBillingTimeTextView"
+				android:id="@+id/mainCustomerContactName_textview"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:paddingLeft="5dp"
-				android:paddingTop="0dp"
 				android:textColor="#919191"
+				android:layout_marginLeft="5dp"
+				android:paddingTop="5dp"
+				android:text="" />
+
+
+			<TextView android:id="@+id/mainCustomerBillingItemPhone"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#919191"
+				android:layout_marginLeft="5dp"
+				android:paddingTop="5dp"
 				android:text="" />
 
 			<LinearLayout
@@ -94,4 +81,12 @@
 		</LinearLayout>
 	</LinearLayout>
 
+	<TextView
+		android:id="@+id/mainCustomerBillingTimeTextView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="5dp"
+		android:paddingTop="0dp"
+		android:textColor="#919191"
+		android:text="" />
 </LinearLayout>

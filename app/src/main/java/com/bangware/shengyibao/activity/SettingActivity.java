@@ -33,12 +33,16 @@ public class SettingActivity extends BaseActivity {
     private String name = "";
     private String pwd = "";
     private String user_real_name = "";
+    SharedPreferences sharedPreferences;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         mSettingTitleBtnLeft= (ImageButton) findViewById(R.id.settingTitleBtnLeft);
+        sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
 
+        user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
         //修改密码
         mUpdate_password_setting= (TextView) findViewById(R.id.update_password_setting);
         mSettingTitleBtnLeft.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +107,7 @@ public class SettingActivity extends BaseActivity {
         quitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = Model.HTTPURL+"users/sign_out.json?token="+ AppContext.getInstance().getUser().getLogin_token();
+                String url = Model.HTTPURL+"users/sign_out.json?token="+ user.getLogin_token();
                 clearUserCache();
                 ThreadPoolUtils.execute(new HttpGetThread(hand, url));
                 Intent loginIntent = new Intent(SettingActivity.this,LoginActivity.class);
@@ -145,7 +149,7 @@ public class SettingActivity extends BaseActivity {
         SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
-        editor.putString("username", AppContext.getInstance().getUser().getUser_name());
+        editor.putString("username", user.getUser_name());
         editor.commit();
     }
 

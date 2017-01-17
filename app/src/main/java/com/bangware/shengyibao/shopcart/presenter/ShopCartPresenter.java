@@ -4,13 +4,14 @@ package com.bangware.shengyibao.shopcart.presenter;
 import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.shopcart.model.entity.ShopCart;
 import com.bangware.shengyibao.shopcart.model.entity.ShopCartGoods;
+import com.bangware.shengyibao.user.model.entity.User;
 
 
 public interface ShopCartPresenter {
 	/**
 	 * 加载库存
 	 */
-	public void loadStocks();
+	public void loadStocks(User user);
 	/**
 	 * 加载送货单
 	 * @param deliveryNoteId

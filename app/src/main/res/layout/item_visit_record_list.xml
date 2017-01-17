@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="6dp"
@@ -26,7 +26,7 @@
             android:padding="5dp"
             android:textSize="16sp"
             android:textColor="#666666"
-            android:text=""/>
+            android:text="时间"/>
 
         <TextView
             android:id="@+id/visit_content_textview"
@@ -36,14 +36,13 @@
             android:textSize="17sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text=""/>
+            android:text="内容"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="46dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:visibility="visible"
             android:layout_below="@+id/hearder_layout"
             android:id="@+id/sound_record_file">
 
@@ -68,48 +67,171 @@
 
         </LinearLayout>
 
-        <com.bangware.shengyibao.customervisits.view.CustomGridView
+        <com.bangware.shengyibao.utils.OnScrollGridView.NoScrollGridView
             android:id="@+id/image_gridview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:horizontalSpacing="4dip"
-            android:scrollbars="none"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
             android:numColumns="3"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="4dip" >
+            android:verticalSpacing="4dip">
 
-        </com.bangware.shengyibao.customervisits.view.CustomGridView>
+        </com.bangware.shengyibao.utils.OnScrollGridView.NoScrollGridView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:padding="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="16sp"
+                android:text="客户信息"
+                android:drawableRight="@drawable/arrow_right"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#ffcccccc" />
+
             <TextView
                 android:id="@+id/visit_customer_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:textSize="16sp"
                 android:textColor="#666666"
-                android:text=""/>
+                android:text="店名"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/visit_customer_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:text="客户联系人名字"/>
+                <TextView
+                    android:id="@+id/visit_customer_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:text="电话"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/customer_level_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/red"
+                    android:text=""/>
+                <TextView
+                    android:id="@+id/visit_type_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/red"
+                    android:text=""/>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/visit_type_textview"
+                android:id="@+id/visit_customerAddress_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:textSize="16sp"
-                android:textColor="@color/red"
-                android:text=""/>
-        </LinearLayout>
+                android:textColor="#666666"
+                android:text="地址"/>
 
-        <TextView
-            android:id="@+id/visit_customerAddress_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textSize="16sp"
-            android:textColor="#666666"
-            android:text=""/>
+            <LinearLayout
+                android:id="@+id/owner_info_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:text="业主信息"
+                    android:drawableRight="@drawable/arrow_right"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#ffcccccc" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/owner_name_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="姓名"/>
+
+                    <TextView
+                        android:id="@+id/owner_mobile_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="电话"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/owner_acreage_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="面积"/>
+
+                    <TextView
+                        android:id="@+id/owner_price_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:textSize="16sp"
+                        android:textColor="#666666"
+                        android:text="单价"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

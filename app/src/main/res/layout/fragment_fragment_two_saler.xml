@@ -147,6 +147,143 @@
 
         </LinearLayout>
         <View android:layout_width="wrap_content"  android:layout_height="4dp"  android:background="#e0e0e0" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:paddingTop="8dp"
+            android:background="#ffffff"
+            android:paddingBottom="10dp"
+            android:baselineAligned="true"
+            android:gravity="center"
+            android:orientation="horizontal" >
+            <LinearLayout
+                android:id="@+id/referee_visit"
+                android:background="@drawable/grid_view_item_selector_xml"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/icon_return_product" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="推荐人拜访"
+                    android:textColor="#000000"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <View android:layout_width="0.5dp"  android:layout_height="70dp"  android:background="#e0e0e0" />
+
+            <LinearLayout
+                android:id="@+id/new_practical_projects"
+                android:background="@drawable/grid_view_item_selector_xml"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/icon_sale_record" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="新建案例"
+                    android:textColor="#000000"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <View android:layout_width="0.5dp"  android:layout_height="70dp"  android:background="#e0e0e0" />
+
+            <LinearLayout
+                android:id="@+id/query_practical_projects"
+                android:background="@drawable/grid_view_item_selector_xml"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/icon_customers2"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="查看案例"
+                    android:textColor="#000000"
+                    android:textSize="14dp" />
+            </LinearLayout>
+            <View android:layout_width="0.5dp"  android:layout_height="70dp"  android:background="#e0e0e0" />
+            <LinearLayout
+                android:id="@+id/my_customer_visitor"
+                android:background="@drawable/grid_view_item_selector_xml"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/icon_my_customers" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="客户联系人"
+                    android:textColor="#000000"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <View android:layout_width="0.5dp"  android:layout_height="70dp"  android:background="#e0e0e0" />
+
+        </LinearLayout>
+
+        <View android:layout_width="wrap_content"  android:layout_height="4dp"  android:background="#e0e0e0" />
+        <TextView
+            android:id="@+id/visits_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="20sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:drawableRight="@drawable/right"
+            android:clickable="true"
+            android:background="@drawable/my_tab_background"
+            android:text="查看拜访统计"/>
+        <View android:layout_width="wrap_content"  android:layout_height="1dp"  android:background="#e0e0e0" />
+
+        <TextView
+            android:id="@+id/visits_analysis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="20sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:drawableRight="@drawable/right"
+            android:clickable="true"
+            android:background="@drawable/my_tab_background"
+            android:text="客户拜访分析统计"/>
+        <View android:layout_width="wrap_content"  android:layout_height="1dp"  android:background="#e0e0e0" />
     </LinearLayout>
 
 </LinearLayout>

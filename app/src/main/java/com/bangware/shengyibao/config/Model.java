@@ -18,9 +18,11 @@ public class Model {
 	     //修改密码
 	   public  static String UPDATEPASSWORD="users.json";
 		
-		//app版本升级接口
+		//app业务员版本升级接口
 		public static String UPDATEVERSION = HTTPURL+"mobile_interfaces/mobile_info?method=update_app_version";
 
+	    //app硅藻泥版本升级接口
+		public static String UPDATEVERSION_GZN= HTTPURL+"mobile_interfaces/mobile_info?method=gzn_app_version";
 		//用户反馈
 		public static String SUGGESTIONURL = HTTPURL + "feedback_suggestions.json";
 
@@ -56,6 +58,9 @@ public class Model {
 		
 		//送货单保存数据接口
 		public static String DELIVAERYNOTEURL = HTTPURL + "mobile_interfaces/get_mobile_info?method=add_delivery_order";
+
+	    //卸货单保存数据接口
+	    public static String DISBUREN_SAVA=HTTPURL+"disburden_orders.json?";
 
 		//送货单查询数据接口
 		public static String DELIVAERY_NOTE_QUERYURL = HTTPURL + "mobile_interfaces/mobile_info?method=employee_to_delivery_order";
@@ -116,6 +121,19 @@ public class Model {
 
 		//客户拜访记录
 		public static String CUSTOMER_VISIT_RECORD_URL = HTTPURL +"customer_visits/get_customer_visits_info";
+
+	   //新增推荐人
+	    public static String ADDREFEREE_VISITOR_URL=HTTPURL+"/mobile_interfaces/get_mobile_info?";
+
+	   //查询推荐人
+	    public static String QUERY_REFEREE_URL=HTTPURL+"mobile_interfaces/mobile_info?method=query_referee_contacts";
+
+	   //新建案例
+	    public static String NEW_PRACTICAL_PROJECT_URL=HTTPURL+"construction_cases.json";
+	    //客户拜访统计
+	    public static String VISITS_COUNT_URL=HTTPURL+"customer_visits/get_customer_visits_list.json";
+		//客户拜访状态
+		public static String CUSTOMER_VISIT_STATUS_URL = HTTPURL + "customer_visits/is_initial_visit";
 		
 		//编辑客户
 		public static String CUSTOMER_EDIT_URL = HTTPURL + "mobile_interfaces/get_mobile_info?method=edit_customer_info";
@@ -131,5 +149,8 @@ public class Model {
 		
 		//客户地理位置标注
 		public static String CUSTOMER_MAPLOCATION_URL = HTTPURL + "mobile_interfaces/mobile_info?method=edit_customer_position";
+
+		//全厂业务员查询
+		public static String SALER_PERSON_QUERY_URL = HTTPURL +"employees/list_name.json?post=1";
 }
 

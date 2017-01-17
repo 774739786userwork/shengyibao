@@ -6,6 +6,7 @@ import com.bangware.shengyibao.daysaleaccount.model.impl.SaleAccountModelImpl;
 import com.bangware.shengyibao.daysaleaccount.presenter.OnSaleProductListener;
 import com.bangware.shengyibao.daysaleaccount.presenter.SaleProductPresenter;
 import com.bangware.shengyibao.daysaleaccount.view.SaleProductView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -39,9 +40,9 @@ public class SaleProductPresenterImpl implements SaleProductPresenter,OnSaleProd
     }
 
     @Override
-    public void loadSalesAccountData(String saler_journals_id) {
+    public void loadSalesAccountData(User user,String saler_journals_id) {
         pView.showLoading();
-        model.onloadProductAccount(requestTag, AppContext.getInstance().getUser(),saler_journals_id,this);
+        model.onloadProductAccount(requestTag, user,saler_journals_id,this);
     }
 
     @Override

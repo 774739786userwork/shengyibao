@@ -3,7 +3,6 @@ package com.bangware.shengyibao.main.model.impl;
 import android.util.Log;
 
 import org.json.JSONObject;
-
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
@@ -23,9 +22,7 @@ public class MainModelImpl implements MainModel {
 								 final OnMainSalerListener onMainSalerListener) {
 		// TODO Auto-generated method stub
 		String main_header_url = Model.MAINHEADERURL+"&employee_id="+user.getEmployee_id()+"&token="+user.getLogin_token();
-		Log.e("main_header_url",main_header_url);
 		DataRequest.getInstance().newJsonObjectGetRequest(requestTag, main_header_url, null, new Response.Listener<JSONObject>() {
-
 			@Override
 			public void onResponse(JSONObject jsonObject) {
 				// TODO Auto-generated method stub

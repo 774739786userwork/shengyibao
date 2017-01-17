@@ -1,6 +1,7 @@
 package com.bangware.shengyibao.purchaseorder.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +19,8 @@ import com.bangware.shengyibao.net.NetWork;
 import com.bangware.shengyibao.purchaseorder.adapter.PurchaseOrderQueryAdapter;
 import com.bangware.shengyibao.purchaseorder.presenter.PurchaseOrderPresenter;
 import com.bangware.shengyibao.purchaseorder.presenter.impl.PurchaseOrderPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.RefreshListView;
 
@@ -37,6 +40,7 @@ public class PurchaseOrderActivity extends BaseActivity implements PurchaseOrder
     private PurchaseOrderQueryAdapter purchaseOrderQueryAdapter;
     private PurchaseOrderPresenter presenter;
     String begin_date;
+    private User user;
     String end_date;
     private int show_type = 1;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
@@ -77,6 +81,9 @@ public class PurchaseOrderActivity extends BaseActivity implements PurchaseOrder
     }
 
     private void findView() {
+        SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+        user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
         purchase_date_layout = (LinearLayout) findViewById(R.id.purchase_date_layout);
         purchase_date_time = (TextView) findViewById(R.id.purchase_date_time);
         purchase_total_sum = (TextView) findViewById(R.id.purchase_total_sum);
@@ -92,7 +99,7 @@ public class PurchaseOrderActivity extends BaseActivity implements PurchaseOrder
         purchase_order_ListView.setDividerHeight(0);
         purchase_order_ListView.setAdapter(purchaseOrderQueryAdapter);
         presenter=new PurchaseOrderPresenterImpl(this);
-        presenter.doLoad(begin_date,end_date,nPage,nSpage,show_type);
+        presenter.doLoad(user,begin_date,end_date,nPage,nSpage,show_type);
     }
 
     @Override
@@ -125,7 +132,7 @@ public class PurchaseOrderActivity extends BaseActivity implements PurchaseOrder
             purchase_order_ListView.hideFooterView();
             return;
         }else{
-            presenter.doLoad(begin_date, end_date, nPage, nSpage,show_type);
+            presenter.doLoad(user,begin_date, end_date, nPage, nSpage,show_type);
         }
         totalSize += nSpage;
     }
@@ -170,7 +177,7 @@ public class PurchaseOrderActivity extends BaseActivity implements PurchaseOrder
                         querylist.clear();
                         nPage = 1;
                         totalSize = nSpage;
-                        presenter.doLoad(begin_date, end_date, nPage, nSpage,show_type);
+                        presenter.doLoad(user,begin_date, end_date, nPage, nSpage,show_type);
 
                     }
                 }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), true).show();

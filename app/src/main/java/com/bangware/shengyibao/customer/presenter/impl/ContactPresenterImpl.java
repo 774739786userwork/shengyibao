@@ -6,6 +6,7 @@ import com.bangware.shengyibao.customer.model.impl.CustomerModelImpl;
 import com.bangware.shengyibao.customer.presenter.ContactPresenter;
 import com.bangware.shengyibao.customer.presenter.OnContactListener;
 import com.bangware.shengyibao.customer.view.ContactView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -25,9 +26,9 @@ public class ContactPresenterImpl implements ContactPresenter,OnContactListener 
 		this.mCustomerMdel = new CustomerModelImpl();
 	}
 	@Override
-	public void loadContact(String customerId) {
+	public void loadContact(User user,String customerId) {
 		// TODO Auto-generated method stub
-		mCustomerMdel.loadContact(requestTag, customerId, AppContext.getInstance().getUser(), this);
+		mCustomerMdel.loadContact(requestTag, customerId, user, this);
 	}
 
 	//销毁请求队列

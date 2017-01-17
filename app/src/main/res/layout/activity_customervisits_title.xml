@@ -35,7 +35,7 @@
             style="@style/A1_Font"
             android:textSize="17sp"
             android:layout_marginLeft="20dp"
-            android:text="请选择客户拜访"
+            android:text="请选择拜访客户"
             android:singleLine="true"
             android:ellipsize="end"/>
 

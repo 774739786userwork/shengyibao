@@ -3,18 +3,15 @@ package com.bangware.shengyibao.main.view;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bangware.shengyibao.activity.ChartLibActivity;
 import com.bangware.shengyibao.activity.HtmlWebActivity;
 import com.bangware.shengyibao.activity.HtmlWebMainActivity;
 import com.bangware.shengyibao.activity.HtmlWebThirdActivity;
 import com.bangware.shengyibao.activity.R;
-import com.bangware.shengyibao.customer.view.CustomerActivity;
 import com.bangware.shengyibao.main.model.entity.ImageShow;
 
 import java.util.ArrayList;
@@ -55,7 +52,7 @@ public class MyPagerAdapter extends PagerAdapter {
      */
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        View view = View.inflate(context, R.layout.item_main_image, null);
+        View view = View.inflate(context, R.layout.main_image_show, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.image);
         ImageShow imageShow = list.get(position%list.size());//实现viewpager图片的无线循环
         imageView.setImageResource(imageShow.getIconResId());

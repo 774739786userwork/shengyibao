@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,9 @@ import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.customer.presenter.AddContactsPresenter;
 import com.bangware.shengyibao.customer.presenter.impl.AddContactsPresenterImp;
+import com.bangware.shengyibao.customercontacts.view.QueryQuickBilingActivity;
+import com.bangware.shengyibao.main.view.MainActivity;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 
 
@@ -36,10 +40,14 @@ public class AddContactsActivity extends BaseActivity implements AddContactsView
   private AddContactsPresenter presenter;
   private String customer_id,name,mobile1,mobile2,position;
   private Customer customer;
+	private User user;
   @Override
 protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_addcontacts);
+
+	  SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME,MODE_PRIVATE);
+	  user = AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 	
 	findView();//初始化控件
 	setListener();//初始化点击事件
@@ -72,9 +80,8 @@ private void init() {
 		mobile1=mAddcontact_phone1.getText().toString();
 		mobile2=mAddcontact_phone2.getText().toString();
 		position=mAddcontact_position.getText().toString();
-		presenter.addContacts(AppContext.getInstance().getUser(), customer.getId(), name, mobile1, mobile2, position);
-		Log.d("TGA", customer_id+" "+name+" "+mobile1+" "+mobile2+" "+position);
-		Intent intent=new Intent(AddContactsActivity.this,CustomerActivity.class);
+		presenter.addContacts(user, customer.getId(), name, mobile1, mobile2, position);
+		Intent intent=new Intent(AddContactsActivity.this,MainActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("customer", customer);

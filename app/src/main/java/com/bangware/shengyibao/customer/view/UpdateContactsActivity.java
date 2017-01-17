@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,9 +27,12 @@ import com.bangware.shengyibao.customer.model.entity.Contacts;
 import com.bangware.shengyibao.customer.presenter.UpdateContactsPresenter;
 import com.bangware.shengyibao.customer.presenter.impl.UpdateContactsPresenterImp;
 import com.bangware.shengyibao.main.view.MainActivity;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.customdialog.CommonDialog;
 import com.bangware.shengyibao.utils.customdialog.CustomDialog;
+
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
 public class UpdateContactsActivity extends BaseActivity implements UpdateContactsView {
 	private EditText mUpdateName,mUpdateMobile1,mUpdateMoblie2,mUpdatePosition;
@@ -38,6 +42,7 @@ public class UpdateContactsActivity extends BaseActivity implements UpdateContac
 	private String name,mobile1,mobile2,position;
 	private Contacts contact;
 	private UpdateContactsPresenter presenter;
+	private User user;
 	private CommonDialog customDialog;
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,9 @@ public class UpdateContactsActivity extends BaseActivity implements UpdateContac
     	super.onCreate(savedInstanceState);
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
     	setContentView(R.layout.activity_updatecontacts);
+		 SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+		 user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
     	presenter=new UpdateContactsPresenterImp(this);
     	contact=(Contacts)getIntent().getExtras().getSerializable("contacts");
     	
@@ -73,7 +81,7 @@ public class UpdateContactsActivity extends BaseActivity implements UpdateContac
 		mUpdateMobile1.setText(contact.getMobile1());
 		mUpdateMoblie2.setText(contact.getMobile2());
 		mUpdatePosition.setText(contact.getPosition());
-		Log.d("asdsadaadsadadsasd", "```````````````````````"+contact.getId());
+
 		//判断返回的值如果为null就设为空  显示默认的值
 		if ((mUpdatePosition.getText().toString()).equals("null")) {
 			mUpdatePosition.setText("");
@@ -91,7 +99,7 @@ public class UpdateContactsActivity extends BaseActivity implements UpdateContac
 			mobile2=mUpdateMoblie2.getText().toString();
 			position=mUpdatePosition.getText().toString();
 		    
-			presenter.updateContacts(AppContext.getInstance().getUser(), contact.getId(), name, mobile1, mobile2, position);
+			presenter.updateContacts(user, contact.getId(), name, mobile1, mobile2, position);
 			Intent intent=new Intent(UpdateContactsActivity.this,MainActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
@@ -115,7 +123,6 @@ public class UpdateContactsActivity extends BaseActivity implements UpdateContac
 		//提交修改信息
 		case R.id.update_contact_submit:
 			init();
-			
 			break;
 		case R.id.delete_contact:
 			//删除联系人 弹出Dialog 提示是否删除联系人
@@ -144,7 +151,7 @@ public class UpdateContactsActivity extends BaseActivity implements UpdateContac
 					showToast("首要联系人不可删除，只可修改");
 					return;
 				}else{
-					presenter.deleteContacts(AppContext.getInstance().getUser(), contact.getId());
+					presenter.deleteContacts(user, contact.getId());
 					Intent intent=new Intent(UpdateContactsActivity.this,MainActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);

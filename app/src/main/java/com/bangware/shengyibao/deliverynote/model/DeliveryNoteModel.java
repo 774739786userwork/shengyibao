@@ -24,7 +24,7 @@ public interface DeliveryNoteModel {
 	 * 保存送货单
 	 * @param deliveryNote
 	 */
-	public void save(String requestTag, DeliveryNote deliveryNote, OnDeliveryNoteSaveListener listener);
+	public void save(User user,String requestTag, DeliveryNote deliveryNote, OnDeliveryNoteSaveListener listener);
 	/**
 	 * 根据送货单ID作废
 	 * @param deliveryNoteId

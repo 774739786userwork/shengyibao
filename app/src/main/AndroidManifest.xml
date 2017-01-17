@@ -34,7 +34,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
     <!-- 录音权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -218,6 +218,7 @@
         <!-- 主页 -->
         <activity
             android:name="com.bangware.shengyibao.main.view.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".BaseActivity"
@@ -238,13 +239,16 @@
         <activity
             android:name=".AboutActivity"
             android:screenOrientation="portrait" />
-        <!--客户拜访-->
-        <activity android:name="com.bangware.shengyibao.customervisits.view.CustomerVisits"
-            android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"/>
+        <!-- 客户拜访 -->
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.CustomerVisits"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
-        <!--客户拜访-->
-        <activity android:name="com.bangware.shengyibao.customervisits.view.CustomerVisitRecordActivity"
-            android:screenOrientation="portrait"/>
+        <!-- 客户拜访 -->
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.CustomerVisitRecordActivity"
+            android:screenOrientation="portrait" />
 
         <!-- 开单选择客户 -->
         <activity
@@ -296,10 +300,6 @@
 
         <!-- 客户编辑测试页面 -->
         <activity
-            android:name="com.bangware.shengyibao.customer.view.TestPhotoActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light" />
-        <activity
             android:name=".zxing.MipcaActivityCapture"
             android:screenOrientation="portrait" />
         <!-- 客户添加 -->
@@ -330,7 +330,6 @@
         <!-- 修改联系人界面 -->
         <activity
             android:name="com.bangware.shengyibao.customer.view.UpdateContactsActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <!-- 查看照片详情 -->
         <activity
@@ -446,6 +445,7 @@
             android:name=".ProvinceCityAreaActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyDialogStyleBottom" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -473,7 +473,7 @@
         <activity
             android:name="com.bangware.shengyibao.purchaseorder.view.PurchaseOrderDetailActivity"
             android:screenOrientation="portrait" />
-        <!-- 欠货欠款-->
+        <!-- 欠货欠款 -->
         <activity
             android:name="com.bangware.shengyibao.debtowed.DebtOwedMainActivity"
             android:screenOrientation="portrait" />
@@ -504,7 +504,7 @@
             android:screenOrientation="portrait" />
 
         <!-- 图表展示 -->
-        <activity android:name=".ChartLibActivity" />
+
 
         <!-- 店面类型及位置选择 -->
         <activity
@@ -518,13 +518,61 @@
         <activity
             android:name="com.bangware.shengyibao.utils.gesture.locus.LoginGesturePassWordActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.bangware.shengyibao.customer.view.ImageGalleryActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.bangware.shengyibao.customer.view.ImageGalleryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.utils.OnScrollGridView.ImagePagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.net.pickpicture.PickPictureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.net.pickpicture.VisitsPickPictureActivity"
+            android:screenOrientation="portrait" />
 
         <!-- 语音播放 -->
         <activity
             android:name="com.bangware.shengyibao.customervisits.view.SpeechActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.ladingbilling.view.StockBluetoothPrinterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.VisitsCountActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Light"/>
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.ManagerHtmlActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.EditCustomerRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.QueryVisitsTimeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.refereevisit.view.RefereeVisitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.refereevisit.view.NewRefereeVisitorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.customervisits.view.QueryVisitCustomerContactActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.practicalprojects.view.NewPracticalProjects"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.practicalprojects.view.QueryPracticalProjects"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.practicalprojects.view.FuzzyQueryPractical"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.bangware.shengyibao.utils.OnScrollGridView.CasesImageActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name="com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

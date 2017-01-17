@@ -6,6 +6,7 @@ import com.bangware.shengyibao.ladingbilling.model.impl.LadingbillingQueryModelI
 import com.bangware.shengyibao.ladingbilling.presenter.LadingbillingPresenter;
 import com.bangware.shengyibao.ladingbilling.presenter.OnLadingBillingListener;
 import com.bangware.shengyibao.ladingbilling.view.LadingbillingQueryView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -25,11 +26,11 @@ public class LadingbillingPresenterImpl implements LadingbillingPresenter,OnLadi
 	}
 	
 	@Override
-	public void loadLadingBilling(String begin_date, String end_date,
-			int nPage, int nSpage) {
+	public void loadLadingBilling(User user,String begin_date, String end_date,
+								  int nPage, int nSpage) {
 		// TODO Auto-generated method stub
 		queryView.showDialog();
-		queryModel.LoadLadingBillingData(requestTag, begin_date, end_date, nPage, nSpage, AppContext.getInstance().getUser(), this);
+		queryModel.LoadLadingBillingData(requestTag, begin_date, end_date, nPage, nSpage, user, this);
 	}
 
 

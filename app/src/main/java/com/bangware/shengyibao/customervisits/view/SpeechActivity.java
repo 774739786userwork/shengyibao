@@ -1,12 +1,17 @@
 package com.bangware.shengyibao.customervisits.view;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +50,7 @@ public class SpeechActivity extends BaseActivity{
     private long timeLeftInS = 0;
     private long remain_time = 0;
     private MediaPlayer player ;
+    private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,17 +80,32 @@ public class SpeechActivity extends BaseActivity{
                             Toast.makeText(SpeechActivity.this, "没有内存卡！", Toast.LENGTH_LONG).show();
                             return false;
                         }
-                        System.out.println("2");
-                        System.out.println(event.getY()+"..."+btn_rc_Y+"...."+event.getX() +"...."+btn_rc_X);
                         if (event.getY() < btn_rc_Y && event.getX() > btn_rc_X) {//判断手势按下的位置是否是语音录制按钮的范围内
-                            System.out.println("3");
                             rcChat_popup.setVisibility(View.VISIBLE);
                             mHandler.postDelayed(new Runnable() {
                                 public void run() {
+
                                 }
                             }, 300);
-                            voiceName = CommonUtil.getUUID32() + ".mp3";
-                            start(voiceName);
+                            voiceName = CommonUtil.getUUID32() + ".amr";
+                            //申请6.0权限
+                            if (Build.VERSION.SDK_INT >= 23){
+                                int checkSMSPermission;
+                                try {
+                                    checkSMSPermission = ContextCompat.checkSelfPermission(SpeechActivity.this, Manifest.permission.RECORD_AUDIO);
+                                    if (checkSMSPermission != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(SpeechActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+                                        return false;
+                                    }
+                                    else {
+                                        start(voiceName);
+                                    }
+                                }catch (RuntimeException e) {
+                                    showTipsDialog();
+                                }
+                            }else {
+                                start(voiceName);
+                            }
                             //设置录音时间
                             timedown.setVisibility(View.VISIBLE);
                             initTimer(60);
@@ -103,7 +124,6 @@ public class SpeechActivity extends BaseActivity{
                         timedown.setVisibility(View.GONE);
                         stop();
                         flag = 1;
-
                         /**
                          * 判断按住时间及回传值
                          */
@@ -148,6 +168,21 @@ public class SpeechActivity extends BaseActivity{
         });
     }
 
+    //处理权限结果
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_RECORD_AUDIO:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    start(voiceName);
+                } else {
+                    showTipsDialog();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
     private Runnable mSleepTask = new Runnable() {
         public void run() {

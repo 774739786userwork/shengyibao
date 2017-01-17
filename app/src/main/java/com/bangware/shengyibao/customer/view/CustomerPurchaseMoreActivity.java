@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.customer.model.entity.CustomerPurchase;
 import com.bangware.shengyibao.customer.presenter.CustomerPurchasePresenter;
 import com.bangware.shengyibao.customer.presenter.impl.CustomerPurchaseImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.RefreshListView;
 
@@ -52,12 +55,16 @@ public class CustomerPurchaseMoreActivity extends BaseActivity implements OnRefr
 	private List<CustomerPurchase> purchaseList = new ArrayList<CustomerPurchase>();
 	private CustomerPurchaseMoreAdapter moreAdapter;
 	private CustomerPurchasePresenter purchasePresenter;
+	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_morepurchase);
+
+		SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME,MODE_PRIVATE);
+		user = AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		
 		c.set(Integer.parseInt(year), Integer.parseInt(month), c.getActualMinimum(Calendar.DAY_OF_MONTH));
 		 begin_date=sdf.format(c.getTime());
@@ -87,7 +94,7 @@ public class CustomerPurchaseMoreActivity extends BaseActivity implements OnRefr
 		
 		//进货记录请求
 		purchasePresenter = new CustomerPurchaseImpl(this);
-		purchasePresenter.queryCustomerPurchaseData(customerId, nPage, nSpage, begin_date, end_date);
+		purchasePresenter.queryCustomerPurchaseData(user,customerId, nPage, nSpage, begin_date, end_date);
 		date_time.setText(begin_date+"\n"+end_date);
 		moreAdapter = new CustomerPurchaseMoreAdapter(this,purchaseList);
 		morePurchaseListView.setAdapter(moreAdapter);
@@ -126,7 +133,7 @@ public class CustomerPurchaseMoreActivity extends BaseActivity implements OnRefr
 						purchaseList.clear();
 						nPage = 1;
 						totalSize = nSpage;
-						purchasePresenter.queryCustomerPurchaseData(customerId, nPage, nSpage, begin_date, end_date);
+						purchasePresenter.queryCustomerPurchaseData(user,customerId, nPage, nSpage, begin_date, end_date);
 
 					}
 				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), true).show();
@@ -151,7 +158,7 @@ public class CustomerPurchaseMoreActivity extends BaseActivity implements OnRefr
 			morePurchaseListView.hideFooterView();
 			return;
 		}else{
-			purchasePresenter.queryCustomerPurchaseData(customerId, nPage, nSpage, begin_date, end_date);
+			purchasePresenter.queryCustomerPurchaseData(user,customerId, nPage, nSpage, begin_date, end_date);
 		}
 		totalSize += nSpage;
 	}

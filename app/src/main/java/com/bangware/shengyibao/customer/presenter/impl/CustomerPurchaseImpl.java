@@ -8,6 +8,8 @@ import com.bangware.shengyibao.customer.presenter.OnCustomerPurchaseListener;
 import com.bangware.shengyibao.customer.view.CustomerPurchaseView;
 
 import java.util.List;
+
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -33,10 +35,10 @@ public class CustomerPurchaseImpl implements CustomerPurchasePresenter,OnCustome
 
 	/*******************处理数据加载方法***************************/
 	@Override
-	public void queryCustomerPurchaseData(String customer_id,int nPage,int nSpage,String begin_date,String end_date) {
+	public void queryCustomerPurchaseData(User user,String customer_id, int nPage, int nSpage, String begin_date, String end_date) {
 		// TODO Auto-generated method stub
 		mPurchaseView.showLoading();
-		mCustomerModel.queryCustomerPurchase(requestTag, AppContext.getInstance().getUser(),
+		mCustomerModel.queryCustomerPurchase(requestTag,user,
 				customer_id,nPage,nSpage,begin_date,end_date, this);
 	}
 

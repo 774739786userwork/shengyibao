@@ -10,6 +10,8 @@ import com.bangware.shengyibao.deliverynote.view.DeliveryNoteDetailView;
 import com.bangware.shengyibao.deliverynote.view.DeliveryNoteQueryView;
 
 import java.util.List;
+
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -47,27 +49,27 @@ public class DeliveryNotePresenterImpl implements DeliveryNotePresenter,Delivery
 	 * 作废
 	 */
 	@Override
-	public void doAbort(String deliveryNoteId) {
+	public void doAbort(User user,String deliveryNoteId) {
 		// TODO Auto-generated method stub
-		noteModel.abort(requestTag, deliveryNoteId, AppContext.getInstance().getUser(),this);
+		noteModel.abort(requestTag, deliveryNoteId,user,this);
 	}
 	
 	/**
 	 * 产品详情
 	 */
 	@Override
-	public void doLoadDetail(String deliveryNoteId) {
+	public void doLoadDetail(User user,String deliveryNoteId) {
 		// TODO Auto-generated method stub
 		noteDetailView.showLoading();
-		noteModel.load(requestTag, deliveryNoteId,AppContext.getInstance().getUser(), this);
+		noteModel.load(requestTag, deliveryNoteId,user, this);
 	}
 
 	//通过时间查询送货单
 	@Override
-	public void doLoad(String begin_date, String end_date, int nPage, int nSpage,int show_type) {
+	public void doLoad(User user,String begin_date, String end_date, int nPage, int nSpage,int show_type) {
 		// TODO Auto-generated method stub
 		noteView.showLoading();
-		noteModel.query(requestTag, begin_date, end_date, nPage, nSpage,show_type,AppContext.getInstance().getUser(), this);
+		noteModel.query(requestTag, begin_date, end_date, nPage, nSpage,show_type,user, this);
 	}
 	
 	////////////////////////////////////响应事件////////////////////////////////

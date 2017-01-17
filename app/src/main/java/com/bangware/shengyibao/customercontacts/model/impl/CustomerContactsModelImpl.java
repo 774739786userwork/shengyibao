@@ -24,20 +24,19 @@ public class CustomerContactsModelImpl implements CustomerContactsModel {
 	public void loadCustomerContacts(String requestTag, User user, int nPage, int nSpage,
 									 String phone, String contactName,String employee_id,
 									 final OnCustomerContactsListener customerContactsListener) {
-		String customer_contacts_url;
+		 String customer_contacts_url;
 		try {
-			customer_contacts_url = Model.CUSETOMER_CONTACTS_DETAIL_URL+"?token="+user.getLogin_token()+"&page="+nPage+"&rows="+nSpage
+			 customer_contacts_url = Model.CUSETOMER_CONTACTS_DETAIL_URL+"?token="+user.getLogin_token()+"&page="+nPage+"&rows="+nSpage
 					+"&contactMobile="+phone+"&content="+URLEncoder.encode(contactName, "UTF-8")+"&employee_id="+employee_id+"&organization_id="+user.getOrg_id();
-			Log.e("TGA", customer_contacts_url);
+			Log.e("TGA",customer_contacts_url);
 			DataRequest.getInstance().newJsonObjectGetRequest(requestTag, customer_contacts_url, null, new Response.Listener<JSONObject>() {
 
 				@Override
 				public void onResponse(JSONObject jsonObject) {
 					if(jsonObject != null){
 						List<Contacts> contacts = CustomerContactsJosnUtils.getCustomerContactsList(jsonObject.toString());
-						
 						customerContactsListener.onLoadCustomerContactsSuccess(contacts);
-						Log.d("TAG", "query11111  "+contacts.size());
+						Log.e("TAG", "query11111  "+contacts.size());
 					}else{
 						customerContactsListener.onLoadCustomerContactsFailure("数据传输失败！");
 				      }

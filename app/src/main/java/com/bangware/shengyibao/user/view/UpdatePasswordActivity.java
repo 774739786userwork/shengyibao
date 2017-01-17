@@ -31,7 +31,8 @@ public class UpdatePasswordActivity extends BaseActivity implements UpdatePasswo
     private ImageView mUpdate_password_back;//回退按钮
     String oldPwd,newPwd,newPwds,name;//接收输入框的信息
     private UpdatePasswordPresenter presenter;
-
+    SharedPreferences sharedPreferences;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +49,15 @@ public class UpdatePasswordActivity extends BaseActivity implements UpdatePasswo
     }
 
     private void findView() {
+        sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+        user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
         mOldPassword= (EditText) findViewById(R.id.old_password);
         mNewPassword= (EditText) findViewById(R.id.new_password_one);
         mNewPasswords= (EditText) findViewById(R.id.new_password_two);
         mUpdateusername= (EditText) findViewById(R.id.update_username);
         mUpdate_password_submit= (Button) findViewById(R.id.update_password_submit);
         mUpdate_password_back= (ImageView) findViewById(R.id.update_password_back);
-        mUpdateusername.setText(AppContext.getInstance().getUser().getUser_name());
+        mUpdateusername.setText(user.getUser_name());
         presenter=new UpdatePasswordPresenterImpl(this);
     }
 
@@ -103,7 +106,7 @@ public class UpdatePasswordActivity extends BaseActivity implements UpdatePasswo
                         return;
                     }else
                     {
-                        presenter.doUpdatePassword(oldPwd,newPwd);
+                        presenter.doUpdatePassword(user,oldPwd,newPwd);
                     }
 
                     break;
@@ -124,7 +127,7 @@ public class UpdatePasswordActivity extends BaseActivity implements UpdatePasswo
         SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
-        editor.putString("username", AppContext.getInstance().getUser().getUser_name());
+        editor.putString("username", user.getUser_name());
         editor.commit();
     }
 }

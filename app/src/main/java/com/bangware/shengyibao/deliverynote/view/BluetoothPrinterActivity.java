@@ -1,6 +1,7 @@
 package com.bangware.shengyibao.deliverynote.view;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -40,10 +42,13 @@ import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.customer.model.entity.Contacts;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
+import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteGoods;
 import com.bangware.shengyibao.main.view.MainActivity;
 import com.bangware.shengyibao.net.NetWork;
 import com.bangware.shengyibao.printer.BluetoothService;
 import com.bangware.shengyibao.printer.BtDevice;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.NumberUtils;
 
 
@@ -77,10 +82,15 @@ public class BluetoothPrinterActivity extends BaseActivity {
 	private BluetoothDeviceAdapter mNewDevicesArrayAdapter;
 	private List<BtDevice> mPairedDevices = new ArrayList<BtDevice>();
 	private List<BtDevice> mNewDevices = new ArrayList<BtDevice>();
+
+	private User user;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bluetooth_printer);
+
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		// 获取本地蓝牙适配器
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		
@@ -344,7 +354,7 @@ public class BluetoothPrinterActivity extends BaseActivity {
 						sendMessage("联系人：老板\n");
 						sendMessage("电话:无\n");
 					}
-					String message = deliveryNote.toPrintText();
+					String message = toPrintText();
 					sendMessage("本单实收金额：￥"+deliveryNote.getReceiveAmount()+"\n");
 					if (deliveryNote.getReceiveAmount() < deliveryNote.getTotalAmount()){
 						if (deliveryNote.getUnpaidAmount() == 0){
@@ -386,6 +396,49 @@ public class BluetoothPrinterActivity extends BaseActivity {
 			}
 		}
 		
+	}
+
+	public String toPrintText(){
+		StringBuffer sb = new StringBuffer();
+		int rowCount = 32;
+		sb.append("送货人：").append(user.getUser_realname()).append("\n");
+		sb.append("联系方式：").append(user.getMobile_number()).append("\n");
+		String carnumber = "车牌号："+deliveryNote.getCarNumber();
+		sb.append(carnumber).append("\n");
+		sb.append("--------------------------------");
+		for(DeliveryNoteGoods goods: deliveryNote.getGoodsList()){
+			sb.append("产品名称：").append(goods.getProduct().getName()).append("\n");
+			String leftText = "数量："+goods.getSalesVolume();
+			String rightText = "￥"+ NumberUtils.toDoubleRound(goods.getTotalAmount());
+			sb.append(addRow(leftText, rightText, rowCount));
+
+			leftText = "";
+			if(goods.getGiftsVolume()>0){
+				leftText="赠送："+goods.getGiftsVolume();
+			}
+
+			rightText = "数量小计："+goods.getTotalVolume();
+			sb.append(addRow(leftText, rightText, rowCount));
+			sb.append("--------------------------------");
+		}
+		sb.append(addRow("","数量总计："+deliveryNote.getTotalVolumes()+"    总计金额:"+NumberUtils.toDoubleRound(deliveryNote.getTotalAmount()),rowCount));
+		sb.append(addRow("", "其中押金:"+deliveryNote.getTotalForeigft(), rowCount));
+		sb.append("\n");
+		return sb.toString();
+	}
+
+	private String addRow(String left, String right, int rowCount){
+		StringBuffer sb = new StringBuffer();
+		sb.append(left);
+		int l= rowCount- getBytesLength(left)- getBytesLength(right);
+		for(int i=0;i<l;i++){
+			sb.append(" ");
+		}
+		sb.append(right).append("\n");
+		return sb.toString();
+	}
+	private int getBytesLength(String msg){
+		return msg.getBytes(Charset.forName("GBK")).length;
 	}
 	
 	@Override

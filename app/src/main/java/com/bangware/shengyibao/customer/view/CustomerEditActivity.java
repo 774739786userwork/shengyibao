@@ -42,6 +42,7 @@ import com.bangware.shengyibao.customer.adapter.CustomerImageShowAdapter;
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.customer.model.entity.CustomerShopType;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.view.FlowLayoutActivity;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
 
@@ -53,6 +54,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -93,14 +95,12 @@ public class CustomerEditActivity extends BaseActivity {
 	private String defaultPhotoAddress = null; //拍照生成默认照片的绝对路径
 	private String photoFolderAddress = null; //存放照片的文件夹
 	private String pztargetPath = null;
-	private List<String> listPhotoNames = null;
+	private ArrayList<String> listPhotoNames = null;
 	private CaremaAdapter cadapter = null;//拍照完显示的adapter
 	private int screenWidth = 0; //屏幕宽度
 	
 	private CustomerImageShowAdapter showImageAdapter;//从后台获取图片的adapter
-	//提交数据到后台的接口
-	private String edit_actionUrl = Model.CUSTOMER_EDIT_URL+"&token="+ AppContext.getInstance().getUser().getLogin_token();
-	
+	private User user;
 	private ImageView back_img,add_imageview;
 	private EditText store_name,code,telephone_et,customer_address,kind_ids_et,link_man,mobile_et,mobile_second_et;
 	private EditText provice_editText,city_editText,district_editText,longitude_edit,latitude_edit,saler_area_id;
@@ -127,6 +127,9 @@ public class CustomerEditActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
 		
 		setContentView(R.layout.activity_edit);
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		context = this;
 		init();
 		initview();
@@ -394,36 +397,32 @@ public class CustomerEditActivity extends BaseActivity {
 			//营销区域选择
 			if(v.getId() == R.id.relative_saler_area){
 				Intent intent = new Intent(CustomerEditActivity.this, CustomerSalerAreaActivity.class);
-				intent.putExtra("salerAreaId", saler_area_id.getText().toString());
-				intent.putExtra("salerArea", area.getText().toString());
 				startActivityForResult(intent, 1000);
 			}
 			//行政区域选择
 			if (v.getId() == R.id.relative_EditRegionalArea){
 				Intent intent = new Intent(CustomerEditActivity.this, ProvinceCityAreaActivity.class);
-				intent.putExtra("province_city_area",administrative_area.getText().toString());
-				intent.putExtra("province",provice_editText.getText().toString());
-				intent.putExtra("city",city_editText.getText().toString());
-				intent.putExtra("district",district_editText.getText().toString());
 				startActivityForResult(intent, 1100);
 			}
 			//店面类型
 			if(v.getId() == R.id.editChoice_shop_rllayout){
 				Intent intent = new Intent(CustomerEditActivity.this,FlowLayoutActivity.class);
-				intent.putExtra("myValue", type_et.getText().toString());
-				intent.putExtra("myKindId",kind_ids_et.getText().toString());
 				startActivityForResult(intent, 1200);
 			}
 			//重新拍摄
 			if (v.getId() == R.id.add_imageview) {
 				//申请6.0权限
 				if (Build.VERSION.SDK_INT >= 23) {
-					int checkSMSPermission = ContextCompat.checkSelfPermission(CustomerEditActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-					if (checkSMSPermission != PackageManager.PERMISSION_GRANTED) {
-						ActivityCompat.requestPermissions(CustomerEditActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
-						return;
-					} else {
-						getTakePhoto();
+					try {
+						int checkSMSPermission = ContextCompat.checkSelfPermission(CustomerEditActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+						if (checkSMSPermission != PackageManager.PERMISSION_GRANTED) {
+							ActivityCompat.requestPermissions(CustomerEditActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
+							return;
+						} else {
+							getTakePhoto();
+						}
+					}catch (RuntimeException e){
+						showTipsDialog();
 					}
 				} else {
 					getTakePhoto();
@@ -466,6 +465,7 @@ public class CustomerEditActivity extends BaseActivity {
 				} else {
 					// Permission Denied
 					showToast("用户取消了权限");
+					showTipsDialog();
 				}
 				break;
 			default:
@@ -490,7 +490,8 @@ public class CustomerEditActivity extends BaseActivity {
 		String city = city_editText.getText().toString();
 		String district = district_editText.getText().toString();
 		Log.d("TAG", "正在发送请求......");
-		try {
+		try {//提交数据到后台的接口
+			String edit_actionUrl = Model.CUSTOMER_EDIT_URL+"&token="+ user.getLogin_token();
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(edit_actionUrl);
 			MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));

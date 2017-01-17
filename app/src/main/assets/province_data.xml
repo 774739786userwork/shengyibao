@@ -1649,7 +1649,8 @@
       <district name="雨花区" zipcode="410000" />
       <district name="岳麓区" zipcode="410000" />
       <district name="高新区" zipcode="410000" />
-      <district name="其他" zipcode="410000" />
+      <district name="星沙区" zipcode="410000" />
+
     </city>
     <city name="常德市">
       <district name="安乡县" zipcode="415000" />
@@ -1736,7 +1737,9 @@
       <district name="湘乡市" zipcode="411100" />
       <district name="雨湖区" zipcode="411100" />
       <district name="岳塘区" zipcode="411100" />
-      <district name="其他" zipcode="411100" />
+      <district name="高新区" zipcode="411100" />
+      <district name="昭山示范区" zipcode="411100" />
+      <district name="九华示范区" zipcode="411100" />
     </city>
     <city name="湘西土家族苗族自治州">
       <district name="保靖县" zipcode="416000" />
@@ -1801,7 +1804,7 @@
       <district name="炎陵县" zipcode="412000" />
       <district name="攸县" zipcode="412000" />
       <district name="株洲县" zipcode="412000" />
-      <district name="其他" zipcode="412000" />
+      <district name="云龙示范区" zipcode="412000" />
     </city>
   </province>
   <province name="吉林省">

@@ -7,6 +7,7 @@ import com.bangware.shengyibao.customer.presenter.CustomerSalerAreaPresenter;
 import com.bangware.shengyibao.customer.presenter.OnCustomerSalerAreaListener;
 import com.bangware.shengyibao.customer.view.CustomerSalerAreaView;
 
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -32,10 +33,10 @@ public class CustomerSalerAreaPresenterImpl implements
 	}
 	
 	@Override
-	public void loadSalerAreaData() {
+	public void loadSalerAreaData(User user) {
 		// TODO Auto-generated method stub
 		mSalerAreaView.showLoading();
-		mCustomerModel.loadSalerArea(requestTag, AppContext.getInstance().getUser(), this);
+		mCustomerModel.loadSalerArea(requestTag, user, this);
 	}
 
 	@Override

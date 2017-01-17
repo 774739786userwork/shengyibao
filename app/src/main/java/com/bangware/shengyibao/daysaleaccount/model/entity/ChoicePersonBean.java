@@ -5,8 +5,18 @@ package com.bangware.shengyibao.daysaleaccount.model.entity;
  * Created by bangware on 2016/9/1.
  */
 public class ChoicePersonBean {
+    public String id;
     private String name;         //显示的数据
     private String sortLetters;  //显示数据拼音的首字母
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

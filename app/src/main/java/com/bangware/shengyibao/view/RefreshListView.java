@@ -47,7 +47,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
 
 	public RefreshListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		initHeaderView();
+//		initHeaderView();
 		initFooterView();
 		this.setOnScrollListener(this);
 	}
@@ -106,13 +106,13 @@ public class RefreshListView extends ListView implements OnScrollListener {
 		downAnimation.setFillAfter(true); // 动画结束后, 停留在结束的位置上
 	}
 
-	@Override
+	/*@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		switch (ev.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			downY = (int) ev.getY();
 			break;
-		/*case MotionEvent.ACTION_MOVE:
+		case MotionEvent.ACTION_MOVE:
 			int moveY = (int) ev.getY();
 			// 移动中的y - 按下的y = 间距.
 			int diff = (moveY - downY) / 2;
@@ -133,8 +133,8 @@ public class RefreshListView extends ListView implements OnScrollListener {
 				headerView.setPadding(0, paddingTop, 0, 0);
 				return true;
 			}
-			break;*/
-		/*case MotionEvent.ACTION_UP:
+			break;
+		case MotionEvent.ACTION_UP:
 			// 判断当前的状态是松开刷新还是下拉刷新
 			if (currentState == RELEASE_REFRESH) {
 				Log.i(TAG, "刷新数据.");
@@ -151,18 +151,18 @@ public class RefreshListView extends ListView implements OnScrollListener {
 				// 隐藏头布局
 				headerView.setPadding(0, -headerViewHeight, 0, 0);
 			}
-			break;*/
+			break;
 		default:
 			break;
 		}
 		return super.onTouchEvent(ev);
 	}
 
-	/**
+	*//**
 	 * 根据currentState刷新头布局的状态
-	 */
+	 *//*
 	private void refreshHeaderView() {
-		/*switch (currentState) {
+		switch (currentState) {
 		case DOWN_PULL_REFRESH: // 下拉刷新状态
 			tvState.setText("下拉刷新");
 			ivArrow.startAnimation(downAnimation); // 执行向下旋转
@@ -179,8 +179,8 @@ public class RefreshListView extends ListView implements OnScrollListener {
 			break;
 		default:
 			break;
-		}*/
-	}
+		}
+	}*/
 
 	/**
 	 * 当滚动状态改变时回调
@@ -239,14 +239,15 @@ public class RefreshListView extends ListView implements OnScrollListener {
 	/**
 	 * 隐藏头布局
 	 */
-	public void hideHeaderView() {
+	/*public void hideHeaderView() {
 		headerView.setPadding(0, -headerViewHeight, 0, 0);
 		ivArrow.setVisibility(View.VISIBLE);
 		mProgressBar.setVisibility(View.GONE);
+
 		tvState.setText("下拉刷新");
 		tvLastUpdateTime.setText("最后刷新时间: " + getLastUpdateTime());
 		currentState = DOWN_PULL_REFRESH;
-	}
+	}*/
 
 	public void hideFooterView() {
 		footerView.setPadding(0, -footerViewHeight, 0, 0);

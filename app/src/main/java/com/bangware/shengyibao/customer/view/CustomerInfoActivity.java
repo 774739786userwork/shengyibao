@@ -16,9 +16,12 @@ import com.bangware.shengyibao.customer.presenter.impl.CustomerInfoPresenterImpl
 import com.bangware.shengyibao.customer.presenter.impl.CustomerPurchaseImpl;
 import com.bangware.shengyibao.net.NetWork;
 import com.bangware.shengyibao.shopcart.view.ShopCartAcitivity;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bumptech.glide.Glide;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -52,12 +55,16 @@ public class CustomerInfoActivity extends BaseActivity implements CustomerPurcha
 	private int nPage = 1;
 	private int nSpage = 5;
 	NetWork netWork = NetWork.getInstance();
+	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_customerinfo);
+
+		SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME,MODE_PRIVATE);
+		user = AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		findViews();
 		setListeners();
 	}
@@ -95,11 +102,11 @@ public class CustomerInfoActivity extends BaseActivity implements CustomerPurcha
 
 			//进货记录请求
 			purchasePresenter = new CustomerPurchaseImpl(this);
-			purchasePresenter.queryCustomerPurchaseData(customer.getId(), nPage, nSpage, "", "");
+			purchasePresenter.queryCustomerPurchaseData(user,customer.getId(), nPage, nSpage, "", "");
 
 			//客户信息资料请求
 			infoPresenter = new CustomerInfoPresenterImpl(this);
-			infoPresenter.queryCustomerInfoData(customer.getId());
+			infoPresenter.queryCustomerInfoData(user,customer.getId());
 
 			purchaseAdapter = new CustomerPurchaseAdapter(this,purchaseList);
 			purchaseRecord_listview.setAdapter(purchaseAdapter);

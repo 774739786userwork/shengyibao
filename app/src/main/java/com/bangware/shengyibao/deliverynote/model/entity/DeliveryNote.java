@@ -1,16 +1,12 @@
 package com.bangware.shengyibao.deliverynote.model.entity;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.util.Log;
-
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.shopcart.model.entity.Payment;
 import com.bangware.shengyibao.user.model.entity.User;
-import com.bangware.shengyibao.utils.NumberUtils;
 
 
 /**
@@ -38,6 +34,8 @@ public class DeliveryNote implements java.io.Serializable{
 	private double receiveAmount=0;//已收
 	private double unpaidAmount=0;//未付
 	private String deliveryNote_product;//查询界面产品展示
+	private String remember_employee_id;
+	private String remember_employee_name;
 	private Date deliveryDate=new Date();
 	
 	private double lng=0;
@@ -86,6 +84,22 @@ public class DeliveryNote implements java.io.Serializable{
 
 	public double getP_totalForeigft() {
 		return p_totalForeigft;
+	}
+
+	public String getRemember_employee_id() {
+		return remember_employee_id;
+	}
+
+	public void setRemember_employee_id(String remember_employee_id) {
+		this.remember_employee_id = remember_employee_id;
+	}
+
+	public String getRemember_employee_name() {
+		return remember_employee_name;
+	}
+
+	public void setRemember_employee_name(String remember_emplpyee_name) {
+		this.remember_employee_name = remember_emplpyee_name;
 	}
 
 	public void setP_totalForeigft(double p_totalForeigft) {
@@ -183,7 +197,6 @@ public class DeliveryNote implements java.io.Serializable{
 		this.user = user;
 	}
 
-
 	public String getCarId() {
 		return carId;
 	}
@@ -242,50 +255,7 @@ public class DeliveryNote implements java.io.Serializable{
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
-	public String toPrintText(){
-		StringBuffer sb = new StringBuffer();
-		int rowCount = 32;
-		sb.append("送货人：").append(user.getUser_realname()).append("\n");
-		sb.append("联系方式：").append(user.getMobile_number()).append("\n");
-		String carnumber = "车牌号："+this.getCarNumber();
-		sb.append(carnumber).append("\n");
-		sb.append("--------------------------------");
-		for(DeliveryNoteGoods goods: this.getGoodsList()){
-			sb.append("产品名称：").append(goods.getProduct().getName()).append("\n");
-			String leftText = "数量："+goods.getSalesVolume();
-			String rightText = "￥"+ NumberUtils.toDoubleRound(goods.getTotalAmount());
-			sb.append(addRow(leftText, rightText, rowCount));
-			
-			leftText = "";
-			if(goods.getGiftsVolume()>0){
-				leftText="赠送："+goods.getGiftsVolume();
-			}
-			
-			rightText = "数量小计："+goods.getTotalVolume();
-			sb.append(addRow(leftText, rightText, rowCount));
-			sb.append("--------------------------------");
-		}
-		sb.append(addRow("","数量总计："+this.totalVolumes+"    总计金额:"+NumberUtils.toDoubleRound(this.totalAmount),rowCount));
-		sb.append(addRow("", "其中押金:"+this.totalForeigft, rowCount));
-		sb.append("\n");
-		return sb.toString();
-	}
-	
-	private String addRow(String left, String right, int rowCount){
-		StringBuffer sb = new StringBuffer();
-		sb.append(left);
-		int l= rowCount- getBytesLength(left)- getBytesLength(right);
-		for(int i=0;i<l;i++){
-			sb.append(" ");
-		}
-		sb.append(right).append("\n");
-		return sb.toString();
-	}
-	private int getBytesLength(String msg){
-		return msg.getBytes(Charset.forName("GBK")).length;
-	}
-	
+
 	private String delivery_id;//送货单id
 	private String delivery_date; //时间
 	private String serial_number;	//编号

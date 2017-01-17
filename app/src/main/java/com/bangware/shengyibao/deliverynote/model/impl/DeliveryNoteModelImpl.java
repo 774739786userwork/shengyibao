@@ -30,14 +30,15 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
 	 * 保存送货单
 	 */
 	@Override
-	public void save(String requestTag, final DeliveryNote deliveryNote, final OnDeliveryNoteSaveListener listener) {
-		String submit_delivery_url = Model.DELIVAERYNOTEURL+"&token="+deliveryNote.getUser().getLogin_token();
+	public void save(User user,String requestTag, final DeliveryNote deliveryNote, final OnDeliveryNoteSaveListener listener) {
+		String submit_delivery_url = Model.DELIVAERYNOTEURL+"&token="+user.getLogin_token();
+
 		try{
 			Log.e("deliveryNote",submit_delivery_url);
 			JSONObject jsonDelivery = new JSONObject();
 			JSONObject jsonData = new JSONObject();
 			jsonDelivery.put("delivery_id", deliveryNote.getDelivery_id());
-			jsonDelivery.put("user_id", deliveryNote.getUser().getUser_id());
+			jsonDelivery.put("user_id",user.getUser_id());
 			jsonDelivery.put("customer_id", deliveryNote.getCustomer().getId());
 			jsonDelivery.put("delivery_goods_count", deliveryNote.getDelivery_goods_count());
 			jsonDelivery.put("car_id", deliveryNote.getCarId());
@@ -56,6 +57,7 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
 			jsonDelivery.put("lng", deliveryNote.getLng());
 			jsonDelivery.put("lat", deliveryNote.getLat());
 			jsonDelivery.put("remark", deliveryNote.getRemark());
+			jsonDelivery.put("remember_employee_id",deliveryNote.getRemember_employee_id());
 			jsonDelivery.put("contact_mobile", deliveryNote.getContact_phone());
 			jsonDelivery.put("contact_name", deliveryNote.getContact_name());
 			JSONArray jsonArray = new JSONArray();
@@ -82,11 +84,9 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
                 public void onResponse(JSONObject jsonObject) {
                     if (jsonObject != null) {
                     	try{
-                    		Log.e("wwwwwwww", "qweeeeee========="+jsonObject.getInt("result"));
 	                    	if(jsonObject.getInt("result")==0){
 								SettlementActivity.flag=0;
 	                    		listener.onSaveSuccess(deliveryNote);
-								Log.e("deliveryNote",String.valueOf(deliveryNote.toString().length()));
 	                    	}else{
 								SettlementActivity.flag=0;
 	                    		listener.onError("送货单保存失败！请重新结算再提交！");
@@ -181,6 +181,8 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
 		// TODO Auto-generated method stub
 		String query_deliveryNote_url = Model.DELIVAERY_NOTE_QUERYURL+"&employee_id="+user.getEmployee_id()+"&organization_id="+user.getOrg_id()
 				+"&begin_date="+begin_date+"&end_date="+end_date+"&page="+nPage+"&rows="+nSpage+"&show_type="+show_type+"&token="+user.getLogin_token();
+
+		Log.e("TAG", "query: ------------------->"+query_deliveryNote_url);
 		DataRequest.getInstance().newJsonObjectGetRequest(requestTag,query_deliveryNote_url, null, new Response.Listener<JSONObject>() {
 
 			@Override

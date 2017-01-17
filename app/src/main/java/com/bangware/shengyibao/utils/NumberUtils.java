@@ -1,5 +1,7 @@
 package com.bangware.shengyibao.utils;
 
+import android.text.TextUtils;
+
 import java.math.BigDecimal;
 
 public class NumberUtils {
@@ -41,5 +43,26 @@ public class NumberUtils {
 
 		}
 		return bd;
+	}
+
+	/**
+	 * 将号码用*星号代替
+	 * @param pNumber
+	 * @return
+	 */
+	public static String goneTelephone(String pNumber){
+		if(!TextUtils.isEmpty(pNumber) && pNumber.length() >= 11 ){
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < pNumber.length(); i++) {
+				char c = pNumber.charAt(i);
+				if (i >= 3 && i <= 4) {
+					sb.append('*');
+				} else {
+					sb.append(c);
+				}
+			}
+			return sb.toString();
+		}
+		return "";
 	}
 }

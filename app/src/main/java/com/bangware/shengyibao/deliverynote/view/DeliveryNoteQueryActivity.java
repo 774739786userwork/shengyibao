@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +34,9 @@ import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.presenter.DeliveryNotePresenter;
 import com.bangware.shengyibao.deliverynote.presenter.impl.DeliveryNotePresenterImpl;
 import com.bangware.shengyibao.net.NetWork;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.volley.DataRequest;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.RefreshListView;
 
@@ -58,7 +62,8 @@ public class DeliveryNoteQueryActivity extends BaseActivity implements OnRefresh
 	public int totalSize = 0;
 	private int MaxDateNum;  
 	private DeliveryNotePresenter notePresenter;
-
+	private User user;
+	private DeliveryNote deliveryNote;
 	/*private Timer mTimer;
 	private TimerTask mTimerTask;
 	private Handler mHandler;
@@ -66,12 +71,40 @@ public class DeliveryNoteQueryActivity extends BaseActivity implements OnRefresh
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		if (savedInstanceState!=null) {
+			savedInstanceState.getString("begin_date");
+			savedInstanceState.getString("end_date");
+			savedInstanceState.getInt("show_type");
+			savedInstanceState.getSerializable("deliveryNote");
+			DataRequest.buildRequestQueue(this);
+		}
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_query_deliverynote);
 
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
+
 		init();
 		initview();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString("begin_date",begin_date);
+		outState.putString("end_date",end_date);
+		outState.putInt("show_type",show_type);
+		outState.putSerializable("deliveryNote",deliveryNote);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.getString("begin_date");
+		savedInstanceState.getString("end_date");
+		savedInstanceState.getInt("show_type");
+		savedInstanceState.getSerializable("deliveryNote");
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 	
 	private void init() {
@@ -86,12 +119,12 @@ public class DeliveryNoteQueryActivity extends BaseActivity implements OnRefresh
 		begin_date=currenttime;
 		end_date=currenttime;
 		notePresenter = new DeliveryNotePresenterImpl(this);
-		notePresenter.doLoad(begin_date, end_date, nPage, nSpage,show_type);
+		notePresenter.doLoad(user,begin_date, end_date, nPage, nSpage,show_type);
 		date_time.setText(currenttime);
 		total_sum.setText("¥0");
 		unpaid_total_sum.setText("¥0");
 		deliverys_sum.setText("0次");
-		deliverynotequeryAdapter = new DeliveryNoteQueryAdapter(this, querylist);
+		deliverynotequeryAdapter = new DeliveryNoteQueryAdapter(this, querylist,user);
 		DeliveryQueryListView.setDividerHeight(0);
 		DeliveryQueryListView.setAdapter(deliverynotequeryAdapter);
 	}
@@ -111,7 +144,7 @@ public class DeliveryNoteQueryActivity extends BaseActivity implements OnRefresh
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(DeliveryNoteQueryActivity.this, DeliveryNoteDetailActivity.class);
 				Bundle bundle = new Bundle();
-				DeliveryNote deliveryNote = (DeliveryNote) adapterView.getItemAtPosition(position);
+				deliveryNote = (DeliveryNote) adapterView.getItemAtPosition(position);
 				bundle.putSerializable("deliveryNote", deliveryNote);
 				intent.putExtras(bundle);
 				startActivity(intent);
@@ -159,7 +192,7 @@ public class DeliveryNoteQueryActivity extends BaseActivity implements OnRefresh
 						querylist.clear();
 						nPage = 1;
 						totalSize = nSpage;
-						notePresenter.doLoad(begin_date, end_date, nPage, nSpage,show_type);
+						notePresenter.doLoad(user,begin_date, end_date, nPage, nSpage,show_type);
 						deliverynotequeryAdapter.notifyDataSetInvalidated();
 						
 					}
@@ -184,7 +217,7 @@ public class DeliveryNoteQueryActivity extends BaseActivity implements OnRefresh
 			DeliveryQueryListView.hideFooterView();
 			return;
 		}else{
-			notePresenter.doLoad(begin_date, end_date, nPage, nSpage,show_type);
+			notePresenter.doLoad(user,begin_date, end_date, nPage, nSpage,show_type);
 		}
 		totalSize += nSpage;
 	}

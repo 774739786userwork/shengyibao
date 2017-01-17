@@ -7,6 +7,7 @@ import com.bangware.shengyibao.customer.model.impl.CustomerModelImpl;
 import com.bangware.shengyibao.customer.presenter.CustomerBillingMonthPresenter;
 import com.bangware.shengyibao.customer.presenter.OnMonthCustomerBillingRecordListener;
 import com.bangware.shengyibao.customer.view.CustomerBillingMonthSalerRecordView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -33,11 +34,11 @@ public class CustomerBillingMonthPresenterImpl implements CustomerBillingMonthPr
 		
 	}
 	@Override
-	public void loadCustomerBillingMonthData(int nPage,
-			int nSpage,int show_type,String compositor) {
+	public void loadCustomerBillingMonthData(User user,int nPage,
+											 int nSpage, int show_type, String compositor) {
 		// TODO Auto-generated method stub
 		salerView.showLoading();
-		mCustomerModel.queryCustomerBillingMonthRecord(requestTag, AppContext.getInstance().getUser(), nPage, nSpage,show_type,compositor,this);
+		mCustomerModel.queryCustomerBillingMonthRecord(requestTag, user, nPage, nSpage,show_type,compositor,this);
 	}
 
 

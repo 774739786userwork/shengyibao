@@ -2,6 +2,7 @@ package com.bangware.shengyibao.daysaleaccount.model;
 
 import com.bangware.shengyibao.daysaleaccount.presenter.OnSaleAccountListener;
 import com.bangware.shengyibao.daysaleaccount.presenter.OnSaleProductListener;
+import com.bangware.shengyibao.daysaleaccount.presenter.OnSalerPersonListener;
 import com.bangware.shengyibao.user.model.entity.User;
 
 /**
@@ -15,4 +16,7 @@ public interface SaleAccountModel {
 
     //日销售清单产品查询
     void onloadProductAccount(String requestTag, User user, String saler_journals_id, OnSaleProductListener productListener);
+
+    //业务员查询
+    void onloadSalerPerson(String requestTag, User user, OnSalerPersonListener personListener);
 }

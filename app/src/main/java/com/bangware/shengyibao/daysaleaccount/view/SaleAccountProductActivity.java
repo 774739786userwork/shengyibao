@@ -1,5 +1,6 @@
 package com.bangware.shengyibao.daysaleaccount.view;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,9 @@ import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountListBean;
 import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountProductBean;
 import com.bangware.shengyibao.daysaleaccount.presenter.SaleProductPresenter;
 import com.bangware.shengyibao.daysaleaccount.presenter.impl.SaleProductPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.volley.DataRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +32,14 @@ public class SaleAccountProductActivity extends BaseActivity implements SaleProd
     private List<SaleAccountProductBean> productList = new ArrayList<SaleAccountProductBean>();
     private SaleAccountProductAdapter productAdapter;
     private SaleProductPresenter productPresenter = null;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sale_account_product);
+
+        SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+        user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 
         findView();
         setListener();
@@ -52,7 +60,7 @@ public class SaleAccountProductActivity extends BaseActivity implements SaleProd
         String date = (String) bundle.getSerializable("sale_date");
         date_producttext.setText(date+"产品清单");
         productPresenter = new SaleProductPresenterImpl(this);
-        productPresenter.loadSalesAccountData(saler_journals_id);
+        productPresenter.loadSalesAccountData(user,saler_journals_id);
 
         productAdapter = new SaleAccountProductAdapter(this,productList);
         daySaleProductListView.setAdapter(productAdapter);

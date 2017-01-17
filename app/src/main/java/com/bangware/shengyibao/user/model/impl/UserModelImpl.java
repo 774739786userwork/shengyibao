@@ -71,8 +71,8 @@ public class UserModelImpl implements UserModel {
 	}
 
 	@Override
-	public void updatePassword(String requestTag, String oldPassword, String newPassword, final OnUpdatePasswordListener Listener) {
-		String updatepassword_url=Model.HTTPURL+Model.UPDATEPASSWORD+"?token="+AppContext.getInstance().getUser().getLogin_token();
+	public void updatePassword(User user,String requestTag, String oldPassword, String newPassword, final OnUpdatePasswordListener Listener) {
+		String updatepassword_url=Model.HTTPURL+Model.UPDATEPASSWORD+"?token="+user.getLogin_token();
 		try {
 			JSONObject object=new JSONObject();
 			object.put("current_password",oldPassword);

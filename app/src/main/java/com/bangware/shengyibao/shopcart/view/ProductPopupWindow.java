@@ -430,7 +430,6 @@ public class ProductPopupWindow extends PopupWindow {
 	/**
 	 * 显示popupWindow
 	 * 
-	 * @param parent
 	 */
 	public void showPopupWindow(View view) {
 		if (!this.isShowing()) {

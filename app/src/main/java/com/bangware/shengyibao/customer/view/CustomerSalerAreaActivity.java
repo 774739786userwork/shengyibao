@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +20,8 @@ import com.bangware.shengyibao.customer.adapter.CustomerSalerAreaAdapter;
 import com.bangware.shengyibao.customer.model.entity.CustomerSalerArea;
 import com.bangware.shengyibao.customer.presenter.CustomerSalerAreaPresenter;
 import com.bangware.shengyibao.customer.presenter.impl.CustomerSalerAreaPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 
 /**
  * 客户营销区域
@@ -31,12 +34,16 @@ public class CustomerSalerAreaActivity extends BaseActivity implements CustomerS
 	private GridView saler_area_gridview;
 	private CustomerSalerAreaAdapter salerAreaAdapter;
 	private ImageView customer_salerArea_back;
+	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_saler_area);
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		findViews();
 		setListener();
 	}
@@ -47,7 +54,7 @@ public class CustomerSalerAreaActivity extends BaseActivity implements CustomerS
 		customer_salerArea_back = (ImageView) findViewById(R.id.customer_salerArea_back);
 		//营销区域数据请求
 		salerAreaPresenter = new CustomerSalerAreaPresenterImpl(this);
-		salerAreaPresenter.loadSalerAreaData();
+		salerAreaPresenter.loadSalerAreaData(user);
 		
 		salerAreaAdapter = new CustomerSalerAreaAdapter(this, salerArealList);
 		saler_area_gridview.setAdapter(salerAreaAdapter);

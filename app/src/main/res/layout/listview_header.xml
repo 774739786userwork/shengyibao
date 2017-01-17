@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:orientation="horizontal" >
+    android:orientation="vertical">
 
-    <FrameLayout
+    <!--<FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dip" >
@@ -19,26 +19,43 @@
 
         <ProgressBar
             android:id="@+id/pb_listview_header"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_gravity="center"
-            android:indeterminateDrawable="@drawable/common_progressbar"
-            android:visibility="gone" />
-    </FrameLayout>
+            android:indeterminateDrawable="@drawable/common_progressbar" />
+    </FrameLayout>-->
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
 
+        <ImageView
+            android:id="@+id/iv_listview_header_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:minWidth="30dip"
+            android:src="@drawable/arrow_up" />
+
+        <ProgressBar
+            android:id="@+id/pb_listview_header"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/common_progressbar" />
         <TextView
             android:id="@+id/tv_listview_header_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="下拉刷新"
-            android:textColor="#FF0000"
+            android:textColor="#666666"
             android:textSize="18sp" />
 
         <TextView
@@ -46,8 +63,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
+            android:visibility="gone"
             android:text="最后刷新时间: 2014-10-10 12:56:12"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/background_dark"
             android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

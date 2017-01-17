@@ -5,6 +5,7 @@ import com.bangware.shengyibao.activity.Suggest.model.impl.SuggestModelImpl;
 import com.bangware.shengyibao.activity.Suggest.presenter.SuggestListener;
 import com.bangware.shengyibao.activity.Suggest.presenter.SuggestPresenter;
 import com.bangware.shengyibao.activity.Suggest.view.SuggestView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -35,9 +36,9 @@ public class SuggestPresenterImpl implements SuggestPresenter,SuggestListener{
     }
 
     @Override
-    public void loadData(String content) {
+    public void loadData(User user,String content) {
         sView.showLoading();
-        sModel.onLoadsubmit(requestTag,content, AppContext.getInstance().getUser(),this);
+        sModel.onLoadsubmit(requestTag,content, user,this);
     }
 
     @Override

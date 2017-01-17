@@ -4,6 +4,7 @@ import com.bangware.shengyibao.updateversion.VersionUpdateView;
 import com.bangware.shengyibao.updateversion.model.VersionModel;
 import com.bangware.shengyibao.updateversion.model.entity.VersionBean;
 import com.bangware.shengyibao.updateversion.model.impl.VersionModelImpl;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -26,9 +27,9 @@ public class UpdateVersionPresenterImpl implements UpdateVersionPresenter,Versio
 		this.updateView=mUpdateView;
 	}
 	@Override
-	public void versionUpdate() {
+	public void versionUpdate(User user) {
 		// TODO Auto-generated method stub
-		vmodel.versionUpdate(requestTag,this, AppContext.getInstance().getUser());
+		vmodel.versionUpdate(requestTag,this, user);
 	}
 	
 	@Override

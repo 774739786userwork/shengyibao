@@ -61,7 +61,6 @@ private void initData() {
 		mCon_Detail_name.setText(contact.getName());
 		mContact_Detail_mobile1.setText(contact.getMobile1());
 		mContact_Detail_PositionValue.setText(contact.getPosition());
-	   Log.d("TAG", "qweqrqwrq"+mContact_Detail_PositionValue.getText().toString());
 		mContact_Detail_mobile2.setText(contact.getMobile2());
 		//如果控件有值就显示控件，没有值就隐藏控件
 	if ((mContact_Detail_mobile1.getText().toString()).equals("")||(mContact_Detail_mobile1.getText().toString()).equals("null")) {

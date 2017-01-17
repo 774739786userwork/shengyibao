@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.bangware.shengyibao.user.presenter.UserPresenter;
 import com.bangware.shengyibao.user.presenter.impl.UserPresenterImpl;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.gesture.locus.LoginGesturePassWordActivity;
+import com.bangware.shengyibao.utils.volley.DataRequest;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,6 +43,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
 	SharedPreferences sharedPreferences;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		if (savedInstanceState!=null)
+		{
+			DataRequest.buildRequestQueue(this);
+		}
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
@@ -75,7 +81,17 @@ public class LoginActivity extends BaseActivity implements LoginView {
 		mLogin_OK = (TextView) findViewById(R.id.Login_OK);
 		
 	}
-	
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
 	private void setListeners(){
 		MyOnClickListener myonclick = new MyOnClickListener();
 		mLogin_OK.setOnClickListener(myonclick);
@@ -184,6 +200,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
 		editor.putString("organization_id", user.getOrg_id());
 		editor.putString("organization_name", user.getOrg_name());
 		editor.putString("roles", user.getRoles());
+		editor.putString("app_id",user.getApp_id());
 		editor.putString("employee_id", user.getEmployee_id());
 		editor.putString("mobile_number", user.getMobile_number());
 		editor.commit();

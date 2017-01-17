@@ -36,6 +36,6 @@ public interface PurchaseOrderModel {
 	 * @param bank_receive_total_sum
 	 * @param cash_payment
      */
-	public void update_purchase_order(DeliveryNote deliveryNote,double wechat_payment,double Alipay,double bank_receive_total_sum,double cash_payment,PurchaseOrderListener queryListener,String requestTag);
+	public void update_purchase_order(User user,DeliveryNote deliveryNote,double wechat_payment,double Alipay,double bank_receive_total_sum,double cash_payment,PurchaseOrderListener queryListener,String requestTag);
 
 }

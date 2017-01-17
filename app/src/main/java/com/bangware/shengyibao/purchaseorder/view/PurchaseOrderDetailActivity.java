@@ -3,7 +3,9 @@ package com.bangware.shengyibao.purchaseorder.view;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,7 +37,9 @@ import com.bangware.shengyibao.purchaseorder.presenter.impl.PurchaseOrderPresent
 import com.bangware.shengyibao.shopcart.model.entity.Payment;
 import com.bangware.shengyibao.shopcart.view.PaymentPopupWindow;
 import com.bangware.shengyibao.shopcart.view.ShopCartAcitivity;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.volley.DataRequest;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -61,13 +65,20 @@ public class PurchaseOrderDetailActivity extends BaseActivity implements Purchas
 	private PurchaseOrderPresenter notePresenter;
 	private DeliveryNote deliveryNote = null;
 	private Contacts contact=null;
+	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		if (savedInstanceState!=null)
+		{
+			savedInstanceState.getString("date1");
+		}
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_purshaseorder_detail);
-		
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		init();
 		initView();
 	}
@@ -93,7 +104,7 @@ public class PurchaseOrderDetailActivity extends BaseActivity implements Purchas
 		contact.setName(deliveryNote.getContact_name());
 		contact.setMobile1(deliveryNote.getContact_phone());
 		notePresenter = new PurchaseOrderPresenterImpl(this);
-		notePresenter.doLoadDetail(deliveryNote.getDelivery_id());
+		notePresenter.doLoadDetail(user,deliveryNote.getDelivery_id());
 		customer_id.setText(deliveryNote.getCustomer().getId());
 		shop_name.setText(deliveryNote.getCustomer().getName());
 		contact_name.setText(deliveryNote.getContact_name());
@@ -104,14 +115,28 @@ public class PurchaseOrderDetailActivity extends BaseActivity implements Purchas
 		
 		detailAdapter = new PurchaseOrderDetailAdapter(this,noteGoodsList);
 		purchaseorder_Detail_GoodsListView.setAdapter(detailAdapter);
-		date1= FragmentSaler.Date;
-		date2=deliveryNote.getDelivery_date();
-		int result=date1.compareTo(date2);
-		if (result!=0) {
-			bottom_linear.setVisibility(View.GONE);
-		}
+//		date1= FragmentSaler.Date;
+//		Log.e("date1",date1);
+//		date2=deliveryNote.getDelivery_date();
+//		Log.e("getDelivery_date()",""+deliveryNote.getDelivery_date());
+//		int result=date1.compareTo(date2);
+//		if (result!=0) {
+//			bottom_linear.setVisibility(View.GONE);
+//		}
 	}
-	
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString("date1",date1);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		DataRequest.buildRequestQueue(this);
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
 	private void initView() {
 		// TODO Auto-generated method stub
 		MyOnClickLinstener clickLinstener = new MyOnClickLinstener();
@@ -127,7 +152,7 @@ public class PurchaseOrderDetailActivity extends BaseActivity implements Purchas
 			noteGoodsList.clear();
 			noteGoodsList.addAll(newList);
 			//todo notifyDatasetChange();
-			deliveryNote.setUser(AppContext.getInstance().getUser());
+			deliveryNote.setUser(user);
 			deliveryNote.setGoodsList(noteGoodsList);
 
 			for (DeliveryNoteGoods goods: noteGoodsList) {
@@ -178,7 +203,7 @@ public class PurchaseOrderDetailActivity extends BaseActivity implements Purchas
 
 			//确认配送
 			if(v.getId() == R.id.purchaseorder_confirm){
-				notePresenter.update_purchase_order(deliveryNote,0,0,0,deliveryNote.getTotalAmount());
+				notePresenter.update_purchase_order(user,deliveryNote,0,0,0,deliveryNote.getTotalAmount());
 			}
 		}
 	}

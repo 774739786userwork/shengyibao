@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.bangware.shengyibao.customer.model.entity.Contacts;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.ViewHolder;
+import com.bangware.shengyibao.utils.NumberUtils;
 
 /**
  * 选择客户联系人
@@ -77,9 +78,9 @@ public class QuickBillingAdapter extends BaseAdapter{
 		con_name.setText(contactsList.get(position).getName());
 		String mobile1 = contactsList.get(position).getMobile1();
 		if(mobile1.equals("")){
-			con_phone.setText(contactsList.get(position).getMobile2());
+			con_phone.setText(NumberUtils.goneTelephone(contactsList.get(position).getMobile2()));
 		}else{
-			con_phone.setText(mobile1);
+			con_phone.setText(NumberUtils.goneTelephone(mobile1));
 		}
 		convertView.setBackgroundResource(R.drawable.my_tab_background);
 		return convertView;

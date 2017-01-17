@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light">
+    android:background="@color/gray_light"
+    android:orientation="vertical">
 
     <!-- hearder 头部标签布局 -->
     <RelativeLayout
@@ -32,15 +33,12 @@
             android:textColor="#ffffff"/>
     </RelativeLayout>
 
-    <com.bangware.shengyibao.view.RefreshListView
-        android:id="@+id/visit_record_ListView"
+    <include layout="@layout/activity_visit_top_tab"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/id_page_vp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/hearder_layout"
-        android:layout_margin="5dp"
-        android:cacheColorHint="#00000000"
-        android:listSelector="#00000000"
-        android:clickable="true"
-        android:divider="@color/gray_light"
-        android:dividerHeight="5dp"/>
-</RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,38 +16,22 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.model.LatLng;
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.customer.adapter.CustomerRightSectionedAdapter;
-import com.bangware.shengyibao.customer.adapter.MonthCustomerBillingAdapter;
 import com.bangware.shengyibao.customer.adapter.LeftMoreAdapter;
 import com.bangware.shengyibao.customer.adapter.MonthCustomerLeftListAdapter;
-import com.bangware.shengyibao.customer.adapter.OrderConditionSortAdapter;
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.customer.model.entity.CustomerTypes;
 import com.bangware.shengyibao.customer.presenter.CustomerBillingMonthPresenter;
-import com.bangware.shengyibao.customer.presenter.RegionalAreaPresenter;
 import com.bangware.shengyibao.customer.presenter.impl.CustomerBillingMonthPresenterImpl;
-import com.bangware.shengyibao.model.Product;
-import com.bangware.shengyibao.returngood.view.ReturnsProcessingActivity;
-import com.bangware.shengyibao.returngood.view.ReturnsProductPopupWindow;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.PinnedHeaderListView;
-import com.bangware.shengyibao.view.RefreshListView;
 
 /**
  * 主页月开单客户查询
@@ -81,12 +65,17 @@ public class MonthCustomerBillingActivity extends BaseActivity implements OnRefr
 
 	public static String[] CUSTOMERLIST_TOPLIST;
 	private int positionTemp = 0;
+
+	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_monthbilling_customer);
+
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		findViews();
 		setListeners();
 	}
@@ -111,14 +100,12 @@ public class MonthCustomerBillingActivity extends BaseActivity implements OnRefr
 		//默认加载本月未开单的客户
 		BillingList_title_txt.setText(CUSTOMERLIST_TOPLIST[positionTemp]);
 		billingMonthPresenter = new CustomerBillingMonthPresenterImpl(this);
-		billingMonthPresenter.loadCustomerBillingMonthData(nPage, nobillingCustomer,3,"");
+		billingMonthPresenter.loadCustomerBillingMonthData(user,nPage, nobillingCustomer,3,"");
 
 
 		//设置左侧列表数据
 		topadapter = new LeftMoreAdapter(MonthCustomerBillingActivity.this,CUSTOMERLIST_TOPLIST,R.layout.search_more_list);
 		Billing_customerlist_toplist.setAdapter(topadapter);
-
-
 	}
 
 	//控件点击监听事件绑定
@@ -149,35 +136,35 @@ public class MonthCustomerBillingActivity extends BaseActivity implements OnRefr
 					mainCustomerBillingList.clear();
 					nPage = 1;
 					totalSize = nSpage;
-					billingMonthPresenter.loadCustomerBillingMonthData(nPage, MaxNumer,3,"");
+					billingMonthPresenter.loadCustomerBillingMonthData(user,nPage, MaxNumer,3,"");
 					RightsectionedAdapter.notifyDataSetChanged();
 					break;
 				case 1://本月未开单客户
 					mainCustomerBillingList.clear();
 					nPage = 1;
 					totalSize = nSpage;
-					billingMonthPresenter.loadCustomerBillingMonthData(nPage, nobillingCustomer, 1,"");
+					billingMonthPresenter.loadCustomerBillingMonthData(user,nPage, nobillingCustomer, 1,"");
 					RightsectionedAdapter.notifyDataSetChanged();
 					break;
 				case 2://本月已开单客户
 					mainCustomerBillingList.clear();
 					nPage = 1;
 					totalSize = nSpage;
-					billingMonthPresenter.loadCustomerBillingMonthData(nPage, billingCustomerSum, 2,"");
+					billingMonthPresenter.loadCustomerBillingMonthData(user,nPage, billingCustomerSum, 2,"");
 					RightsectionedAdapter.notifyDataSetChanged();
 					break;
 				case 3://本月的大客户
 					mainCustomerBillingList.clear();
 					nPage=1;
 					nSpage=20;
-					billingMonthPresenter.loadCustomerBillingMonthData(nPage,nSpage,2,"total_sum");
+					billingMonthPresenter.loadCustomerBillingMonthData(user,nPage,nSpage,2,"total_sum");
 					RightsectionedAdapter.notifyDataSetChanged();
 					break;
 				case 4://我的大客户
 					mainCustomerBillingList.clear();
 					nPage=1;
 					nSpage=20;
-					billingMonthPresenter.loadCustomerBillingMonthData(nPage,nSpage,3,"total_sum");
+					billingMonthPresenter.loadCustomerBillingMonthData(user,nPage,nSpage,3,"total_sum");
 					RightsectionedAdapter.notifyDataSetChanged();
 					break;
 				default:

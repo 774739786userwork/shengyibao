@@ -7,16 +7,22 @@ import com.android.volley.VolleyError;
 import com.bangware.shengyibao.config.Model;
 import com.bangware.shengyibao.daysaleaccount.SaleAccountJsonUtils;
 import com.bangware.shengyibao.daysaleaccount.model.SaleAccountModel;
+import com.bangware.shengyibao.daysaleaccount.model.entity.ChoicePersonBean;
 import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountListBean;
 import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountProductBean;
 import com.bangware.shengyibao.daysaleaccount.presenter.OnSaleAccountListener;
 import com.bangware.shengyibao.daysaleaccount.presenter.OnSaleProductListener;
+import com.bangware.shengyibao.daysaleaccount.presenter.OnSalerPersonListener;
+import com.bangware.shengyibao.ladingbilling.LadingBillingUtils;
+import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
 import org.json.JSONObject;
 
 import java.util.List;
+
+import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
 /**
  * 日销售清单数据请求
@@ -74,6 +80,34 @@ public class SaleAccountModelImpl implements SaleAccountModel{
             public void onErrorResponse(VolleyError arg0) {
                 // TODO Auto-generated method stub
                 productListener.onLoadSalesProductFailure("请求失败，服务器异常......");
+            }
+        });
+    }
+
+    //业务员查询
+    @Override
+    public void onloadSalerPerson(String requestTag, User user,final OnSalerPersonListener personListener) {
+        final String query_salerPerson_url = Model.SALER_PERSON_QUERY_URL +"&token="+user.getLogin_token()+"&organization_id="+user.getOrg_id();
+        Log.e("query_salerPerson_url",query_salerPerson_url);
+        DataRequest.getInstance().newJsonObjectGetRequest(requestTag,query_salerPerson_url, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                // TODO Auto-generated method stub
+                if(jsonObject != null){
+                    List<ChoicePersonBean> personlist = SaleAccountJsonUtils.getSalerPerson(jsonObject.toString());
+                    personListener.onLoadSalesPersonSuccess(personlist);
+                }else {
+                    personListener.onLoadSalesPersonFailure("返回内容为空！数据传输失败！");
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError arg0) {
+                // TODO Auto-generated method stub
+                personListener.onLoadSalesPersonFailure("请求失败，服务器异常......");
             }
         });
     }

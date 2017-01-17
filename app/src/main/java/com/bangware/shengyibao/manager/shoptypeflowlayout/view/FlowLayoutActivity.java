@@ -1,5 +1,6 @@
 package com.bangware.shengyibao.manager.shoptypeflowlayout.view;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,8 @@ import com.bangware.shengyibao.manager.shoptypeflowlayout.flowlayout.Flow;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.flowlayout.FlowLayout;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.presenter.ShopTypeFlowPresenter;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.presenter.impl.ShopTypeFlowPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +27,14 @@ public class FlowLayoutActivity extends BaseActivity implements View.OnClickList
     private ImageView backImg;
 
     private ShopTypeFlowPresenter flowPresenter;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flow_layout);
+        SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
 
+        user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
         initView();
         initData();
         initListener();
@@ -80,7 +86,7 @@ public class FlowLayoutActivity extends BaseActivity implements View.OnClickList
 
     private void initData(){
         flowPresenter = new ShopTypeFlowPresenterImpl(this);
-        flowPresenter.loadShopTypeData();
+        flowPresenter.loadShopTypeData(user);
     }
 
     private void initListener(){

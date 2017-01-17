@@ -6,6 +6,7 @@ import com.bangware.shengyibao.customer.model.impl.CustomerModelImpl;
 import com.bangware.shengyibao.customer.presenter.CustomerInfoPresenter;
 import com.bangware.shengyibao.customer.presenter.OnCustomerInfoListener;
 import com.bangware.shengyibao.customer.view.CustomerPurchaseView;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
@@ -27,10 +28,10 @@ public class CustomerInfoPresenterImpl implements CustomerInfoPresenter,OnCustom
 	}
 	
 	@Override
-	public void queryCustomerInfoData(String customer_id) {
+	public void queryCustomerInfoData(User user,String customer_id) {
 		// TODO Auto-generated method stub
 		mPurchaseView.showLoading();
-		mCustomerModel.queryCustomerInfo(requestTag, AppContext.getInstance().getUser(), customer_id, this);
+		mCustomerModel.queryCustomerInfo(requestTag, user, customer_id, this);
 	}
 
 	@Override

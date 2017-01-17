@@ -3,15 +3,16 @@ package com.bangware.shengyibao.customervisits.view;
 import android.media.MediaRecorder;
 import android.os.Environment;
 
+import com.bangware.shengyibao.activity.BaseActivity;
+
 import java.io.File;
 import java.io.IOException;
 
 /**
  * 语音播放文件
  */
-public  class SoundMeter {
+public  class SoundMeter{
 	static final private double EMA_FILTER = 0.6;
-
 	private MediaRecorder mRecorder = null;
 	private double mEMA = 0.0;
 
@@ -25,6 +26,7 @@ public  class SoundMeter {
 			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 			mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
 			File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/shengyibao_voice");
 			if(!file.exists()){
 				file.mkdir();
@@ -39,7 +41,6 @@ public  class SoundMeter {
 			} catch (IOException e) {
 				System.out.print(e.getMessage());
 			}
-
 		}
 	}
 

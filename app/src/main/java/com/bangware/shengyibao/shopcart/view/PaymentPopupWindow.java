@@ -360,7 +360,7 @@ public class PaymentPopupWindow extends PopupWindow {
                     Toast.makeText(context,"付款方式总计不能超出实收金额！",Toast.LENGTH_SHORT).show();
                     return;
                 }else {
-                    presenter.update_purchase_order(deliveryNote,wechat_payment_text,Alipay_text,bank_receive_total_sum_text,cash_payment_text);
+//                    presenter.update_purchase_order(deliveryNote,wechat_payment_text,Alipay_text,bank_receive_total_sum_text,cash_payment_text);
                     Log.e("qweee===>","cash_payment_text"+cash_payment_text+"      bank_receive_total_sum_text"+bank_receive_total_sum_text);
                     Intent intent=new Intent(context, BluetoothPrinterActivity.class);
                     Bundle bundle =  new Bundle();

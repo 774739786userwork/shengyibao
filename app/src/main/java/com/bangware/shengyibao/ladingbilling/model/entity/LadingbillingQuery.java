@@ -15,7 +15,17 @@ public class LadingbillingQuery implements Serializable{
 	private String ladingbilling_product; //提货产品
 	private String loadingcount;			//车次
 	private String ladingbilling_person;    //开单人
-	
+	private String carnumber;
+	private String carId;
+
+	public String getCarnumber() {
+		return carnumber;
+	}
+
+	public void setCarnumber(String carnumber) {
+		this.carnumber = carnumber;
+	}
+
 	public String getLadingbilling_date() {
 		return ladingbilling_date;
 	}
@@ -55,6 +65,12 @@ public class LadingbillingQuery implements Serializable{
 	public void setLadingbilling_total_count(String ladingbilling_total_count) {
 		this.ladingbilling_total_count = ladingbilling_total_count;
 	}
-	
-		
+
+	public String getCarId() {
+		return carId;
+	}
+
+	public void setCarId(String carId) {
+		this.carId = carId;
+	}
 }

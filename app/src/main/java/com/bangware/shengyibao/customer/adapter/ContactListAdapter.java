@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bangware.shengyibao.customer.model.entity.Contacts;
 import com.bangware.shengyibao.activity.R;
+import com.bangware.shengyibao.utils.NumberUtils;
 
 /**
  * 客户详情页适配器
@@ -93,10 +94,10 @@ public class ContactListAdapter extends BaseAdapter {
 			holder.contactName.setText(nameStr);
 			
 			String mobileStr = contactList.get(position).getMobile1();
-			holder.contactMobile.setText(mobileStr);
+			holder.contactMobile.setText(NumberUtils.goneTelephone(mobileStr));
 			
 			String mobileTwoStr = contactList.get(position).getMobile2();
-			holder.contactMobile_two.setText(mobileTwoStr);
+			holder.contactMobile_two.setText(NumberUtils.goneTelephone(mobileTwoStr));
 			if (holder.contactName.getText().toString().equals("")||holder.contactMobile.getText().toString().equals("null")) {
 				holder.contactName.setVisibility(View.GONE);
 			}else{

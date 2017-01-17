@@ -110,6 +110,7 @@
             android:layout_below="@+id/delivery_serial_number"
             android:textColor="#666666"
             android:textSize="18sp"/>
+
         <TextView
             android:id="@+id/deliverynote_detail"
             android:layout_width="wrap_content"
@@ -119,13 +120,24 @@
             android:layout_below="@+id/shop_name"
             android:textColor="#ff8c00"
             android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/remember_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="555"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/deliverynote_detail"
+            android:textColor="#FF0000"
+            android:textSize="14sp"/>
         
         <TextView 
             android:id="@+id/unPaid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/deliverynote_detail"
+            android:layout_below="@+id/remember_name"
             android:textColor="#FF0000"
             android:layout_marginTop="5dp"
             android:paddingLeft="3dp"
@@ -137,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/deliverynote_detail"
+            android:layout_below="@+id/remember_name"
             android:textColor="#FF0000"
             android:text="55555"
             android:layout_marginTop="5dp"

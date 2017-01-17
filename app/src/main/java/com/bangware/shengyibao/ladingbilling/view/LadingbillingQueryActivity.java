@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,6 +28,9 @@ import com.bangware.shengyibao.ladingbilling.adapter.LadingBillingQueryAdapter;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.ladingbilling.presenter.LadingbillingPresenter;
 import com.bangware.shengyibao.ladingbilling.presenter.impl.LadingbillingPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.volley.DataRequest;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.RefreshListView;
 
@@ -45,24 +49,26 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 	private int nPage = 1;
 	private int nSpage = 10;
 	public int totalSize = 0;
-	private int MaxDateNum; 
+	private int MaxDateNum;
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.CHINA);
 	String currenttime = sdf.format(new Date());
 	String begin_date;
 	String end_date;
+	private User user;
+	SharedPreferences sharedPreferences;
 
 	private LadingbillingPresenter billingPresenter;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_ladingbilling_query);
-		
+
 		init();
 		initview();
 	}
-	
+
+
 	private void init() {
 		ladbilling_query_back = (ImageView) findViewById(R.id.ladbilling_query_back);
 		ladingbilling_layout = (LinearLayout) findViewById(R.id.ladingbilling_layout);
@@ -70,12 +76,15 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		ladingbilling_total_sum =  (TextView) findViewById(R.id.ladingbilling_total_sum);
 		ladbilling_queryListView = (RefreshListView) findViewById(R.id.ladbilling_queryListView);
 		stock_query = (TextView) findViewById(R.id.stock_textview);
-		
+
+		sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
+
+
 		begin_date=currenttime;
 		end_date=currenttime;
 		billingPresenter = new LadingbillingPresenterImpl(this);
-		Log.e("------------------>",begin_date+" "+end_date+" "+nPage+" "+nSpage);
-		billingPresenter.loadLadingBilling(begin_date, end_date, nPage, nSpage);
+		billingPresenter.loadLadingBilling(user,begin_date, end_date, nPage, nSpage);
 		ladingbilling_time.setText(currenttime);
 		ladingbilling_total_sum.setText("0次");
 		billingadapter = new LadingBillingQueryAdapter(this, ladingquery_list);
@@ -129,7 +138,7 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 						ladingquery_list.clear();
 						nPage = 1;
 						totalSize = nSpage;
-						billingPresenter.loadLadingBilling(begin_date, end_date, nPage, nSpage);
+						billingPresenter.loadLadingBilling(user,begin_date, end_date, nPage, nSpage);
 						billingadapter.notifyDataSetInvalidated();
 					}
 				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), true).show();
@@ -157,7 +166,7 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 			ladbilling_queryListView.hideFooterView();
 			return;
 		}else{
-			billingPresenter.loadLadingBilling(begin_date, end_date, nPage, nSpage);
+			billingPresenter.loadLadingBilling(user,begin_date, end_date, nPage, nSpage);
 		}
 		totalSize += nSpage;
 	}

@@ -1,6 +1,7 @@
 package com.bangware.shengyibao.activity.Suggest.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.activity.Suggest.presenter.SuggestPresenter;
 import com.bangware.shengyibao.activity.Suggest.presenter.impl.SuggestPresenterImpl;
 import com.bangware.shengyibao.main.view.MainActivity;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 
 /**
  * 意见反馈
@@ -21,6 +24,7 @@ public class SuggestActivity extends BaseActivity implements SuggestView{
     private Button btn_submit;
     private EditText suggest_edit;
     private SuggestPresenter suggestPresenter;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +35,9 @@ public class SuggestActivity extends BaseActivity implements SuggestView{
     }
 
     public void findView(){
+        SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+        user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
         mSuggestTitleBtnLeft= (ImageButton) findViewById(R.id.suggestTitleBtnLeft);
         btn_submit = (Button) findViewById(R.id.suggestion_button);
         suggest_edit = (EditText) findViewById(R.id.suggesttion_edit);
@@ -67,7 +74,7 @@ public class SuggestActivity extends BaseActivity implements SuggestView{
             if (v.getId() == R.id.suggestion_button){
                 String contentStr = suggest_edit.getText().toString();
                 if (!contentStr.isEmpty()&&!"".equals(contentStr)){
-                    suggestPresenter.loadData(contentStr);
+                    suggestPresenter.loadData(user,contentStr);
                 }else{
                     showToast("请输入你要反馈的内容！");
                 }

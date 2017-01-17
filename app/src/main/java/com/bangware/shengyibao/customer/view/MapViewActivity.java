@@ -2,6 +2,7 @@ package com.bangware.shengyibao.customer.view;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.customer.presenter.CustomerMapLocationPresenter;
 import com.bangware.shengyibao.customer.presenter.impl.CustomerMapLocationPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 
 public class MapViewActivity extends BaseActivity {
 	// 定位相关
@@ -58,6 +61,7 @@ public class MapViewActivity extends BaseActivity {
     private double lat;
     private double lng;
     private float mCurrentAccracy;
+    private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -65,6 +69,9 @@ public class MapViewActivity extends BaseActivity {
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_bdmap);
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME,MODE_PRIVATE);
+        user = AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		
         mCurrentMode = LocationMode.NORMAL;
         findViews();
@@ -104,6 +111,7 @@ public class MapViewActivity extends BaseActivity {
                 } else {
                     // Permission Denied
                     showToast("用户取消了权限");
+                    showTipsDialog();
                 }
                 break;
             default:
@@ -154,12 +162,16 @@ public class MapViewActivity extends BaseActivity {
 			// TODO Auto-generated method stub
 			if(v.getId() == R.id.bdgetLocation){
                 if(Build.VERSION.SDK_INT >= 23) {
-                    int checkSMSPermission = ContextCompat.checkSelfPermission(MapViewActivity.this, Manifest.permission.WRITE_CALENDAR);
-                    if(checkSMSPermission != PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(MapViewActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
-                        return;
-                    }else{
-                        requestLocClick();
+                    try{
+                        int checkSMSPermission = ContextCompat.checkSelfPermission(MapViewActivity.this, Manifest.permission.WRITE_CALENDAR);
+                        if(checkSMSPermission != PackageManager.PERMISSION_GRANTED){
+                            ActivityCompat.requestPermissions(MapViewActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
+                            return;
+                        }else{
+                            requestLocClick();
+                        }
+                    }catch (RuntimeException e){
+                        showTipsDialog();
                     }
                 }else{
                     requestLocClick();
@@ -167,7 +179,7 @@ public class MapViewActivity extends BaseActivity {
 			}
 			if(v.getId() == R.id.resetMarkerBtn){
 				//提交数据至后台
-				locationPresenter.loadMapLocation(customer.getId(), longitude, latitude,customer.getAddress());
+				locationPresenter.loadMapLocation(user,customer.getId(), longitude, latitude,customer.getAddress());
 				Intent intent = new Intent(MapViewActivity.this, CustomerInfoActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				showToast("标注成功");

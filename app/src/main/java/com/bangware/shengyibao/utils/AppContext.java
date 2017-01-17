@@ -1,6 +1,8 @@
 package com.bangware.shengyibao.utils;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.bangware.shengyibao.user.model.entity.User;
@@ -43,7 +45,7 @@ public class AppContext {
 	 * 从缓存中获取用户信息
 	 * @return
 	 */
-	public void readFromSharedPreferences(SharedPreferences sharedPreferences){
+	public User readFromSharedPreferences(SharedPreferences sharedPreferences){
 		User user = new User();
 		user.setUser_name(sharedPreferences.getString("username", ""));
 		user.setPassword(sharedPreferences.getString("password", ""));
@@ -54,6 +56,8 @@ public class AppContext {
 		user.setRoles(sharedPreferences.getString("roles", ""));
 		user.setEmployee_id(sharedPreferences.getString("employee_id", ""));
 		user.setUser_id(sharedPreferences.getString("user_id", ""));
+		user.setApp_id(sharedPreferences.getString("app_id",""));
+		user.setMobile_number(sharedPreferences.getString("mobile_number",""));
+		return user;
 	}
-
 }

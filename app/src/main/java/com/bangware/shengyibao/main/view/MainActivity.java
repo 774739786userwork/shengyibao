@@ -1,40 +1,52 @@
 package com.bangware.shengyibao.main.view;
 
+import android.Manifest;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.activity.SettingActivity;
 import com.bangware.shengyibao.main.model.entity.ImageShow;
-import com.bangware.shengyibao.net.ConnectionChangeReceiver;
+import com.bangware.shengyibao.updateversion.VersionUpdateView;
+import com.bangware.shengyibao.updateversion.model.entity.VersionBean;
+import com.bangware.shengyibao.updateversion.presenter.UpdateVersionPresenter;
+import com.bangware.shengyibao.updateversion.presenter.UpdateVersionPresenterImpl;
+import com.bangware.shengyibao.updateversion.service.UpdateVersionService;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
-import com.bangware.shengyibao.utils.HomeListener;
+import com.bangware.shengyibao.utils.VersionUtil;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private Fragment mContent;
-    private ConnectionChangeReceiver myReceiver;//网络监听广播
-    private HomeListener homeListener = null;//Home键监听广播
+
+    SharedPreferences sharedPreferences;
+    private User user;
     /**
      * 首页图片变量
      */
@@ -60,16 +72,22 @@ public class MainActivity extends AppCompatActivity {
         init();
         initData();
         initListener();
-        String app_id="0";
+
+        String app_id=user.getApp_id();
         if (app_id.equals("0") ) {
+            //南厂版本
             mContent = new FragmentSaler();
         }else if(app_id.equals("1")) {
+            //北厂硅藻泥业务员版本
+            mContent = new FragmentTwoSaler();
+        }else if (app_id.equals("2")) {
+            //北厂硅藻泥销售主管版本
             mContent = new FragmentTwoSaler();
         }
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
             //FIXME modify by mouse
-
-            if (getSupportFragmentManager().findFragmentById(R.id.main_FrameLayout) != null) {
+            if (fm.findFragmentById(R.id.main_FrameLayout) != null) {
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else {
@@ -86,12 +104,13 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager)findViewById(R.id.viewpage);
         tv_intro = (TextView) findViewById(R.id.tv_intro);
         dot_layout = (LinearLayout)findViewById(R.id.dot_layout);
+        sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+
+        user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
     }
 
     //初始化数据
     private void initData(){
-        registerReceiver();
-
         list = new ArrayList<ImageShow>();
         list.add(new ImageShow(R.drawable.img1, "多邦生态硅藻泥改善睡眠"));
         list.add(new ImageShow(R.drawable.img2, "新品上市外墙耐水腻子粉"));
@@ -106,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(centerValue-value);
         updateIntroAndDot();
         handler.sendEmptyMessageDelayed(0,4000);
+        //版本更新调用
     }
 
     //初始化文字下方的圆点
@@ -144,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this, SettingActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("user_name",AppContext.getInstance().getUser().getUser_name());
-                bundle.putString("pass_word",AppContext.getInstance().getUser().getPassword());
-                bundle.putString("user_real_name",AppContext.getInstance().getUser().getUser_realname());
-                bundle.putString("app_id",AppContext.getInstance().getUser().getApp_id());
+                bundle.putString("user_name",user.getUser_name());
+                bundle.putString("pass_word",user.getPassword());
+                bundle.putString("user_real_name",user.getUser_realname());
+                bundle.putString("app_id",user.getApp_id());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -171,58 +191,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < dot_layout.getChildCount(); i++){
             dot_layout.getChildAt(i).setEnabled(i==currentPage);
         }
-    }
-
-    /**广播注册*/
-    private  void registerReceiver(){
-        IntentFilter filter=new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        myReceiver=new ConnectionChangeReceiver();
-        this.registerReceiver(myReceiver, filter);
-    }
-
-    /**注销广播服务*/
-    private  void unregisterReceiver(){
-        this.unregisterReceiver(myReceiver);
-
-    }
-
-    @Override
-    protected void onResume( ) {
-        super.onResume();
-//        homeListener.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        homeListener.stop();
-    }
-
-    private void initHomeListen(){
-        homeListener = new HomeListener(this);
-        homeListener.setOnHomeBtnPressListener( new HomeListener.OnHomeBtnPressLitener( ) {
-            @Override
-            public void onHomeBtnPress() {
-                showToast( "按下Home按键！" );
-            }
-
-            @Override
-            public void onHomeBtnLongPress() {
-                showToast( "长按Home按键！" );
-            }
-        });
-    }
-
-    private void showToast( String toastInfoStr ){
-        Toast.makeText( this, toastInfoStr, Toast.LENGTH_LONG ).show( );
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (myReceiver != null){
-            unregisterReceiver();
-        }
-        super.onDestroy();
     }
 
     int keyBackClickCount = 0;

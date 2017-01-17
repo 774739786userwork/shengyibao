@@ -1,7 +1,7 @@
 package com.bangware.shengyibao.daysaleaccount.view;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,22 +17,20 @@ import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.DoubleDatePickerDialog;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.daysaleaccount.adapter.SaleAccountListAdapter;
-import com.bangware.shengyibao.daysaleaccount.adapter.SaleAccountProductAdapter;
 import com.bangware.shengyibao.daysaleaccount.model.entity.SaleAccountListBean;
 import com.bangware.shengyibao.daysaleaccount.presenter.SaleAccountPresenter;
 import com.bangware.shengyibao.daysaleaccount.presenter.impl.SaleAccountPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.volley.DataRequest;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.RefreshListView;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * 日销售清单列表查询
@@ -58,17 +56,20 @@ public class SaleAccountListActivity extends BaseActivity implements OnRefreshLi
     public int totalSize = 0;
     private int pagesize;
     Calendar c = Calendar.getInstance();
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_sale_account);
 
+        SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+        user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
+
         findViews();
         setListener();
         initData();
     }
-
 
     public void findViews(){
         backimage = (ImageView) findViewById(R.id.day_saleaccount_backImg);
@@ -103,8 +104,7 @@ public class SaleAccountListActivity extends BaseActivity implements OnRefreshLi
 //        daySale_end_date.setText(date);
 
         saleAccountPresenter = new SaleAccountPresenterImpl(this);
-        saleAccountPresenter.loadSalesAccountData(begin_date,end_date,nPage,nSpage);//默认查询一个星期的数据
-        Log.e("TAG", "findViews: "+begin_date+","+end_date);
+        saleAccountPresenter.loadSalesAccountData(user,begin_date,end_date,nPage,nSpage);//默认查询一个星期的数据
 
         accountListAdapter = new SaleAccountListAdapter(this,datalist);
         daySaleQueryListView.setAdapter(accountListAdapter);
@@ -158,7 +158,7 @@ public class SaleAccountListActivity extends BaseActivity implements OnRefreshLi
             daySaleQueryListView.hideFooterView();
             return;
         }else{
-            saleAccountPresenter.loadSalesAccountData(begin_date,end_date,nPage,nSpage);
+            saleAccountPresenter.loadSalesAccountData(user,begin_date,end_date,nPage,nSpage);
         }
         totalSize += nSpage;
     }
@@ -201,7 +201,7 @@ public class SaleAccountListActivity extends BaseActivity implements OnRefreshLi
                         datalist.clear();
                         nPage = 1;
                         totalSize = nSpage;
-                        saleAccountPresenter.loadSalesAccountData(begin_date,end_date,nPage,nSpage);
+                        saleAccountPresenter.loadSalesAccountData(user,begin_date,end_date,nPage,nSpage);
                         accountListAdapter.notifyDataSetInvalidated();
 
                     }

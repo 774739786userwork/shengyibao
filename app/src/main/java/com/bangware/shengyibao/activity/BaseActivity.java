@@ -1,14 +1,17 @@
 package com.bangware.shengyibao.activity;
 import android.app.Activity;
-import android.app.Notification;
-import android.app.PendingIntent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -17,6 +20,9 @@ import com.bangware.shengyibao.model.DistrictModel;
 import com.bangware.shengyibao.model.ProvinceModel;
 import com.bangware.shengyibao.net.ConnectionChangeReceiver;
 import com.bangware.shengyibao.utils.AppContext;
+import com.bangware.shengyibao.utils.HomeListener;
+import com.bangware.shengyibao.utils.volley.DataRequest;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 import java.io.InputStream;
@@ -27,18 +33,40 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-
 public class BaseActivity extends Activity implements BaseView {
 	private Toast mToast;
 	protected CustomProgressDialog loadingdialog;
 	private  ConnectionChangeReceiver myReceiver;
+	private HomeListener homeListener = null;//Home键监听广播
 
 	protected void onCreate(Bundle savedInstanceState) {
+		if (savedInstanceState!=null)
+		{
+			DataRequest.buildRequestQueue(this);
+		}
 		super.onCreate(savedInstanceState);
 		registerReceiver();
 		loadingdialog = CustomProgressDialog.createDialog(this,R.drawable.frame);
 		setDefaultFont();
 
+		/*initHomeListen();//监听home键退出
+		homeListener.start();*/
+	}
+
+	/**
+	 * onSaveInstanceState和onRestoreInstanceState保存状态与恢复
+	 * @param outState
+     */
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		Log.e("HELLO", "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Log.e("HELLO", "HELLO:如果应用进程被系统咔嚓，则再次打开应用的时候会进入");
 	}
 
 	/**广播注册监听网络*/
@@ -82,7 +110,34 @@ public class BaseActivity extends Activity implements BaseView {
 		res.updateConfiguration(config, res.getDisplayMetrics());
 	}
 
+	@Override
+	protected void onResume( ) {
+		super.onResume();
+//        homeListener.start();
+	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+//        homeListener.stop();
+	}
+
+	private void initHomeListen(){
+		homeListener = new HomeListener(this);
+		homeListener.setOnHomeBtnPressListener( new HomeListener.OnHomeBtnPressLitener( ) {
+			@Override
+			public void onHomeBtnPress() {
+				showToast( "按下Home按键！" );
+                /*finish();
+                System.exit(0);*/
+			}
+
+			@Override
+			public void onHomeBtnLongPress() {
+				showToast( "长按Home按键！" );
+			}
+		});
+	}
 
 	/**
      * 显示Toast消息
@@ -119,7 +174,33 @@ public class BaseActivity extends Activity implements BaseView {
         mToast.show();
     }
 
-    public void showLoading(){
+	protected void showTipsDialog() {
+		new AlertDialog.Builder(this).setTitle("提示信息").setMessage("当前应用缺少该功能的使用权限，该功能暂时无法使用。如若需要，请单击【确定】按钮前往设置中心进行权限授权。")
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						showToast("该功能未授权，请再次授权");
+					}
+				})
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						startAppSettings();
+					}
+				}).show();
+	}
+
+
+	/**
+	 * 启动当前应用设置页面
+	 */
+	protected void startAppSettings() {
+		Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+		intent.setData(Uri.parse("package:" + getPackageName()));
+		startActivity(intent);
+	}
+
+	public void showLoading(){
     	loadingdialog.show();
     }
 

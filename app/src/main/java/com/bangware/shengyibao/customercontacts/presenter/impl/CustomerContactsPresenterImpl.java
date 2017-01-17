@@ -33,10 +33,8 @@ public class CustomerContactsPresenterImpl implements CustomerContactsPresenter,
 	}
 	@Override
 	public void onLoadCustomerContactsSuccess(List<Contacts> contacts) {
-		if(contacts != null){
-			contactsView.doCustomerContactsLoadSuccess(contacts);
-			contactsView.hideLoading();
-		}
+		contactsView.doCustomerContactsLoadSuccess(contacts);
+		contactsView.hideLoading();
 	}
 	@Override
 	public void onLoadCustomerContactsFailure(String errorMessage) {

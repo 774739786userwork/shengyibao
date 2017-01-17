@@ -1,7 +1,5 @@
 package com.bangware.shengyibao.shopcart.model.entity;
 
-import android.util.Log;
-
 import com.bangware.shengyibao.customer.model.entity.Customer;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteGoods;
@@ -9,7 +7,6 @@ import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.user.model.entity.User;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

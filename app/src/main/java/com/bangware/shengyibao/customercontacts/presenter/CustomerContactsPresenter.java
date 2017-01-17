@@ -9,5 +9,4 @@ import java.util.List;
 public interface CustomerContactsPresenter {
 	public void loadCustomerContacts(User user, int nPage, int nSpage, String contactName, String phone,String employee_id);
 	void onDestroy();
-	void onLoadCustomerContactsSuccess(List<Contacts> contacts);
 }

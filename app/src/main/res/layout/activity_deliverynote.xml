@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/white"
     android:clickable="true"
     android:orientation="vertical" >
 
+	<include android:id="@+id/DeliveryNoteTitle" layout="@layout/activity_deliverynote_title" android:focusable="true"/>
 
 	<RelativeLayout
         android:id="@+id/ProductListLayout"
         android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:layout_below="@+id/DeliveryNoteTitle"
-	    android:layout_marginBottom="60dp"
-        >
+	    android:layout_marginBottom="60dp">
 		<com.bangware.shengyibao.view.RefreshListView
 			android:id="@+id/customercontact_query_ListView"
 			android:layout_width="fill_parent"
@@ -89,7 +88,4 @@
             android:visibility="gone"
             android:textSize="18sp" />
 	</RelativeLayout>
-
-	<include android:id="@+id/DeliveryNoteTitle" layout="@layout/activity_deliverynote_title" android:focusable="true"
-		/>
 </RelativeLayout>

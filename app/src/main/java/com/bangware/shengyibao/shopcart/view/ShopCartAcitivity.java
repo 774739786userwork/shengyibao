@@ -27,6 +27,7 @@ import com.bangware.shengyibao.shopcart.model.entity.ShopCart;
 import com.bangware.shengyibao.shopcart.model.entity.ShopCartGoods;
 import com.bangware.shengyibao.shopcart.presenter.ShopCartPresenter;
 import com.bangware.shengyibao.shopcart.presenter.impl.ShopCartPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.ClearEditText;
 import com.bangware.shengyibao.utils.DensityUtil;
@@ -41,6 +42,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,11 +54,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -64,8 +68,7 @@ import android.widget.TextView;
 
 
 public class ShopCartAcitivity extends BaseActivity implements ShopCartView,CustomerContactsView,OnRefreshListener {
-
-	public static String text="";
+	public String text="";
 	String phone="";
 	String contactName="";
 	int nPage=1;
@@ -89,6 +92,10 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 	private TextView deliveryNoteAmountText;
 	private CommonDialog customDialog;
 
+	private Spinner shopCarNumber_spinner;//选择车牌下拉框
+	private List<String> spinnerList = new ArrayList<String>();
+	private ArrayAdapter<String> spinnerAdapter;
+
 	private TextView mCustomerContactQuery_btn;//查询按钮
 	private TextView ShopCart_Customer_Name;//查询的店面名称
 	private ImageView contactlist_textview;//通讯录按钮
@@ -106,15 +113,17 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 	private List<String> mycontactlist=new ArrayList<String>();
 	private MyContactAdapter myContactAdapter;
 	private Customer customer;
+	private User user;
 
-	private String voiceName;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
 		height=wm.getDefaultDisplay().getHeight();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_deliverynote);
+		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
 
+		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		deliveryNoteTotalVolume = new BadgeView(ShopCartAcitivity.this);
 		deliveryNoteTotalVolume.setTargetView(findViewById(R.id.shopCartIcon));
 		myContactAdapter=new MyContactAdapter(this,mycontactlist);
@@ -133,13 +142,13 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 			contact=(Contacts) bundle.getSerializable("contacts");
 		}
 		//加载产品Presenter
-		presenter = new ShopCartPresenterImpl(this);
+		presenter = new ShopCartPresenterImpl(this,user);
 		//加载客户联系人Presenter
 		CCPresenter=new CustomerContactsPresenterImpl(this);
 		//设置购物车中的客户信息
 		presenter.getShopCart().setCustomer(customer);
 //		updateCustomerInfo(customer);
-		presenter.loadStocks();
+		presenter.loadStocks(user);
 		mAdapter = new ShopCartProductListAdapter(presenter.getShopCart(),list, this);
 		productListView.setAdapter(mAdapter);
 		adapter = new CustomerContactAdapter(this, customerlist);
@@ -158,6 +167,28 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 				presenter.getShopCart().setCustomer(customer);
 			}
 		});
+
+		spinnerList.add("选车牌");
+		spinnerList.add("湘A00000");
+		spinnerList.add("湘A0DR39");
+		spinnerList.add("鄂AE5T20");
+		spinnerList.add("湘A14476");
+
+		spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerList);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		shopCarNumber_spinner.setAdapter(spinnerAdapter);
+
+		shopCarNumber_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> adapterView) {
+
+			}
+		});
 	}
 
 
@@ -169,7 +200,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		DeliveryNoteTitle=(LinearLayout) findViewById(R.id.DeliveryNoteTitle);
 		toSettlementBtn =(Button)findViewById(R.id.ShopCart_toSettlementBtn);
 		productListView = (ListView)findViewById(R.id.ProductListView);
-
+		shopCarNumber_spinner = (Spinner) findViewById(R.id.carNumber_spinner);
 		mCustomerContactQuery_btn= (TextView) findViewById(R.id.customercontactquery_btns);
 		contactlist_textview= (ImageView) findViewById(R.id.contactlist_textviews);
 		mRefreshListView= (RefreshListView) findViewById(R.id.customercontact_query_ListView);
@@ -186,7 +217,6 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		contactlist_textview.setOnClickListener(myonclick);
 		mCustomerContactQuery_btn.setOnClickListener(myonclick);
 	}
-
 
    //加载客户联系人列表
 	@Override
@@ -216,7 +246,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 			mRefreshListView.hideFooterView();
 			return;
 		}else{
-			CCPresenter.loadCustomerContacts(AppContext.getInstance().getUser(), nPage, nSpage, phone, contactName,"");
+			CCPresenter.loadCustomerContacts(user, nPage, nSpage, phone, contactName,"");
 		}
 		totalSize += nSpage;
 	}
@@ -290,79 +320,84 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_OK) {
-			ContentResolver reContentResolverol = getContentResolver();
-			Uri contactData = data.getData();
-			@SuppressWarnings("deprecation")
-			Cursor cursor = managedQuery(contactData, null, null, null, null);
-			cursor.moveToFirst();
-			//获得DATA表中的名字
-			username = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-			//条件为联系人ID
-			String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+		try {
 
-			// 获得DATA表中的电话号码，条件为联系人ID,因为手机号码可能会有多个
-			Cursor phone = reContentResolverol.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-					null,
-					ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
-					null,
-					null);
-			if (phone!=null){
-				String phoneNumber=null;
-				while (phone.moveToNext()) {
-					if(phone.moveToFirst())
-					{
-						do
-						{
-							//遍历所有的联系人下面所有的电话号码
-							phoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-							//使用Toast技术显示获得的
-							Log.e("phone",phoneNumber);
-							usernumber = phoneNumber;
-							// 对手机号码进行预处理（去掉号码前的+86、首尾空格、“-”号等）
-							usernumber = usernumber.replaceAll("^(\\+86)", "");
-							usernumber = usernumber.replaceAll("^(86)", "");
-							usernumber = usernumber.replaceAll("-", "");
-							usernumber = usernumber.replaceAll(" ", "");
-							usernumber = usernumber.trim();
-							mycontactlist.add(usernumber);
+			if (resultCode == Activity.RESULT_OK) {
+				ContentResolver reContentResolverol = getContentResolver();
+				Uri contactData = data.getData();
+				@SuppressWarnings("deprecation")
+				Cursor cursor = managedQuery(contactData, null, null, null, null);
+				cursor.moveToFirst();
+				//获得DATA表中的名字
+				username = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+				//条件为联系人ID
+				String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
 
-						}while(phone.moveToNext());
-						if (mycontactlist.size() > 1) {
-							int screenView = ShopCartAcitivity.this.getWindowManager().getDefaultDisplay().getWidth();
-							customDialog = new CommonDialog(ShopCartAcitivity.this,screenView, R.layout.show_mycontact_dialog_layout,R.style.custom_dialog);
-							customDialog.setCanceledOnTouchOutside(false);
-							final ListView my_contact_list= (ListView) customDialog.findViewById(R.id.my_contact_listview);
-							TextView my_contact_close= (TextView) customDialog.findViewById(R.id.my_contact_close);
-							Log.e("mycontactlist",mycontactlist.size()+"");
-							my_contact_list.setAdapter(myContactAdapter);
-							customDialog.show();
-							my_contact_close.setOnClickListener(new View.OnClickListener() {
-								@Override
-								public void onClick(View view) {
-									mycontactlist.clear();
-									customDialog.dismiss();
-								}
-							});
-							my_contact_list.setOnItemClickListener(new OnItemClickListener() {
-								@Override
-								public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-									usernumber=mycontactlist.get(i);
-									mClearEditText.setText(usernumber);
-									mycontactlist.clear();
-									customDialog.dismiss();
-								}
-							});
-						}else if (mycontactlist.size()==1){
-							usernumber = usernumber.trim();
-							mClearEditText.setText(usernumber);
+				// 获得DATA表中的电话号码，条件为联系人ID,因为手机号码可能会有多个
+				Cursor phone = reContentResolverol.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+						null,
+						ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
+						null,
+						null);
+				if (phone != null) {
+					String phoneNumber = null;
+					while (phone.moveToNext()) {
+						if (phone.moveToFirst()) {
+							do {
+								//遍历所有的联系人下面所有的电话号码
+								phoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+								//使用Toast技术显示获得的
+								Log.e("phone", phoneNumber);
+								usernumber = phoneNumber;
+								// 对手机号码进行预处理（去掉号码前的+86、首尾空格、“-”号等）
+								usernumber = usernumber.replaceAll("^(\\+86)", "");
+								usernumber = usernumber.replaceAll("^(86)", "");
+								usernumber = usernumber.replaceAll("-", "");
+								usernumber = usernumber.replaceAll(" ", "");
+								usernumber = usernumber.trim();
+								mycontactlist.add(usernumber);
+
+							} while (phone.moveToNext());
+							if (mycontactlist.size() > 1) {
+								int screenView = ShopCartAcitivity.this.getWindowManager().getDefaultDisplay().getWidth();
+								customDialog = new CommonDialog(ShopCartAcitivity.this, screenView, R.layout.show_mycontact_dialog_layout, R.style.custom_dialog);
+								customDialog.setCanceledOnTouchOutside(false);
+								final ListView my_contact_list = (ListView) customDialog.findViewById(R.id.my_contact_listview);
+								TextView my_contact_close = (TextView) customDialog.findViewById(R.id.my_contact_close);
+								Log.e("mycontactlist", mycontactlist.size() + "");
+								my_contact_list.setAdapter(myContactAdapter);
+								customDialog.show();
+								my_contact_close.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										mycontactlist.clear();
+										customDialog.dismiss();
+									}
+								});
+								my_contact_list.setOnItemClickListener(new OnItemClickListener() {
+									@Override
+									public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+										usernumber = mycontactlist.get(i);
+										mClearEditText.setText(usernumber);
+										mycontactlist.clear();
+										customDialog.dismiss();
+									}
+								});
+							} else if (mycontactlist.size() == 1) {
+								usernumber = usernumber.trim();
+								mClearEditText.setText(usernumber);
+							}
 						}
 					}
 				}
-			}
 				/*if (!phone.isClosed()){
 					phone.close();
 				}*/
+			}
+		}
+		catch (Exception e)
+		{
+			showTipsDialog();
 		}
 
 	}
@@ -374,7 +409,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 			mRefreshListView.setVisibility(View.GONE);
 			return;
 		}
-       if (text.length()==8||text.length()>=11){
+       if (text.length()==8||text.length()>=11||text.length()==7){
 		Pattern p = Pattern.compile("[0-9]*");
 		Matcher m = p.matcher(text);
 		if (m.matches()) {
@@ -383,7 +418,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 			nPage = 1;
 			totalSize = nSpage;
 			contactName = "";
-			CCPresenter.loadCustomerContacts(AppContext.getInstance().getUser(), nPage, nSpage, phone, contactName,"");
+			CCPresenter.loadCustomerContacts(user, nPage, nSpage, phone, contactName,"");
 		}
 
 		p = Pattern.compile("[\u4e00-\u9fa5]*");
@@ -394,7 +429,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 			nPage = 1;
 			totalSize = nSpage;
 			phone = "";
-			CCPresenter.loadCustomerContacts(AppContext.getInstance().getUser(), nPage, nSpage, "", contactName,"");
+			CCPresenter.loadCustomerContacts(user, nPage, nSpage, "", contactName,"");
 		}
 	}else
 	   {
@@ -542,7 +577,4 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		if(presenter!=null)
 			presenter.destroy();
 	}
-
-
-
 }

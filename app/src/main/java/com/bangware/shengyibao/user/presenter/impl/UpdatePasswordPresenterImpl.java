@@ -3,6 +3,7 @@ package com.bangware.shengyibao.user.presenter.impl;
 import android.util.Log;
 
 import com.bangware.shengyibao.user.model.UserModel;
+import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.user.model.impl.UserModelImpl;
 import com.bangware.shengyibao.user.presenter.OnUpdatePasswordListener;
 import com.bangware.shengyibao.user.presenter.UpdatePasswordPresenter;
@@ -38,9 +39,9 @@ public class UpdatePasswordPresenterImpl implements UpdatePasswordPresenter,OnUp
     }
 
     @Override
-    public void doUpdatePassword( String oldPassword, String newPassword) {
+    public void doUpdatePassword(User user, String oldPassword, String newPassword) {
          updatePasswordView.showLoading();
-        userModel.updatePassword(requestTag,oldPassword,newPassword,this);
+        userModel.updatePassword(user,requestTag,oldPassword,newPassword,this);
     }
 
     @Override

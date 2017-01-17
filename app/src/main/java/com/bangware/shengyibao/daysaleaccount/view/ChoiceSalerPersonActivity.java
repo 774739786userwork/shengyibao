@@ -1,5 +1,7 @@
 package com.bangware.shengyibao.daysaleaccount.view;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,17 +12,19 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.daysaleaccount.adapter.ChoiceSalerPersonAdapter;
 import com.bangware.shengyibao.daysaleaccount.model.entity.ChoicePersonBean;
+import com.bangware.shengyibao.daysaleaccount.presenter.SalerPersonPresenter;
+import com.bangware.shengyibao.daysaleaccount.presenter.impl.SalerPersonPresenterImpl;
+import com.bangware.shengyibao.user.model.entity.User;
+import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CharacterParser;
 import com.bangware.shengyibao.utils.ClearEditText;
 import com.bangware.shengyibao.utils.PinyinComparator;
 import com.bangware.shengyibao.view.SideBar;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +32,7 @@ import java.util.List;
 /**
  * 记量选择业务员
  */
-public class ChoiceSalerPersonActivity extends BaseActivity {
-    protected static final int requestCode = 1;
+public class ChoiceSalerPersonActivity extends BaseActivity implements SalerPersonView{
     //UI控件的封装
     private ListView sortListView;
     private SideBar sideBar;
@@ -38,18 +41,24 @@ public class ChoiceSalerPersonActivity extends BaseActivity {
     private ClearEditText mClearEditText;
     private ImageView saler_backimage;
 
-    //汉字转换成拼音的类
+    //汉字转换成拼音的类 ChoicePersonBean
     private CharacterParser characterParser;
-    private List<ChoicePersonBean> SourceDateList;
+    private List<ChoicePersonBean> SourceDateList = new ArrayList<ChoicePersonBean>();
 
     //根据拼音来排列Listview里面的数据类
     private PinyinComparator pinyinComparator;
+
+    private User user;
+    private SalerPersonPresenter personPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //规定输入法弹出模式 避免挤压屏幕与覆盖控件
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_choice_saler_person);
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences(User.SHARED_NAME,MODE_PRIVATE);
+        user = AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 
         initViews();
     }
@@ -83,7 +92,6 @@ public class ChoiceSalerPersonActivity extends BaseActivity {
                 if(position != -1){
                     sortListView.setSelection(position);
                 }
-
             }
         });
 
@@ -95,19 +103,19 @@ public class ChoiceSalerPersonActivity extends BaseActivity {
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 //这里要利用adapter.getItem(position)来获取当前position所对应的对象
-                Toast.makeText(getApplication(), ((ChoicePersonBean)adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
-//                intent.setClass(CityItemActivity.this, AddcreditActivity.class);
-//                startActivityForResult(intent, requestCode);
+                Intent intent = new Intent();
+                intent.putExtra("employeeName",((ChoicePersonBean)adapter.getItem(position)).getName());
+                intent.putExtra("employeedId",((ChoicePersonBean) adapter.getItem(position)).getId());
+                setResult(2001,intent);
+                finish();
             }
         });
 
-        SourceDateList = filledData(getResources().getStringArray(R.array.person));
-
-        // 根据a-z进行排序源数据
-        Collections.sort(SourceDateList, pinyinComparator);
+        personPresenter = new SalerPersonPresenterImpl(this);
+        personPresenter.loadSalerPersonData(user);
+//        SourceDateList = filledData(getResources().getStringArray(R.array.person));
         adapter = new ChoiceSalerPersonAdapter(this, SourceDateList);
         sortListView.setAdapter(adapter);
-
 
         mClearEditText = (ClearEditText) findViewById(R.id.filter_edit);
 
@@ -134,17 +142,17 @@ public class ChoiceSalerPersonActivity extends BaseActivity {
 
     /**
      * 为ListView填充数据
-     * @param date
+     * @param plist
      * @return
      */
-    private List<ChoicePersonBean> filledData(String [] date){
+    private List<ChoicePersonBean> filledData(List<ChoicePersonBean> plist){
         List<ChoicePersonBean> mSortList = new ArrayList<ChoicePersonBean>();
 
-        for(int i=0; i<date.length; i++){
+        for(int i=0; i<plist.size(); i++){
             ChoicePersonBean choicePersonBean = new ChoicePersonBean();
-            choicePersonBean.setName(date[i]);
+            choicePersonBean.setName(plist.get(i).getName());
             //汉字转换成拼音
-            String pinyin = characterParser.getSelling(date[i]);
+            String pinyin = characterParser.getSelling(plist.get(i).getName());
             String sortString = pinyin.substring(0, 1).toUpperCase();
 
             // 正则表达式，判断首字母是否是英文字母
@@ -168,7 +176,7 @@ public class ChoiceSalerPersonActivity extends BaseActivity {
         List<ChoicePersonBean> filterDateList = new ArrayList<ChoicePersonBean>();
 
         if(TextUtils.isEmpty(filterStr)){
-            filterDateList = SourceDateList;
+            filterDateList.addAll(SourceDateList);
         }else{
             filterDateList.clear();
             for(ChoicePersonBean sortModel : SourceDateList){
@@ -184,4 +192,16 @@ public class ChoiceSalerPersonActivity extends BaseActivity {
         adapter.updateListView(filterDateList);
     }
 
+    @Override
+    public void doLoadSalePersonData(List<ChoicePersonBean> personBeanList) {
+        if (personBeanList.size() > 0){
+            SourceDateList.addAll(personBeanList);
+            // 根据a-z进行排序源数据
+            Collections.sort(SourceDateList, pinyinComparator);
+            adapter.notifyDataSetChanged();
+        }else {
+            showToast("查无此数据");
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

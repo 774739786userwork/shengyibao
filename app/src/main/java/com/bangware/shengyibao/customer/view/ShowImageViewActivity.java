@@ -19,12 +19,13 @@ public class ShowImageViewActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.item_main_image);
+
 		String customerShowImage = getIntent().getStringExtra("showImage");
-		ImageView iv = new ImageView(this);
+		ImageView iv = (ImageView) findViewById(R.id.image);
 		if(customerShowImage!=null && !"".equals(customerShowImage)){
 			Glide.with(getApplicationContext()).load(Model.HTTPURL+ customerShowImage).placeholder(R.drawable.no_pic_300).error(R.drawable.no_pic_300)
 			.into(iv);
 	    }
-		setContentView(iv);
 	}
 }

@@ -49,6 +49,7 @@ public class Product implements java.io.Serializable{
 		this.basic_price = basic_price;
 	}*/
 
+
 	public double getP_totalforegift() {
 		return total_foregift;
 	}

@@ -54,9 +54,9 @@ public class PurchaseOrderModelImpl implements PurchaseOrderModel {
 	}
 
 	@Override
-	public void update_purchase_order(final DeliveryNote deliveryNote, double wechat_payment, double Alipay, double bank_receive_total_sum, double cash_payment,
+	public void update_purchase_order(User user,final DeliveryNote deliveryNote, double wechat_payment, double Alipay, double bank_receive_total_sum, double cash_payment,
 									  final  PurchaseOrderListener queryListener, String requestTag) {
-		String update_purchase_order_url=Model.UPDATE_PURCHASE_ORDER+"&token="+ AppContext.getInstance().getUser().getLogin_token();
+		String update_purchase_order_url=Model.UPDATE_PURCHASE_ORDER+"&token="+ user.getLogin_token();
 
 		try {
 			JSONObject object=new JSONObject();
