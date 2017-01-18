@@ -169,12 +169,10 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		});
 
 		spinnerList.add("选车牌");
-
 		spinnerList.add("湘A00000");
 		spinnerList.add("湘A0DR39");
 		spinnerList.add("鄂AE5T20");
 		spinnerList.add("湘A14476");
-
 		spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerList);
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		shopCarNumber_spinner.setAdapter(spinnerAdapter);
