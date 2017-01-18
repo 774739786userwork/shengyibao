@@ -21,6 +21,7 @@ import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
 import com.bangware.shengyibao.customercontacts.view.QueryQuickBilingActivity;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteGoods;
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.shopcart.adapter.ShopCartProductListAdapter;
 import com.bangware.shengyibao.shopcart.model.entity.ShopCart;
@@ -173,9 +174,9 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		spinnerList.add("湘A0DR39");
 		spinnerList.add("鄂AE5T20");
 		spinnerList.add("湘A14476");
-		spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerList);
-		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		shopCarNumber_spinner.setAdapter(spinnerAdapter);
+		/*spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerList);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);*/
+		shopCarNumber_spinner.setAdapter(adapter);
 
 		shopCarNumber_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
