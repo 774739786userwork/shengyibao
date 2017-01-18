@@ -9,4 +9,5 @@ import com.bangware.shengyibao.shopcart.model.entity.StockInfo;
 public interface StockListener {
     public void onStockLoaded(StockInfo stockInfo);
     public void onErrors(String errorMessage);
+
 }

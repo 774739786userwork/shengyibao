@@ -15,6 +15,8 @@ public class Model {
 		//登录
 		public static String LOGINURL = "users/sign_in.json";
 
+	public static String QUERY_CAR=HTTPURL+"mobile_interfaces/mobile_info?method=get_ladingbill_car_number";
+
 	     //修改密码
 	   public  static String UPDATEPASSWORD="users.json";
 		

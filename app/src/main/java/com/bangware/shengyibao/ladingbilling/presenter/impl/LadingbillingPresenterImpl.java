@@ -1,6 +1,7 @@
 package com.bangware.shengyibao.ladingbilling.presenter.impl;
 
 import com.bangware.shengyibao.ladingbilling.model.LadingbillingQueryModel;
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.ladingbilling.model.impl.LadingbillingQueryModelImpl;
 import com.bangware.shengyibao.ladingbilling.presenter.LadingbillingPresenter;
@@ -33,6 +34,12 @@ public class LadingbillingPresenterImpl implements LadingbillingPresenter,OnLadi
 		queryModel.LoadLadingBillingData(requestTag, begin_date, end_date, nPage, nSpage, user, this);
 	}
 
+	@Override
+	public void loadCarBean(User user) {
+		queryView.showDialog();
+		queryModel.onLoadCarBean(requestTag,user,this);
+	}
+
 
 	@Override
 	public void onLoadDataSuccess(List<LadingbillingQuery> ladingbillinglist) {
@@ -47,6 +54,13 @@ public class LadingbillingPresenterImpl implements LadingbillingPresenter,OnLadi
 		queryView.hideDialog();
 		queryView.showFailureMsg(errorMessage);
 	}
+
+	@Override
+	public void onCarBeanLoaded(List<CarBean> carBeanList) {
+		queryView.hideDialog();
+		queryView.loadCarBean(carBeanList);
+	}
+
 
 	public void destroy(){
 		DataRequest.getInstance().cancelRequestByTag(requestTag);

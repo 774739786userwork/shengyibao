@@ -1,5 +1,8 @@
 package com.bangware.shengyibao.ladingbilling;
 
+import android.util.Log;
+
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 
 import java.util.ArrayList;
@@ -38,5 +41,27 @@ public class LadingBillingUtils {
 			e.printStackTrace();
 		}
 		return ladingQueries;
+	}
+	public static List<CarBean> getLadingCar(String jsonString)
+	{
+		List<CarBean> carBeanList=new ArrayList<CarBean>();
+		try {
+			JSONObject objects=new JSONObject(jsonString);
+			JSONArray jsonArray = objects.getJSONArray("data");
+			CarBean carBean=null;
+			for (int i=0;i<jsonArray.length();i++)
+			{
+				JSONObject object=jsonArray.getJSONObject(i);
+				carBean=new CarBean();
+				carBean.setCar_id(object.getString("carbaseinfo_id"));
+				carBean.setCar_Number(object.getString("platenumber"));
+				Log.e("carbaseinfo_id",carBean.getCar_id()+carBean.getCar_Number());
+				carBeanList.add(carBean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Log.e("carBeanList","------------->"+carBeanList.size());
+		return carBeanList;
 	}
 }

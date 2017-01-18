@@ -15,22 +15,29 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.CustomProgressDialog;
 import com.bangware.shengyibao.activity.DoubleDatePickerDialog;
 import com.bangware.shengyibao.activity.R;
+import com.bangware.shengyibao.ladingbilling.adapter.CarBeanAdapter;
 import com.bangware.shengyibao.ladingbilling.adapter.LadingBillingQueryAdapter;
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.ladingbilling.presenter.LadingbillingPresenter;
 import com.bangware.shengyibao.ladingbilling.presenter.impl.LadingbillingPresenterImpl;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
-import com.bangware.shengyibao.utils.volley.DataRequest;
 import com.bangware.shengyibao.view.OnRefreshListener;
 import com.bangware.shengyibao.view.RefreshListView;
 
@@ -42,10 +49,14 @@ import com.bangware.shengyibao.view.RefreshListView;
 public class LadingbillingQueryActivity extends BaseActivity implements OnRefreshListener,LadingbillingQueryView{
 	private ImageView ladbilling_query_back;
 	private LinearLayout ladingbilling_layout;
-	private TextView ladingbilling_time,ladingbilling_total_sum,stock_query;
+	private TextView ladingbilling_time,ladingbilling_total_sum;
+	private Spinner stock_car;
+	private Button stock_query;
 	private RefreshListView ladbilling_queryListView;
 	List<LadingbillingQuery> ladingquery_list = new ArrayList<LadingbillingQuery>();
+	List<CarBean> carList=new ArrayList<CarBean>();
 	private LadingBillingQueryAdapter billingadapter;
+	private CarBeanAdapter carBeanAdapter;
 	private int nPage = 1;
 	private int nSpage = 10;
 	public int totalSize = 0;
@@ -75,7 +86,7 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		ladingbilling_time = (TextView) findViewById(R.id.ladingbilling_time);
 		ladingbilling_total_sum =  (TextView) findViewById(R.id.ladingbilling_total_sum);
 		ladbilling_queryListView = (RefreshListView) findViewById(R.id.ladbilling_queryListView);
-		stock_query = (TextView) findViewById(R.id.stock_textview);
+		stock_query = (Button) findViewById(R.id.stock_textview);
 
 		sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
 		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
@@ -84,13 +95,21 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		begin_date=currenttime;
 		end_date=currenttime;
 		billingPresenter = new LadingbillingPresenterImpl(this);
+		billingPresenter.loadCarBean(user);
 		billingPresenter.loadLadingBilling(user,begin_date, end_date, nPage, nSpage);
 		ladingbilling_time.setText(currenttime);
 		ladingbilling_total_sum.setText("0次");
 		billingadapter = new LadingBillingQueryAdapter(this, ladingquery_list);
 		ladbilling_queryListView.setDividerHeight(0);
 		ladbilling_queryListView.setAdapter(billingadapter);
+		stock_car= (Spinner) findViewById(R.id.stock_car);
+		carBeanAdapter=new CarBeanAdapter(this,carList);
+		stock_car.setAdapter(carBeanAdapter);
+//	SpinnerAdapter adapter=new ArrayAdapter<CarBean>(this,android.R.layout.simple_list_item_1,carList);
+//		stock_car.setAdapter(adapter);
 	}
+
+
 	
 	private void initview() {
 		// TODO Auto-generated method stub
@@ -98,6 +117,18 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		ladbilling_query_back.setOnClickListener(clickLinstener);
 		ladingbilling_layout.setOnClickListener(clickLinstener);
 		stock_query.setOnClickListener(clickLinstener);
+		stock_car.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				carList.get(position).getCar_Number();
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
 	}
 
 
@@ -203,6 +234,18 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		}
 		ladbilling_queryListView.hideFooterView();
 		ladbilling_queryListView.setOnRefreshListener(LadingbillingQueryActivity.this);
+	}
+
+	@Override
+	public void loadCarBean(List<CarBean> carBeanList) {
+		if (carBeanList.size()>0)
+		{
+			carList.addAll(carBeanList);
+			Log.e("carList","==================>"+carList.size()+carBeanList.get(0).getCar_Number());
+		} else
+		{
+//			showToast("当日暂无提货单记录！");
+		}
 	}
 
 
