@@ -21,7 +21,12 @@ import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
 import com.bangware.shengyibao.customercontacts.view.QueryQuickBilingActivity;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteGoods;
+import com.bangware.shengyibao.ladingbilling.adapter.CarBeanAdapter;
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
+import com.bangware.shengyibao.ladingbilling.presenter.LadingbillingPresenter;
+import com.bangware.shengyibao.ladingbilling.presenter.impl.LadingbillingPresenterImpl;
+import com.bangware.shengyibao.ladingbilling.view.LadingbillingQueryView;
 import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.shopcart.adapter.ShopCartProductListAdapter;
 import com.bangware.shengyibao.shopcart.model.entity.ShopCart;
@@ -68,7 +73,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-public class ShopCartAcitivity extends BaseActivity implements ShopCartView,CustomerContactsView,OnRefreshListener {
+public class ShopCartAcitivity extends BaseActivity implements ShopCartView,LadingbillingQueryView,CustomerContactsView,OnRefreshListener {
 	public String text="";
 	String phone="";
 	String contactName="";
@@ -94,8 +99,9 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 	private CommonDialog customDialog;
 
 	private Spinner shopCarNumber_spinner;//选择车牌下拉框
-	private List<String> spinnerList = new ArrayList<String>();
-	private ArrayAdapter<String> spinnerAdapter;
+	private List<CarBean> spinnerList = new ArrayList<CarBean>();
+	private CarBeanAdapter carBeanAdapter;
+	private LadingbillingPresenter billingPresenter;
 
 	private TextView mCustomerContactQuery_btn;//查询按钮
 	private TextView ShopCart_Customer_Name;//查询的店面名称
@@ -169,14 +175,11 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 			}
 		});
 
-		spinnerList.add("选车牌");
-		spinnerList.add("湘A00000");
-		spinnerList.add("湘A0DR39");
-		spinnerList.add("鄂AE5T20");
-		spinnerList.add("湘A14476");
-		/*spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerList);
-		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);*/
-		shopCarNumber_spinner.setAdapter(adapter);
+		/**请求后台车牌数据接口**/
+		billingPresenter = new LadingbillingPresenterImpl(this);
+		billingPresenter.loadCarBean(user);
+		carBeanAdapter=new CarBeanAdapter(this,spinnerList);
+		shopCarNumber_spinner.setAdapter(carBeanAdapter);
 
 		shopCarNumber_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
@@ -251,6 +254,23 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Cust
 		totalSize += nSpage;
 	}
 
+	@Override
+	public void addLadingbillingData(List<LadingbillingQuery> ladingbillingList) {
+
+	}
+
+	/**加载车牌数据**/
+	@Override
+	public void loadCarBean(List<CarBean> carBeanList) {
+		if (carBeanList.size()>0)
+		{
+			spinnerList.addAll(carBeanList);
+			carBeanAdapter.notifyDataSetChanged();
+		} else
+		{
+			carBeanAdapter.notifyDataSetChanged();
+		}
+	}
 
 	private class MyOnClickLietener implements View.OnClickListener {
 		public void onClick(View view) {
