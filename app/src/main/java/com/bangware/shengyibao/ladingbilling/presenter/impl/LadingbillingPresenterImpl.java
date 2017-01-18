@@ -30,13 +30,13 @@ public class LadingbillingPresenterImpl implements LadingbillingPresenter,OnLadi
 	public void loadLadingBilling(User user,String begin_date, String end_date,
 								  int nPage, int nSpage) {
 		// TODO Auto-generated method stub
-		queryView.showDialog();
+		queryView.showLoading();
 		queryModel.LoadLadingBillingData(requestTag, begin_date, end_date, nPage, nSpage, user, this);
 	}
 
 	@Override
 	public void loadCarBean(User user) {
-		queryView.showDialog();
+		queryView.showLoading();
 		queryModel.onLoadCarBean(requestTag,user,this);
 	}
 
@@ -44,20 +44,20 @@ public class LadingbillingPresenterImpl implements LadingbillingPresenter,OnLadi
 	@Override
 	public void onLoadDataSuccess(List<LadingbillingQuery> ladingbillinglist) {
 		// TODO Auto-generated method stub
-		queryView.hideDialog();
+		queryView.hideLoading();
 		queryView.addLadingbillingData(ladingbillinglist);
 	}
 
 	@Override
 	public void onLoadDataFailure(String errorMessage) {
 		// TODO Auto-generated method stub
-		queryView.hideDialog();
-		queryView.showFailureMsg(errorMessage);
+		queryView.hideLoading();
+		queryView.showMessage(errorMessage);
 	}
 
 	@Override
 	public void onCarBeanLoaded(List<CarBean> carBeanList) {
-		queryView.hideDialog();
+		queryView.hideLoading();
 		queryView.loadCarBean(carBeanList);
 	}
 

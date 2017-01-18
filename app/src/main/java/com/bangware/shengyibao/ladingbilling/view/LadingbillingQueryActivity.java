@@ -10,24 +10,19 @@ import java.util.Locale;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.BaseActivity;
-import com.bangware.shengyibao.activity.CustomProgressDialog;
 import com.bangware.shengyibao.activity.DoubleDatePickerDialog;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.ladingbilling.adapter.CarBeanAdapter;
@@ -105,8 +100,6 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		stock_car= (Spinner) findViewById(R.id.stock_car);
 		carBeanAdapter=new CarBeanAdapter(this,carList);
 		stock_car.setAdapter(carBeanAdapter);
-//	SpinnerAdapter adapter=new ArrayAdapter<CarBean>(this,android.R.layout.simple_list_item_1,carList);
-//		stock_car.setAdapter(adapter);
 	}
 
 
@@ -203,18 +196,6 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 	}
 
 	@Override
-	public void showDialog() {
-		// TODO Auto-generated method stub
-		loadingdialog.show();
-	}
-
-	@Override
-	public void hideDialog() {
-		// TODO Auto-generated method stub
-		loadingdialog.hide();
-	}
-
-	@Override
 	public void addLadingbillingData(
 			List<LadingbillingQuery> ladingbillingList) {
 		// TODO Auto-generated method stub
@@ -242,20 +223,13 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		{
 			carList.addAll(carBeanList);
 			carBeanAdapter.notifyDataSetChanged();
-			Log.e("carList","==================>"+carList.size()+carBeanList.get(0).getCar_Number());
 		} else
 		{
+			carBeanAdapter.notifyDataSetChanged();
 //			showToast("当日暂无提货单记录！");
 		}
 	}
 
-
-	@Override
-	public void showFailureMsg(String errorMessage) {
-		// TODO Auto-generated method stub
-		showToast(errorMessage);
-	}
-	
 	public void onDestroy(){
 		if(billingPresenter!=null){
 			billingPresenter.destroy();
