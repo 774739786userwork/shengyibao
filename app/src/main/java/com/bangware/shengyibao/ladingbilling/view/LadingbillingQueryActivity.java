@@ -241,6 +241,7 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		if (carBeanList.size()>0)
 		{
 			carList.addAll(carBeanList);
+			carBeanAdapter.notifyDataSetChanged();
 			Log.e("carList","==================>"+carList.size()+carBeanList.get(0).getCar_Number());
 		} else
 		{
