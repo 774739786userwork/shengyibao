@@ -53,6 +53,8 @@ public class Model {
 		//提货单查询接口
 		public static String LADINGBILL_QUERYURL = HTTPURL + "mobile_interfaces/mobile_info?method=employee_to_ladingbill_order";
 
+		public static String QUERY_CAR=HTTPURL+"mobile_interfaces/mobile_info?method=get_ladingbill_car_number";
+
 		//余货查询接口
 		public static String STOCKQUERYURL = HTTPURL + "mobile_interfaces/mobile_info?method=get_ladingbill_product_list";
 		
