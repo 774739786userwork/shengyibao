@@ -15,11 +15,8 @@ public class Model {
 		//登录
 		public static String LOGINURL = "users/sign_in.json";
 
-        //提货/开单车牌号查询
-	    public static String QUERY_CAR=HTTPURL+"mobile_interfaces/mobile_info?method=get_ladingbill_car_number";
-
 	     //修改密码
-	    public  static String UPDATEPASSWORD="users.json";
+	   public  static String UPDATEPASSWORD="users.json";
 		
 		//app业务员版本升级接口
 		public static String UPDATEVERSION = HTTPURL+"mobile_interfaces/mobile_info?method=update_app_version";
