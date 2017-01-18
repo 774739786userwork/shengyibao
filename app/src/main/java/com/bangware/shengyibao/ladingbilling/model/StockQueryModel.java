@@ -8,5 +8,5 @@ import com.bangware.shengyibao.user.model.entity.User;
  * Created by bangware on 2016/8/22.
  */
 public interface StockQueryModel {
-    void onQueryStockinfo(String requestTag, User user, StockListener stockListener);
+    void onQueryStockinfo(String requestTag, User user,String CarId, StockListener stockListener);
 }
