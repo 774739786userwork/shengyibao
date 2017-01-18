@@ -15,7 +15,7 @@ public class Model {
 		//登录
 		public static String LOGINURL = "users/sign_in.json";
 
-	     //修改登录密码
+	     //修改密码
 	   public  static String UPDATEPASSWORD="users.json";
 		
 		//app业务员版本升级接口

@@ -372,7 +372,7 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
                     //开始计时
                     @Override
                     public void onTick(long millisUntilFinished) {
-                        mPrintTicketBtn.setText((millisUntilFinished / 1000) + "秒后跳转到首页");
+                        mPrintTicketBtn.setText((millisUntilFinished / 1000) + "秒后跳转到余货查询页");
                         mPrintTicketBtn.setClickable(false);
                         mPrintTicketBtn.setBackgroundColor(Color.GRAY);
                     }
