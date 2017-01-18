@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -40,7 +41,8 @@ import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
  */
 public class StockQueryActivity extends BaseActivity implements StockQueryView,DisburdenView{
     private ImageView backImg;
-    private TextView printerStockTextview;
+    private Button printerStockTextview;
+    private TextView  query_disburden,disburden_cache;
     private ListView stocklistview;
     private StockQueryAdapter stockQueryAdapter;
     private List<Product> stocklist = new ArrayList<Product>();
@@ -64,9 +66,10 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
 
     public void findViews(){
         backImg = (ImageView) findViewById(R.id.backImg);
-        printerStockTextview = (TextView) findViewById(R.id.printer_stock_textview);
+        printerStockTextview = (Button) findViewById(R.id.printer_stock_textview);
         stocklistview = (ListView) findViewById(R.id.stockListView);
-
+        query_disburden= (TextView) findViewById(R.id.query_disburden);
+        disburden_cache= (TextView) findViewById(R.id.disburden_cache);
         stockPresenter = new StockPresenterImpl(this);
         stockPresenter.onLoadStock(user);
 
@@ -91,6 +94,12 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
                         mExitTime = System.currentTimeMillis();
                     }
                 }
+            }
+        });
+        disburden_cache.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

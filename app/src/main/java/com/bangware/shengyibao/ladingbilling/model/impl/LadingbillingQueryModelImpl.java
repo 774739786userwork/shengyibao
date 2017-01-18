@@ -1,5 +1,7 @@
 package com.bangware.shengyibao.ladingbilling.model.impl;
 
+import android.util.Log;
+
 import java.util.List;
 
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.bangware.shengyibao.config.Model;
 import com.bangware.shengyibao.ladingbilling.LadingBillingUtils;
 import com.bangware.shengyibao.ladingbilling.model.LadingbillingQueryModel;
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.ladingbilling.presenter.OnLadingBillingListener;
 import com.bangware.shengyibao.user.model.entity.User;
@@ -44,5 +47,29 @@ public class LadingbillingQueryModelImpl implements LadingbillingQueryModel {
 				billingListener.onLoadDataFailure("请求失败，服务器异常......！");
 			}
         });
-	} 
+	}
+
+	@Override
+	public void onLoadCarBean(String requestTag, User user, final OnLadingBillingListener billingListener) {
+		String query_car_url=Model.QUERY_CAR+"&employee_id="+user.getEmployee_id()+"&token="+user.getLogin_token();
+		Log.e("query_car_url",query_car_url);
+		DataRequest.getInstance().newJsonObjectGetRequest(requestTag,query_car_url,null, new Response.Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject jsonObject) {
+				if (jsonObject!=null) {
+					List<CarBean> carBeanList = LadingBillingUtils.getLadingCar(jsonObject.toString());
+					billingListener.onCarBeanLoaded(carBeanList);
+				}else
+				{
+					billingListener.onLoadDataFailure("返回内容为空！数据传输失败！");
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError volleyError) {
+				billingListener.onLoadDataFailure("请求失败，服务器异常......！");
+			}
+		});
+	}
 }
