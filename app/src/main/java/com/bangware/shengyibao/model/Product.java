@@ -8,7 +8,7 @@ package com.bangware.shengyibao.model;
 public class Product implements java.io.Serializable{
 	private static final long serialVersionUID = -5622063816597717236L;
 	private String id;
-	private String image;//图片
+	private String image;//产品图片
 	private String name;//名称
 	private String specifications;//规格
 	private Integer stock;//库存
