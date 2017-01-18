@@ -47,6 +47,7 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 	private TextView ladingbilling_time,ladingbilling_total_sum;
 	private Spinner stock_car;
 	private Button stock_query;
+	private CarBean carBean;
 	private RefreshListView ladbilling_queryListView;
 	List<LadingbillingQuery> ladingquery_list = new ArrayList<LadingbillingQuery>();
 	List<CarBean> carList=new ArrayList<CarBean>();
@@ -113,8 +114,8 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		stock_car.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				carList.get(position).getCar_Number();
-
+				carBean= (CarBean) parent.getItemAtPosition(position);
+				showToast(carBean.getCar_id());
 			}
 
 			@Override
@@ -169,8 +170,16 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 			}
 			if (v.getId() == R.id.stock_textview){
 				//余货查询
+				if (carBean==null)
+				{
+					showToast("请选择车牌号");
+				}else {
 				Intent intent = new Intent(LadingbillingQueryActivity.this,StockQueryActivity.class);
+					Bundle bundle=new Bundle();
+					bundle.putSerializable("CarBean",carBean);
+					intent.putExtras(bundle);
 				startActivity(intent);
+				}
 			}
 		}
 		

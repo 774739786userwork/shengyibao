@@ -11,7 +11,7 @@ import com.bangware.shengyibao.user.model.entity.User;
  */
 public interface StockPresenter {
 
-    void onLoadStock(User user);
+    void onLoadStock(User user,String CarId);
     public void addProductGoods(DisburdenGoods disburdenGoods);
     public void removeProductGoods(Product product);
     public DisburdenBean getDisburdenBean();

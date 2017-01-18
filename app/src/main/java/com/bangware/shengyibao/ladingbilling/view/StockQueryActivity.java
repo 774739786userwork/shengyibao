@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.ladingbilling.adapter.StockQueryAdapter;
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenGoods;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
@@ -47,6 +48,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
     private StockQueryAdapter stockQueryAdapter;
     private List<Product> stocklist = new ArrayList<Product>();
     private User user;
+    private CarBean carBean;
     private long mExitTime = System.currentTimeMillis();
     private DisburdenPopupWindow mPopupWindow;
     private LadingbillingQuery ladingbillingQuery;
@@ -58,6 +60,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_query);
         SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
+        carBean=(CarBean)getIntent().getExtras().getSerializable("CarBean");
         user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
         findViews();
         setListener();
@@ -71,7 +74,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         query_disburden= (TextView) findViewById(R.id.query_disburden);
         disburden_cache= (TextView) findViewById(R.id.disburden_cache);
         stockPresenter = new StockPresenterImpl(this);
-        stockPresenter.onLoadStock(user);
+        stockPresenter.onLoadStock(user,carBean.getCar_id());
 
         presenter=new DisburenPresentImpl(this);
         stockQueryAdapter = new StockQueryAdapter(this,stocklist,stockPresenter);

@@ -58,9 +58,9 @@ public class StockPresenterImpl implements StockPresenter,StockListener{
     }
 
     @Override
-    public void onLoadStock(User user) {
+    public void onLoadStock(User user,String CarId) {
         queryView.showLoading();
-        queryModel.onQueryStockinfo(requestTag, user,this);
+        queryModel.onQueryStockinfo(requestTag, user,CarId,this);
     }
 
     @Override

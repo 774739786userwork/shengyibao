@@ -1,5 +1,7 @@
 package com.bangware.shengyibao.ladingbilling.model.impl;
 
+import android.util.Log;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.bangware.shengyibao.config.Model;
@@ -14,8 +16,9 @@ import com.bangware.shengyibao.utils.volley.DataRequest;
  */
 public class StockQueryModelImpl implements StockQueryModel{
     @Override
-    public void onQueryStockinfo(String requestTag, User user, final StockListener stockListener) {
-        String stockinfo_url = Model.STOCKQUERYURL + "&employee_id="+user.getEmployee_id()+"&token="+user.getLogin_token();
+    public void onQueryStockinfo(String requestTag, User user,String CarId, final StockListener stockListener) {
+        String stockinfo_url = Model.STOCKQUERYURL + "&employee_id="+user.getEmployee_id()+"&token="+user.getLogin_token()+"&carbaseinfo_id="+CarId;
+        Log.e("stockinfo_url",stockinfo_url);
         DataRequest.getInstance().newGsonGetRequest(requestTag,stockinfo_url, StockInfo.class,
                 new Response.Listener<StockInfo>() {
                     @Override
