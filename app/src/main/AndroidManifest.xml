@@ -541,7 +541,7 @@
         <activity
             android:name="com.bangware.shengyibao.customervisits.view.VisitsCountActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light"/>
+            android:theme="@android:style/Theme.Holo.Light" />
         <activity
             android:name="com.bangware.shengyibao.customervisits.view.ManagerHtmlActivity"
             android:screenOrientation="landscape" />
@@ -569,10 +569,13 @@
         <activity
             android:name="com.bangware.shengyibao.practicalprojects.view.FuzzyQueryPractical"
             android:screenOrientation="portrait" />
-        <activity android:name="com.bangware.shengyibao.utils.OnScrollGridView.CasesImageActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name="com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.bangware.shengyibao.utils.OnScrollGridView.CasesImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.bangware.shengyibao.ladingbilling.view.QueryDisburdenActivity"></activity>
     </application>
 
 </manifest>

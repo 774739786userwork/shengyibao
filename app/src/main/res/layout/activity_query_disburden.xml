@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_query_disburden"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bangware.shengyibao.ladingbilling.view.QueryDisburdenActivity">
+
+    <LinearLayout
+        android:id="@+id/querydisburn_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:background="@drawable/title_background"
+        android:padding="0.0dp">
+        <!-- 左边按钮 -->
+        <ImageButton
+            android:id="@+id/querydisburn_Goback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/about_showleft_selector"
+            android:gravity="center"
+            android:includeFontPadding="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/A1_Font"
+            android:textSize="17sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="卸货单查询"
+           />
+    </LinearLayout>
+    <ListView
+        android:id="@+id/querydisburn_ListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="#00000000"
+        android:listSelector="#00000000"
+        android:divider="#E0E0E0"
+        android:dividerHeight="1px"/>
+</LinearLayout>

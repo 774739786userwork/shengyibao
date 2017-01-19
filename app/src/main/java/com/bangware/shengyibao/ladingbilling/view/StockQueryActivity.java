@@ -105,6 +105,12 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
 
             }
         });
+        query_disburden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent=new Intent(this,);
+            }
+        });
     }
     /**
      * 设置添加屏幕的背景透明度
