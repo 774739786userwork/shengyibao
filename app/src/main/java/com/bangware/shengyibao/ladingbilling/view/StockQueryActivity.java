@@ -32,8 +32,11 @@ import com.bangware.shengyibao.utils.AppContext;
 import com.nostra13.universalimageloader.utils.L;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
@@ -49,9 +52,11 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
     private List<Product> stocklist = new ArrayList<Product>();
     private User user;
     private CarBean carBean;
+    private String  serial_numbers;
     private long mExitTime = System.currentTimeMillis();
     private DisburdenPopupWindow mPopupWindow;
     private LadingbillingQuery ladingbillingQuery;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
 
     private StockPresenter stockPresenter;
     private DisburdenPresenter presenter;
@@ -62,6 +67,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
         carBean=(CarBean)getIntent().getExtras().getSerializable("CarBean");
         user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
+        serial_numbers=sdf.format(new Date());
         findViews();
         setListener();
     }
@@ -108,7 +114,8 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         query_disburden.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent=new Intent(this,);
+                Intent intent=new Intent(StockQueryActivity.this,QueryDisburdenActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -137,6 +144,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
         intent.putExtra("product", (Serializable) stocklist);
         intent.putExtra("carNumber", (Serializable) ladingbillingQuery);
+        intent.putExtra("serial_num",serial_numbers);
         intent.putExtra("DisburdenGoods",(Serializable) disburdenGoodsList);
         showToast("保存成功");
         startActivity(intent);
@@ -155,11 +163,13 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
                     Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
                     intent.putExtra("product", (Serializable) stocklist);
                     intent.putExtra("carNumber", (Serializable) ladingbillingQuery);
+                    intent.putExtra("serial_num",serial_numbers);
+
                     intent.putExtra("DisburdenGoods",(Serializable) stockPresenter.getDisburdenBean().getAllGoodsList());
                     showToast("保存成功");
                     startActivity(intent);
                 }else {
-                    presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), ladingbillingQuery.getCarId());
+                    presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), ladingbillingQuery.getCarId(),serial_numbers);
                 }
             }
         }

@@ -49,6 +49,12 @@ public class Model {
 		
 		//提货单数据接口
 		public static String LADINGBILLURL = HTTPURL + "mobile_interfaces/mobile_info?method=get_ladingbill_product_list";
+
+	    //卸货单查询接口
+	    public static String QUERY_DISBURDEN=HTTPURL+"mobile_interfaces/mobile_info?method=employee_to_disburden_order";
+
+	    //卸货作废接口
+	    public static String CANCEL_DISBURDEN=HTTPURL+"mobile_interfaces/get_mobile_info?method=disburden_order_abort";
 		
 		//提货单查询接口
 		public static String LADINGBILL_QUERYURL = HTTPURL + "mobile_interfaces/mobile_info?method=employee_to_ladingbill_order";

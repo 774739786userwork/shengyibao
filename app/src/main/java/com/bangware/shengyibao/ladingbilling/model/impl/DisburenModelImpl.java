@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DisburenModelImpl implements DisburenModel {
     @Override
-    public void save(User user, String requestTag, final List<DisburdenGoods> disburdenGoodsList,String carId, final OnDisburenSaveListener listener) {
+    public void save(User user, String requestTag, final List<DisburdenGoods> disburdenGoodsList,String carId,String date, final OnDisburenSaveListener listener) {
         String disburen_url= Model.DISBUREN_SAVA+"token="+user.getLogin_token();
         try{
         JSONArray jsonArray = new JSONArray();
@@ -38,6 +38,7 @@ public class DisburenModelImpl implements DisburenModel {
             jsonDelivery.put("list_goods",jsonArray);
             jsonDelivery.put("carbaseinfo_id",carId);
             jsonDelivery.put("user_id",user.getUser_id());
+            jsonDelivery.put("serial_numbers",date);
             jsonData.put("data", jsonDelivery);
             DataRequest.getInstance().newJsonObjectPostRequest(requestTag,disburen_url, jsonData, new Response.Listener<JSONObject>() {
                 @Override

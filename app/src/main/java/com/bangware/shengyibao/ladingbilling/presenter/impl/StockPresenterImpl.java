@@ -18,7 +18,10 @@ import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.volley.DataRequest;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
@@ -32,6 +35,7 @@ public class StockPresenterImpl implements StockPresenter,StockListener{
     private DisburdenBean bean;
     private String requestTag;
     LadingbillingQuery ladingbillingQuery;
+
 
     public StockPresenterImpl(StockQueryView queryView) {
         this.requestTag = REQUEST_TAG+System.currentTimeMillis();

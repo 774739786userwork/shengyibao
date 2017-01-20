@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
+import com.bangware.shengyibao.ladingbilling.model.entity.QueryDisburdenBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +64,34 @@ public class LadingBillingUtils {
 		}
 		Log.e("carBeanList","------------->"+carBeanList.size());
 		return carBeanList;
+	}
+	public static List<QueryDisburdenBean> getLoadingDisburden(String jsonString)
+	{
+		List<QueryDisburdenBean> list=new ArrayList<QueryDisburdenBean>();
+		try {
+			JSONObject object=new JSONObject(jsonString);
+			JSONObject jsonObject=object.getJSONObject("data");
+			JSONArray jsonArray = jsonObject.getJSONArray("disburden_order_list");
+			QueryDisburdenBean bean=null;
+			CarBean carBean=null;
+			for (int i=0;i<jsonArray.length();i++)
+			{
+				JSONObject obj=jsonArray.getJSONObject(i);
+				bean=new QueryDisburdenBean();
+				carBean=new CarBean();
+				bean.setCreate_user_name(obj.getString("create_user_name"));
+				bean.setDisburn_id(obj.getString("disburden_orde_id"));
+				bean.setDisburn_numer(obj.getString("serial_numbers"));
+				bean.setDisburn_time(obj.getString("disburden_date"));
+				bean.setProduct_name(obj.getString("goodsStr"));
+				carBean.setCar_id(obj.getString("carbaseinfo_id"));
+				carBean.setCar_Number(obj.getString("car_number"));
+				bean.setCarBean(carBean);
+				list.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

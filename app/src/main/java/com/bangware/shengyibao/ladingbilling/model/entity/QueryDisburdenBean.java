@@ -7,10 +7,44 @@ import java.io.Serializable;
  */
 
 public class QueryDisburdenBean implements Serializable {
+    private String disburn_time;
     private String disburn_id;
-    private String CarId;
+    private String disburn_numer;
     private String Product_name;
-    private String Prpduct_count;
+    private String create_user_name;
+    private CarBean carBean;
+
+    public CarBean getCarBean() {
+        return carBean;
+    }
+
+    public String getCreate_user_name() {
+        return create_user_name;
+    }
+
+    public void setCreate_user_name(String create_user_name) {
+        this.create_user_name = create_user_name;
+    }
+
+    public void setCarBean(CarBean carBean) {
+        this.carBean = carBean;
+    }
+
+    public String getDisburn_numer() {
+        return disburn_numer;
+    }
+
+    public void setDisburn_numer(String disburn_numer) {
+        this.disburn_numer = disburn_numer;
+    }
+
+    public String getDisburn_time() {
+        return disburn_time;
+    }
+
+    public void setDisburn_time(String disburn_time) {
+        this.disburn_time = disburn_time;
+    }
 
 
     public String getDisburn_id() {
@@ -21,13 +55,6 @@ public class QueryDisburdenBean implements Serializable {
         this.disburn_id = disburn_id;
     }
 
-    public String getCarId() {
-        return CarId;
-    }
-
-    public void setCarId(String carId) {
-        CarId = carId;
-    }
 
     public String getProduct_name() {
         return Product_name;
@@ -37,11 +64,4 @@ public class QueryDisburdenBean implements Serializable {
         Product_name = product_name;
     }
 
-    public String getPrpduct_count() {
-        return Prpduct_count;
-    }
-
-    public void setPrpduct_count(String prpduct_count) {
-        Prpduct_count = prpduct_count;
-    }
 }

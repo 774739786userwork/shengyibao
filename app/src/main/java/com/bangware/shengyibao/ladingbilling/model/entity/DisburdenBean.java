@@ -18,8 +18,8 @@ import java.util.Map;
  */
 
 public class DisburdenBean  implements Serializable{
+    private String dateTime;
      private Map<String,DisburdenGoods> goodsList = new HashMap<String,DisburdenGoods>();
-
     public Map<String, DisburdenGoods> getGoodsList() {
         return goodsList;
     }
@@ -33,6 +33,14 @@ public class DisburdenBean  implements Serializable{
             list.add(goodsList.get(key));
         }
         return list;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public DisburdenGoods getGoods(String productId){

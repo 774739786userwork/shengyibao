@@ -73,6 +73,7 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
     private TextView mBluetooth_one,mBluetooth_two,mBluetooth_three;
     List<Product> productList;
     List<DisburdenGoods> goodsList;
+    private String serial_numbers;
 
     private boolean isFirst=true;
     private boolean isScenned=true;
@@ -101,6 +102,8 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
         productList = (List<Product>) getIntent().getSerializableExtra("product");
         ladingbillingQuery = (LadingbillingQuery) getIntent().getSerializableExtra("carNumber");
         goodsList= (List<DisburdenGoods>) getIntent().getSerializableExtra("DisburdenGoods");
+        serial_numbers=getIntent().getStringExtra("serial_num");
+        Log.e("serial_numbers",serial_numbers);
         // 如果adapter为null则表示不支持蓝牙
         if (mBluetoothAdapter == null) {
             showMessage("蓝牙设备不可用");
@@ -337,8 +340,9 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
                         sendMessage("卸货详情如下\n\n");
                         mService.write(hexStringToBytes("1D 21 00"));
                         mService.write(hexStringToBytes("1B 61 00"));
+                        sendMessage("卸货单号:"+serial_numbers+"\n");
                         sendMessage("卸货时间：" + sdf.format(new Date()) + "\n");
-                        sendMessage("送货人：" + user.getUser_realname() + "\n");
+                        sendMessage("操作人：" + user.getUser_realname() + "\n");
                         sendMessage("车牌号：" + ladingbillingQuery.getCarnumber() + "\n");
                         for (DisburdenGoods d : goodsList) {
                             sendMessage("--------------------------------\n");

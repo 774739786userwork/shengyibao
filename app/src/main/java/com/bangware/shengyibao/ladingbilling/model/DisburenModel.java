@@ -11,5 +11,5 @@ import java.util.List;
  */
 
 public interface DisburenModel {
-    public void save(User user, String requestTag, List<DisburdenGoods> disburdenGoodsList,String carId, OnDisburenSaveListener listener);
+    public void save(User user, String requestTag, List<DisburdenGoods> disburdenGoodsList,String carId,String date, OnDisburenSaveListener listener);
 }
