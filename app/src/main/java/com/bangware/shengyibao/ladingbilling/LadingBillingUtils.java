@@ -56,13 +56,11 @@ public class LadingBillingUtils {
 				carBean=new CarBean();
 				carBean.setCar_id(object.getString("carbaseinfo_id"));
 				carBean.setCar_Number(object.getString("platenumber"));
-				Log.e("carbaseinfo_id",carBean.getCar_id()+carBean.getCar_Number());
 				carBeanList.add(carBean);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Log.e("carBeanList","------------->"+carBeanList.size());
 		return carBeanList;
 	}
 	public static List<QueryDisburdenBean> getLoadingDisburden(String jsonString)

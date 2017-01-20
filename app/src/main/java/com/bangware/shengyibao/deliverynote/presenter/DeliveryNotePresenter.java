@@ -35,7 +35,7 @@ public interface DeliveryNotePresenter {
 	/**
 	 * 加载送货单单个产品
 	 */
-	public void doLoadDetail(User user,String deliveryNoteId);
+	public void doLoadDetail(User user,String deliveryNoteId,String carId);
 	
 	public void destroy();
 

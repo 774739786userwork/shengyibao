@@ -38,12 +38,13 @@ public class ShopCartPresenterImpl implements ShopCartPresenter {
 		this.shopCart.setUser(user);
 	}
 	@Override
-	public void loadStocks(User user) {
+	public void loadStocks(User user,String carId) {
 		String salerId = user.getEmployee_id();
 		String token = user.getLogin_token();
+		String car_id = carId;
 		Date date = new Date();
 		shopCartView.showLoading();
-		shopCartModel.loadStocks(requestTag, salerId, date, token, new ShopCartListenerImpl());
+		shopCartModel.loadStocks(requestTag, salerId,car_id, date, token, new ShopCartListenerImpl());
 	}
 	@Override
 	public void loadDeliveryNote(String deliveryNoteId) {

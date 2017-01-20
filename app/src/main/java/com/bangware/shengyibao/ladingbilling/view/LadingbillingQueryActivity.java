@@ -103,8 +103,6 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		stock_car.setAdapter(carBeanAdapter);
 	}
 
-
-	
 	private void initview() {
 		// TODO Auto-generated method stub
 		MyOnClickLinstener clickLinstener = new MyOnClickLinstener();
@@ -115,7 +113,6 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				carBean= (CarBean) parent.getItemAtPosition(position);
-				showToast(carBean.getCar_id());
 			}
 
 			@Override
@@ -174,11 +171,11 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 				{
 					showToast("请选择车牌号");
 				}else {
-				Intent intent = new Intent(LadingbillingQueryActivity.this,StockQueryActivity.class);
+					Intent intent = new Intent(LadingbillingQueryActivity.this,StockQueryActivity.class);
 					Bundle bundle=new Bundle();
 					bundle.putSerializable("CarBean",carBean);
 					intent.putExtras(bundle);
-				startActivity(intent);
+					startActivity(intent);
 				}
 			}
 		}

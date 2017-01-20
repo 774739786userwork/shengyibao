@@ -36,6 +36,7 @@ public class DeliveryNoteQueryUtils {
 				deliveryInfo.setDelivery_id(job.getString("delivery_id"));
 				deliveryInfo.setDelivery_date(job.getString("delivery_date"));
 				deliveryInfo.setSerial_number(job.getString("serial_number"));
+				deliveryInfo.setCarId(job.getString("car_id"));
 				deliveryInfo.setCarNumber(job.getString("car_number"));
 				deliveryInfo.setReceiveAmount(job.getDouble("paid_total_sum"));
 				deliveryInfo.setUnpaidAmount(job.getDouble("unpaid_total_sum"));
@@ -48,15 +49,12 @@ public class DeliveryNoteQueryUtils {
 				deliveryInfo.setTotalAmount(job.getDouble("total_sum"));
 				deliveryInfo.setDeliveryNote_product(job.getString("goods_str"));
 				deliveryInfo.setRemember_employee_name(job.getString("remember_employee_name"));
-				Log.e("deliveryInfo",deliveryInfo.getRemember_employee_name());
 				deliveryInfo.setRemember_employee_id(job.getString("remember_employee_id"));
 				customer = new Customer(job.getString("customer_id"),job.getString("shop_name"),job.getString("customer_address"),null);
 				deliveryInfo.setCustomer(customer);
 				deliveryInfo.setPayment(payment);
 				noteQueries.add(deliveryInfo);
 			}
-			
-			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

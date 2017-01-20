@@ -18,7 +18,6 @@ import com.bangware.shengyibao.customercontacts.CustomerContactAdapter;
 import com.bangware.shengyibao.customercontacts.presenter.CustomerContactsPresenter;
 import com.bangware.shengyibao.customercontacts.presenter.impl.CustomerContactsPresenterImpl;
 import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
-import com.bangware.shengyibao.customercontacts.view.QueryQuickBilingActivity;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNote;
 import com.bangware.shengyibao.deliverynote.model.entity.DeliveryNoteGoods;
 import com.bangware.shengyibao.ladingbilling.adapter.CarBeanAdapter;
@@ -43,7 +42,6 @@ import com.bangware.shengyibao.view.RefreshListView;
 import com.jauker.widget.BadgeView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,6 +51,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -60,14 +59,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.TextView;
@@ -102,7 +99,8 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 	private List<CarBean> spinnerList = new ArrayList<CarBean>();
 	private CarBeanAdapter carBeanAdapter;
 	private LadingbillingPresenter billingPresenter;
-
+	private CarBean carBean;
+	private TextView mCarNumber_textview;
 	private TextView mCustomerContactQuery_btn;//查询按钮
 	private TextView ShopCart_Customer_Name;//查询的店面名称
 	private ImageView contactlist_textview;//通讯录按钮
@@ -129,69 +127,10 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_deliverynote);
 		SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
-
 		user=AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
-		deliveryNoteTotalVolume = new BadgeView(ShopCartAcitivity.this);
-		deliveryNoteTotalVolume.setTargetView(findViewById(R.id.shopCartIcon));
-		myContactAdapter=new MyContactAdapter(this,mycontactlist);
+
 		findViews();
 		setListeners();
-		
-		Bundle bundle = this.getIntent().getExtras();
-
-		//接收送货单对象
-		if (bundle != null) {
-			deliveryNote = (DeliveryNote) bundle.getSerializable("deliveryNote");
-			//接收客户对象
-			customer = (Customer)bundle.getSerializable("customer");
-			ShopCart_Customer_Name.setText(customer.getName());
-			//接收contacts_id联系人对象
-			contact=(Contacts) bundle.getSerializable("contacts");
-		}
-		//加载产品Presenter
-		presenter = new ShopCartPresenterImpl(this,user);
-		//加载客户联系人Presenter
-		CCPresenter=new CustomerContactsPresenterImpl(this);
-		//设置购物车中的客户信息
-		presenter.getShopCart().setCustomer(customer);
-//		updateCustomerInfo(customer);
-		presenter.loadStocks(user);
-		mAdapter = new ShopCartProductListAdapter(presenter.getShopCart(),list, this);
-		productListView.setAdapter(mAdapter);
-		adapter = new CustomerContactAdapter(this, customerlist);
-		mRefreshListView.setAdapter(adapter);
-		mRefreshListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View arg1, int position,
-									long arg3) {
-				// TODO Auto-generated method stub
-				//用Bundle传递数据到联系人详情界面
-				contact = (Contacts)adapterView.getItemAtPosition(position);
-				ShopCart_Customer_Name.setText(contact.getCustomer().getName());
-				customer=contact.getCustomer();
-				//设置购物车中的客户信息
-				presenter.getShopCart().setCustomer(customer);
-			}
-		});
-
-		/**请求后台车牌数据接口**/
-		billingPresenter = new LadingbillingPresenterImpl(this);
-		billingPresenter.loadCarBean(user);
-		carBeanAdapter=new CarBeanAdapter(this,spinnerList);
-		shopCarNumber_spinner.setAdapter(carBeanAdapter);
-
-		shopCarNumber_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> adapterView) {
-
-			}
-		});
 	}
 
 
@@ -204,11 +143,61 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 		toSettlementBtn =(Button)findViewById(R.id.ShopCart_toSettlementBtn);
 		productListView = (ListView)findViewById(R.id.ProductListView);
 		shopCarNumber_spinner = (Spinner) findViewById(R.id.carNumber_spinner);
+		mCarNumber_textview = (TextView) findViewById(R.id.carNumber_textview);
 		mCustomerContactQuery_btn= (TextView) findViewById(R.id.customercontactquery_btns);
 		contactlist_textview= (ImageView) findViewById(R.id.contactlist_textviews);
 		mRefreshListView= (RefreshListView) findViewById(R.id.customercontact_query_ListView);
 		mClearEditText= (ClearEditText) findViewById(R.id.customercontact_edits);
 		ShopCart_Customer_Name= (TextView) findViewById(R.id.ShopCart_Customer_Names);
+		deliveryNoteTotalVolume = new BadgeView(ShopCartAcitivity.this);
+		deliveryNoteTotalVolume.setTargetView(findViewById(R.id.shopCartIcon));
+		myContactAdapter=new MyContactAdapter(this,mycontactlist);
+
+		//加载产品Presenter
+		presenter = new ShopCartPresenterImpl(ShopCartAcitivity.this,user);
+		//加载车牌Presenter
+		billingPresenter = new LadingbillingPresenterImpl(this);
+		Bundle bundle = this.getIntent().getExtras();
+		//接收送货单对象
+		if (bundle != null) {
+			deliveryNote = (DeliveryNote) bundle.getSerializable("deliveryNote");
+			//接收客户对象
+			customer = (Customer)bundle.getSerializable("customer");
+			ShopCart_Customer_Name.setText(customer.getName());
+			//接收contacts_id联系人对象
+			contact=(Contacts) bundle.getSerializable("contacts");
+
+			if (deliveryNote != null){
+				shopCarNumber_spinner.setVisibility(View.GONE);
+				presenter.loadStocks(user,deliveryNote.getCarId());
+				mCarNumber_textview.setText(deliveryNote.getCarNumber());
+				presenter.getShopCart().setCustomer(customer);
+				mAdapter = new ShopCartProductListAdapter(presenter.getShopCart(),list, ShopCartAcitivity.this);
+				productListView.setAdapter(mAdapter);
+			}else {
+				getCarNumberData();
+			}
+		}else {
+			getCarNumberData();
+		}
+
+		//加载客户联系人Presenter
+		CCPresenter=new CustomerContactsPresenterImpl(this);
+		adapter = new CustomerContactAdapter(this, customerlist);
+		mRefreshListView.setAdapter(adapter);
+		mRefreshListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View arg1, int position,
+									long arg3) {
+				// TODO Auto-generated method stub
+				contact = (Contacts)adapterView.getItemAtPosition(position);
+				ShopCart_Customer_Name.setText(contact.getCustomer().getName());
+				customer=contact.getCustomer();
+				//设置购物车中的客户信息
+				presenter.getShopCart().setCustomer(customer);
+			}
+		});
 	}
 	
 	private void setListeners(){
@@ -219,9 +208,36 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 		shopCartIcon.setOnClickListener(myonclick);
 		contactlist_textview.setOnClickListener(myonclick);
 		mCustomerContactQuery_btn.setOnClickListener(myonclick);
+//		mCarNumber_textview.setOnClickListener(myonclick);
+
+		//车牌号选择下拉事件
+		shopCarNumber_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+				carBean = (CarBean) adapterView.getItemAtPosition(position);
+				presenter.loadStocks(user,carBean.getCar_id());
+				presenter.getShopCart().setCustomer(customer);
+				mAdapter = new ShopCartProductListAdapter(presenter.getShopCart(),list, ShopCartAcitivity.this);
+				productListView.setAdapter(mAdapter);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> adapterView) {
+
+			}
+		});
 	}
 
-   //加载客户联系人列表
+	/**请求后台车牌数据接口**/
+	private void getCarNumberData(){
+		shopCarNumber_spinner.setVisibility(View.VISIBLE);
+		mCarNumber_textview.setVisibility(View.GONE);
+		billingPresenter.loadCarBean(user);
+		carBeanAdapter=new CarBeanAdapter(this,spinnerList);
+		shopCarNumber_spinner.setAdapter(carBeanAdapter);
+	}
+
+	//加载客户联系人列表
 	@Override
 	public void doCustomerContactsLoadSuccess(List<Contacts> Contacts) {
 		if(Contacts.size() > 0){
@@ -268,7 +284,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 			carBeanAdapter.notifyDataSetChanged();
 		} else
 		{
-			carBeanAdapter.notifyDataSetChanged();
+			showAlertDialog();
 		}
 	}
 
@@ -277,27 +293,24 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 			int mID = view.getId();
 			switch(mID){
 				case R.id.DeliveryNote_Goback:
-					dismissLoading();
 					ShopCartAcitivity.this.finish();
 					break;
-					//点击购物篮图标显示已选的产品
+				//点击购物篮图标显示已选的产品
 				case R.id.shopCartIcon:
 					if (Integer.parseInt((String)(deliveryNoteTotalVolume.getText()))>0) {
 						mShowShopCartPopupWindow=new ShowShopCartPopupWindow(ShopCartAcitivity.this,presenter);
-						//mShowShopCartPopupWindow.getContentView().getHeight();
 						int goodsCount = presenter.getShopCart().getAllGoodsList().size();
 						int popWindowHeight= DensityUtil.dip2px(ShopCartAcitivity.this, (goodsCount*49)+40+58);
 						int d = popWindowHeight ;
 						int h=detail_buy_board.getHeight()+productListView.getHeight()+DensityUtil.dip2px(ShopCartAcitivity.this,0);
-						
 						if (d>h) {
 							mShowShopCartPopupWindow.setHeight(productListView.getHeight());
 							mShowShopCartPopupWindow.showAsDropDown(view, 0, -h);
 							
 						}else{
-						mShowShopCartPopupWindow.showAsDropDown(view, 0,-d);
+							mShowShopCartPopupWindow.showAsDropDown(view, 0,-d);
 						}
-						backgroundAlpha(0.4f);
+							backgroundAlpha(0.4f);
 						mShowShopCartPopupWindow.setOnDismissListener(new OnDismissListener() {
 							
 							@Override
@@ -307,7 +320,6 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 							}
 						});
 					}
-					
 					break;
 				case R.id.ShopCart_toSettlementBtn:
 					if(presenter.getShopCart().getCustomer()!=null){
@@ -316,12 +328,11 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 						Bundle bundle = new Bundle();
 						bundle.putSerializable("deliveryNote",  (Serializable)deliveryNote);
 						bundle.putSerializable("shopCart",  (Serializable)presenter.getShopCart());
-//						bundle.putString("customer_id", Customer_Id.getText().toString());
 						bundle.putSerializable("contacts", contact);
 						intent.putExtras(bundle);
 						startActivity(intent);
 					}else{
-						Toast.makeText(ShopCartAcitivity.this, "请选择开单客户！", Toast.LENGTH_SHORT).show();
+						showToast("请选择开单客户！");
 					}
 					break;
 				case R.id.customercontactquery_btns:
@@ -332,6 +343,10 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 					mycontactlist.clear();
 					startActivityForResult(new Intent(
 							Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), 0);
+					break;
+				//车牌号选择
+				case R.id.carNumber_textview:
+					getCarNumberData();
 					break;
 			}
 		}
@@ -384,7 +399,6 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 								customDialog.setCanceledOnTouchOutside(false);
 								final ListView my_contact_list = (ListView) customDialog.findViewById(R.id.my_contact_listview);
 								TextView my_contact_close = (TextView) customDialog.findViewById(R.id.my_contact_close);
-								Log.e("mycontactlist", mycontactlist.size() + "");
 								my_contact_list.setAdapter(myContactAdapter);
 								customDialog.show();
 								my_contact_close.setOnClickListener(new View.OnClickListener() {
@@ -410,9 +424,6 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 						}
 					}
 				}
-				/*if (!phone.isClosed()){
-					phone.close();
-				}*/
 			}
 		}
 		catch (Exception e)
@@ -470,7 +481,6 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			dismissLoading();
 			this.finish();
 		}
 		return true;
@@ -510,8 +520,6 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
     	showToast(message);
     }
 	public void doChanged(ShopCart shopCart) {
-		// TODO Auto-generated method stub
-
 		double total_sum = shopCart.getTotalAmount();
 		deliveryNoteAmountText.setText("¥"+total_sum+"元");
 		deliveryNoteTotalVolume.setBadgeCount(shopCart.getTotalVolumes());
@@ -535,7 +543,7 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 	 */
 	public void loadProductStock(List<Product> products){
 		if(products.size() == 0){
-			showAlertDialog();
+			showToast("无产品数据！");
 		}else{
 			list.clear();
 			//根据库存排序
@@ -546,7 +554,8 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 			});
 			list.addAll(products);
 			mAdapter.notifyDataSetChanged();
-			
+
+			/**重新开单将产品数据传递过来**/
 			if(deliveryNote!=null){
 				goodsList = deliveryNote.getGoodsList();
 				for(DeliveryNoteGoods g:goodsList){
@@ -555,12 +564,12 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 					shopCartGoods.setPrice(g.getPrice());
 					shopCartGoods.setSalesVolume(g.getSalesVolume());
 					shopCartGoods.setGiftsVolume(g.getGiftsVolume());
-					
+
 					shopCartGoods.setAmount(g.getSalesVolume()+g.getGiftsVolume());
 					Product product = getProductFromList(products, g.getProduct().getId());
 					if(product!=null){
-                        shopCartGoods.setGiftsVolume(g.getGiftsVolume());
-                        shopCartGoods.setSalesVolume(g.getSalesVolume());
+						shopCartGoods.setGiftsVolume(g.getGiftsVolume());
+						shopCartGoods.setSalesVolume(g.getSalesVolume());
 						shopCartGoods.setP_totalforegift(g.getP_totalforegift());
 						product.setStock(g.getProduct().getStock());
 						product.setPrice(shopCartGoods.getPrice());
@@ -573,21 +582,18 @@ public class ShopCartAcitivity extends BaseActivity implements ShopCartView,Ladi
 	}
 
 	private void showAlertDialog(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(ShopCartAcitivity.this,R.style.dialog);
-		builder.setTitle("提示");
-        builder.setMessage("当前暂无提货单！");
-        builder.setIcon(R.mipmap.ic_launcher);
-        builder.setCancelable(false);
-       
-        builder.setPositiveButton("确定！", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            	dismissLoading();
-            	finish();
-                dialog.cancel();
-            }
-       });
-       builder.create().show();
+		AlertDialog.Builder builer = new AlertDialog.Builder(this);
+		builer.setTitle("当前还未进行提货！");
+		builer.setCancelable(false);
+		builer.setPositiveButton("确定", new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				finish();
+			}
+		});
+		builer.show();
 	}
 	
 	public void onDestroy(){
