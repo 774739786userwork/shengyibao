@@ -192,7 +192,7 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 		settlement_summary.setText("共"+shopCart.getTotalVolumes()+"件商品 总计 :¥"+Math.floor(shopCart.getTotalAmount()));
 		//本单实收
 		settlement_totalAmount.setText(""+Math.floor(shopCart.getTotalAmount()));
-		//ShopCart_Settlement_BuyBtn
+		settlement_foregift.setText("其中押金总计:¥"+shopCart.getTotalForegift());
 		settlement_BuyBtn.setText("收款 ¥"+Math.floor(shopCart.getTotalAmount()));
 		double newSmallChange = Math.floor(shopCart.getTotalAmount());
 		small_change_amount = shopCart.getTotalAmount() - newSmallChange;
@@ -419,8 +419,6 @@ public class SettlementActivity extends BaseActivity implements SettlementView {
 				//选择记量人
 				case R.id.Choice_Saler_Person_Btn:
 					Intent intent_person = new Intent(SettlementActivity.this, ChoiceSalerPersonActivity.class);
-					intent_person.putExtra("employeeName",measurement_personBtn.getText().toString());
-					intent_person.putExtra("employeedId",employeedId);
 					startActivityForResult(intent_person,2000);
 					break;
 			}

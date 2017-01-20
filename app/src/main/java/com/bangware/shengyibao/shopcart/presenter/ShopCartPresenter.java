@@ -11,7 +11,7 @@ public interface ShopCartPresenter {
 	/**
 	 * 加载库存
 	 */
-	public void loadStocks(User user);
+	public void loadStocks(User user,String carId);
 	/**
 	 * 加载送货单
 	 * @param deliveryNoteId

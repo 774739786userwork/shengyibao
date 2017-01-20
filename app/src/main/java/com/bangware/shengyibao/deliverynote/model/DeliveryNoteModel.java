@@ -35,7 +35,7 @@ public interface DeliveryNoteModel {
 	 * 加载送货单详情
 	 * @param deliveryNoteId
 	 */
-	public void load(String requestTag, String deliveryNoteId, User user, DeliveryNoteListener detailListener);
+	public void load(String requestTag, String deliveryNoteId,String carId, User user, DeliveryNoteListener detailListener);
 	
 	public void loadDeliveryNoteMonthQuery(String requestTag, User user, String begin_date, String end_date, int nPage, int nSpage, int show_type, OnDeliveryNoteMonthQueryListener listener);
 

@@ -178,10 +178,6 @@ public class ShopCart implements Serializable {
 			dgoods.setProduct(goods.getProduct());
 			deliveryNote.getGoodsList().add(dgoods);
 		}
-		
 		return deliveryNote;
 	}
-
-
-
 }

@@ -6,20 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -27,18 +23,13 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bangware.shengyibao.activity.BaseActivity;
-import com.bangware.shengyibao.activity.CustomProgressDialog;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
 import com.bangware.shengyibao.customer.view.ShowImageActivity;
-import com.bangware.shengyibao.refereevisit.view.RefereeVisitActivity;
 import com.bangware.shengyibao.utils.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
-
-import java.io.File;
 import java.util.ArrayList;
 
 /**

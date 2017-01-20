@@ -58,10 +58,10 @@ public class DeliveryNotePresenterImpl implements DeliveryNotePresenter,Delivery
 	 * 产品详情
 	 */
 	@Override
-	public void doLoadDetail(User user,String deliveryNoteId) {
+	public void doLoadDetail(User user,String deliveryNoteId,String carId) {
 		// TODO Auto-generated method stub
 		noteDetailView.showLoading();
-		noteModel.load(requestTag, deliveryNoteId,user, this);
+		noteModel.load(requestTag, deliveryNoteId,carId,user, this);
 	}
 
 	//通过时间查询送货单

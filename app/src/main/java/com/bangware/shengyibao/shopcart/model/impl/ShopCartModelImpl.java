@@ -17,8 +17,8 @@ import com.bangware.shengyibao.utils.volley.DataRequest;
 public class ShopCartModelImpl implements ShopCartModel {
 
 	@Override
-	public void loadStocks(String requestTag, String salerId, Date date,String token,final ShopCartListener listener) {
-		String ladingbill_url = Model.LADINGBILLURL + "&employee_id="+salerId+"&token="+token;
+	public void loadStocks(String requestTag, String salerId,String carId, Date date,String token,final ShopCartListener listener) {
+		String ladingbill_url = Model.LADINGBILLURL + "&employee_id="+salerId+"&token="+token+"&carbaseinfo_id="+carId;
 		DataRequest.getInstance().newGsonGetRequest(requestTag,ladingbill_url, StockInfo.class,
 				new Response.Listener<StockInfo>() {
             @Override

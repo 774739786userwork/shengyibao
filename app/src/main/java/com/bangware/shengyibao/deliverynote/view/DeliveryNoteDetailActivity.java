@@ -115,7 +115,7 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 		contact.setName(deliveryNote.getContact_name());
 		contact.setMobile1(deliveryNote.getContact_phone());
 		notePresenter = new DeliveryNotePresenterImpl(this);
-		notePresenter.doLoadDetail(user,deliveryNote.getDelivery_id());
+		notePresenter.doLoadDetail(user,deliveryNote.getDelivery_id(),deliveryNote.getCarId());
 		customer_id.setText(deliveryNote.getCustomer().getId());
 		shop_name.setText(deliveryNote.getCustomer().getName());
 		contact_name.setText(deliveryNote.getContact_name());
@@ -164,7 +164,6 @@ public class DeliveryNoteDetailActivity extends BaseActivity implements Delivery
 			}
 			//重开
 			if(v.getId() == R.id.resetBtn){
-//				resetSalerDialog();
 				Intent intent = new Intent(DeliveryNoteDetailActivity.this, ShopCartAcitivity.class);
 				Bundle bundle =new Bundle();
 				//传递客户数据

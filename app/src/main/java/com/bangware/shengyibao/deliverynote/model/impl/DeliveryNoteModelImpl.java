@@ -42,7 +42,6 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
 			jsonDelivery.put("customer_id", deliveryNote.getCustomer().getId());
 			jsonDelivery.put("delivery_goods_count", deliveryNote.getDelivery_goods_count());
 			jsonDelivery.put("car_id", deliveryNote.getCarId());
-
 			/*jsonDelivery.put("wechat_pay",deliveryNote.getPayment().getWechat_payment());
 			jsonDelivery.put("alipay",deliveryNote.getPayment().getAlipay());
 			jsonDelivery.put("bank_receive_total_sum",deliveryNote.getPayment().getBank_receive_total_sum());
@@ -147,9 +146,9 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
 	 * 加载送货单详情 
 	 */
 	@Override
-	public void load(String requestTag,String deliveryNoteId,User user,final DeliveryNoteListener detailListener) {
+	public void load(String requestTag,String deliveryNoteId,String carId,User user,final DeliveryNoteListener detailListener) {
 		// TODO Auto-generated method stub
-		String noteDetail_url = Model.DELIVERYNOTE_DETAILURL +"&delivery_id="+deliveryNoteId+"&token="+user.getLogin_token();
+		String noteDetail_url = Model.DELIVERYNOTE_DETAILURL +"&delivery_id="+deliveryNoteId+"&token="+user.getLogin_token()+"&carbaseinfo_id="+carId;
 		DataRequest.getInstance().newJsonObjectGetRequest(requestTag, noteDetail_url, null, new Response.Listener<JSONObject>() {
 
 			@Override
@@ -182,7 +181,6 @@ public class DeliveryNoteModelImpl implements DeliveryNoteModel {
 		String query_deliveryNote_url = Model.DELIVAERY_NOTE_QUERYURL+"&employee_id="+user.getEmployee_id()+"&organization_id="+user.getOrg_id()
 				+"&begin_date="+begin_date+"&end_date="+end_date+"&page="+nPage+"&rows="+nSpage+"&show_type="+show_type+"&token="+user.getLogin_token();
 
-		Log.e("TAG", "query: ------------------->"+query_deliveryNote_url);
 		DataRequest.getInstance().newJsonObjectGetRequest(requestTag,query_deliveryNote_url, null, new Response.Listener<JSONObject>() {
 
 			@Override

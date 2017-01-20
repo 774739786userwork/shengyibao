@@ -15,6 +15,6 @@ public interface ShopCartModel {
 	 * @param salerId 业务员
 	 * @param date 日期
 	 */
-	public void loadStocks(String requestTag, String salerId, Date date, String token, ShopCartListener listener);
+	public void loadStocks(String requestTag, String salerId,String carId, Date date, String token, ShopCartListener listener);
 	
 }
