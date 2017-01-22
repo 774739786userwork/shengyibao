@@ -126,10 +126,6 @@
             android:background="@color/gray"
             android:gravity="center"
             android:textSize="20sp"
-            android:layout_below="@+id/creat_person"
-             />
+            android:layout_below="@+id/creat_person"/>
     </RelativeLayout>
-
-
-
 </RelativeLayout>

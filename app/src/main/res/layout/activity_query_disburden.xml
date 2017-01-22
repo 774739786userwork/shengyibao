@@ -11,17 +11,13 @@
         android:id="@+id/querydisburn_title"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:gravity="top"
         android:orientation="horizontal"
-        android:background="@drawable/title_background"
-        android:padding="0.0dp">
+        android:background="@drawable/title_background">
         <!-- 左边按钮 -->
         <ImageButton
             android:id="@+id/querydisburn_Goback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
             android:background="@drawable/about_showleft_selector"
             android:gravity="center"
             android:includeFontPadding="false" />
@@ -33,8 +29,7 @@
             android:textSize="17sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="卸货单查询"
-           />
+            android:text="卸货单查询"/>
     </LinearLayout>
     <ListView
         android:id="@+id/querydisburn_ListView"

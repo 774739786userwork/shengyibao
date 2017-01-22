@@ -65,9 +65,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_query);
         SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
-        carBean=(CarBean)getIntent().getExtras().getSerializable("CarBean");
         user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
-        serial_numbers=sdf.format(new Date());
         findViews();
         setListener();
     }
@@ -79,8 +77,12 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         stocklistview = (ListView) findViewById(R.id.stockListView);
         query_disburden= (TextView) findViewById(R.id.query_disburden);
         disburden_cache= (TextView) findViewById(R.id.disburden_cache);
+
+        carBean=(CarBean)getIntent().getExtras().getSerializable("CarBean");
         stockPresenter = new StockPresenterImpl(this);
         stockPresenter.onLoadStock(user,carBean.getCar_id());
+
+        serial_numbers=sdf.format(new Date());
 
         presenter=new DisburenPresentImpl(this);
         stockQueryAdapter = new StockQueryAdapter(this,stocklist,stockPresenter);
@@ -105,19 +107,6 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
                 }
             }
         });
-        disburden_cache.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        query_disburden.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(StockQueryActivity.this,QueryDisburdenActivity.class);
-                startActivity(intent);
-            }
-        });
     }
     /**
      * 设置添加屏幕的背景透明度
@@ -134,13 +123,15 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         MyOnClickListener listener = new MyOnClickListener();
         backImg.setOnClickListener(listener);
         printerStockTextview.setOnClickListener(listener);
+        query_disburden.setOnClickListener(listener);
+        disburden_cache.setOnClickListener(listener);
     }
 
     @Override
     public void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList) {
         /**
          * 用intent传递List<Object>集合方法
-         */
+        */
         Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
         intent.putExtra("product", (Serializable) stocklist);
         intent.putExtra("carNumber", (Serializable) ladingbillingQuery);
@@ -171,6 +162,15 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
                 }else {
                     presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), ladingbillingQuery.getCarId(),serial_numbers);
                 }
+            }
+            //卸货单查询
+            if (v.getId() == R.id.query_disburden){
+                Intent intent=new Intent(StockQueryActivity.this,QueryDisburdenActivity.class);
+                startActivity(intent);
+            }
+            //卸货单缓存
+            if (v.getId() == R.id.disburden_cache){
+
             }
         }
     }
