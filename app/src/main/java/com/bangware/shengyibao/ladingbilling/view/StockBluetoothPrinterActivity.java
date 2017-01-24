@@ -29,9 +29,8 @@ import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
-import com.bangware.shengyibao.deliverynote.view.BluetoothPrinterActivity;
+import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenGoods;
-import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.main.view.MainActivity;
 import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.printer.BluetoothService;
@@ -46,9 +45,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
-
 /**
  * 余卸货单打印
  */
@@ -87,7 +83,7 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
     private List<BtDevice> mNewDevices = new ArrayList<BtDevice>();
 
     private User user;
-    private LadingbillingQuery ladingbillingQuery;
+    private CarBean carBean;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,10 +96,9 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
 
         //接收List<Object>集合方法
         productList = (List<Product>) getIntent().getSerializableExtra("product");
-        ladingbillingQuery = (LadingbillingQuery) getIntent().getSerializableExtra("carNumber");
+        carBean = (CarBean) getIntent().getSerializableExtra("carNumber");
         goodsList= (List<DisburdenGoods>) getIntent().getSerializableExtra("DisburdenGoods");
         serial_numbers=getIntent().getStringExtra("serial_num");
-        Log.e("serial_numbers",serial_numbers);
         // 如果adapter为null则表示不支持蓝牙
         if (mBluetoothAdapter == null) {
             showMessage("蓝牙设备不可用");
@@ -286,8 +281,6 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
                     isFirst=false;
                     len=1;
                     drawable = getResources().getDrawable(R.drawable.setting_check_off);
-					/*drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());//设置边界
-					mBluetooth_one.setCompoundDrawables(null, null, drawable, null);//设置图片在文字右边*/
                     isScenned=false;
 
                 }else
@@ -334,43 +327,39 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
 
                 for (int i = 0; i < len; i++) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
-                    if (goodsList.size()!=0) {
                     mService.write(hexStringToBytes("1B 61 01"));
                     mService.write(hexStringToBytes("1D 21 10"));
-                        sendMessage("卸货详情如下\n\n");
-                        mService.write(hexStringToBytes("1D 21 00"));
-                        mService.write(hexStringToBytes("1B 61 00"));
-                        sendMessage("卸货单号:"+serial_numbers+"\n");
-                        sendMessage("卸货时间：" + sdf.format(new Date()) + "\n");
-                        sendMessage("操作人：" + user.getUser_realname() + "\n");
-                        sendMessage("车牌号：" + ladingbillingQuery.getCarnumber() + "\n");
-                        for (DisburdenGoods d : goodsList) {
-                            sendMessage("--------------------------------\n");
-                            sendMessage("产品名称：" + d.getProduct().getName() + "\n");
-                            sendMessage("卸货数量：" +d.getDisburden() + "\n");
-                        }
-                        sendMessage("--------------------------------\n\n");
-                    }else {
-                        mService.write(hexStringToBytes("1B 61 01"));
-                        mService.write(hexStringToBytes("1D 21 10"));
-                        sendMessage("余货详情如下\n\n");
-                        mService.write(hexStringToBytes("1D 21 00"));
-                        mService.write(hexStringToBytes("1B 61 00"));
-                        sendMessage("余货时间：" + sdf.format(new Date()) + "\n");
-                        sendMessage("送货人：" + user.getUser_realname() + "\n");
-                        sendMessage("车牌号：" + ladingbillingQuery.getCarnumber() + "\n");
-                        mService.write(hexStringToBytes("1D 21 00"));
-                        mService.write(hexStringToBytes("1B 61 00"));
-                        for (Product p : productList) {
-                            sendMessage("--------------------------------\n");
-                            sendMessage("产品名称：" + p.getName() + "\n");
-                            sendMessage("余货数量：" + p.getStock() + "\n");
-                        }
+                    sendMessage("卸货详情如下\n\n");
+                    mService.write(hexStringToBytes("1D 21 00"));
+                    mService.write(hexStringToBytes("1B 61 00"));
+                    sendMessage("卸货单号:"+serial_numbers+"\n");
+                    sendMessage("卸货时间：" + sdf.format(new Date()) + "\n");
+                    sendMessage("操作人：" + user.getUser_realname() + "\n");
+                    sendMessage("车牌号：" + carBean.getCar_Number() + "\n");
+                    for (DisburdenGoods d : goodsList) {
+                        sendMessage("--------------------------------\n");
+                        sendMessage("产品名称：" + d.getProduct().getName() + "\n");
+                        sendMessage("卸货数量：" +d.getDisburden() + "\n");
                     }
-
+                    /*sendMessage("--------------------------------\n\n");
+                    mService.write(hexStringToBytes("1B 61 01"));
+                    mService.write(hexStringToBytes("1D 21 10"));
+                    sendMessage("余货详情如下\n\n");
+                    mService.write(hexStringToBytes("1D 21 00"));
+                    mService.write(hexStringToBytes("1B 61 00"));
+                    sendMessage("余货时间：" + sdf.format(new Date()) + "\n");
+                    sendMessage("送货人：" + user.getUser_realname() + "\n");
+                    sendMessage("车牌号：" + ladingbillingQuery.getCarnumber() + "\n");
+                    mService.write(hexStringToBytes("1D 21 00"));
+                    mService.write(hexStringToBytes("1B 61 00"));
+                    for (Product p : productList) {
+                        sendMessage("--------------------------------\n");
+                        sendMessage("产品名称：" + p.getName() + "\n");
+                        sendMessage("余货数量：" + p.getStock() + "\n");
+                    }*/
                     sendMessage("\n");
-                        sendMessage("仓管签名：___________________\n");
-                        sendMessage("\n\n\n\n");
+                    sendMessage("仓管签名：___________________\n");
+                    sendMessage("\n\n\n\n");
                 }
                 timer = new CountDownTimer(3000, 1000) {
                     //开始计时

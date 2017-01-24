@@ -1,5 +1,6 @@
 package com.bangware.shengyibao.ladingbilling.view;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -174,6 +175,7 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 					Intent intent = new Intent(LadingbillingQueryActivity.this,StockQueryActivity.class);
 					Bundle bundle=new Bundle();
 					bundle.putSerializable("CarBean",carBean);
+					bundle.putSerializable("carList", (Serializable) carList);
 					intent.putExtras(bundle);
 					startActivity(intent);
 				}
@@ -232,7 +234,6 @@ public class LadingbillingQueryActivity extends BaseActivity implements OnRefres
 		} else
 		{
 			carBeanAdapter.notifyDataSetChanged();
-//			showToast("当日暂无提货单记录！");
 		}
 	}
 

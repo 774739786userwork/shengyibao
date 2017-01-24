@@ -43,6 +43,7 @@ public class LadingBillingUtils {
 		}
 		return ladingQueries;
 	}
+
 	public static List<CarBean> getLadingCar(String jsonString)
 	{
 		List<CarBean> carBeanList=new ArrayList<CarBean>();
@@ -63,6 +64,8 @@ public class LadingBillingUtils {
 		}
 		return carBeanList;
 	}
+
+
 	public static List<QueryDisburdenBean> getLoadingDisburden(String jsonString)
 	{
 		List<QueryDisburdenBean> list=new ArrayList<QueryDisburdenBean>();
@@ -92,4 +95,6 @@ public class LadingBillingUtils {
 		}
 		return list;
 	}
+
+
 }

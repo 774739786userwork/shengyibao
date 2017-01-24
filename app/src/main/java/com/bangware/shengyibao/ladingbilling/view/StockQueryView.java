@@ -13,8 +13,6 @@ import java.util.List;
  * Created by bangware on 2016/8/22.
  */
 public interface StockQueryView extends BaseView{
-    void doChanged(LadingbillingQuery ladingbillingQuery);
     void doProcuctChanged(DisburdenBean bean);
     void loadProductStockData(List<Product> productstockList);
-
 }

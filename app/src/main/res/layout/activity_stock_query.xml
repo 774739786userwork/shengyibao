@@ -74,27 +74,36 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_centerVertical="true"
             android:background="@drawable/dialog_positive_btn_bg"
-            android:gravity="center"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="卸货单打印"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
         <Button
             android:id="@+id/disburden_cache"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_centerVertical="true"
+            android:visibility="gone"
             android:background="#000000"
             android:alpha="0.6"
-            android:gravity="center"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="卸货单缓存"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
+        <Button
+            android:id="@+id/print_balancesettle_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:alpha="0.6"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="余货打印"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
     </LinearLayout>
 </RelativeLayout>

@@ -575,7 +575,8 @@
         <activity
             android:name="com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.bangware.shengyibao.ladingbilling.view.QueryDisburdenActivity"></activity>
+        <activity android:name="com.bangware.shengyibao.ladingbilling.view.QueryDisburdenActivity" />
+        <activity android:name="com.bangware.shengyibao.ladingbilling.view.SettleBluetoothPrinterActivity"></activity>
     </application>
 
 </manifest>
