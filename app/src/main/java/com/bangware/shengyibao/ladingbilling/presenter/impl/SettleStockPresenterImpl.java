@@ -2,6 +2,7 @@ package com.bangware.shengyibao.ladingbilling.presenter.impl;
 
 import com.bangware.shengyibao.ladingbilling.model.StockQueryModel;
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.StockPrinterBean;
 import com.bangware.shengyibao.ladingbilling.model.impl.StockQueryModelImpl;
 import com.bangware.shengyibao.ladingbilling.presenter.SettleStockInfoListener;
 import com.bangware.shengyibao.ladingbilling.presenter.SettleStockPresenter;
@@ -28,9 +29,9 @@ public class SettleStockPresenterImpl implements SettleStockPresenter,SettleStoc
         this.queryModel = new StockQueryModelImpl();
     }
     @Override
-    public void onSettleStockSuccess(List<CarBean> carBeanList) {
+    public void onSettleStockSuccess(List<StockPrinterBean> printerBeanList) {
         settleStockView.hideLoading();
-        settleStockView.loadSettleStockData(carBeanList);
+        settleStockView.loadSettleStockData(printerBeanList);
     }
 
     @Override
@@ -40,9 +41,9 @@ public class SettleStockPresenterImpl implements SettleStockPresenter,SettleStoc
     }
 
     @Override
-    public void onLoadSettleStock(User user, List<CarBean> carBeanList) {
+    public void onLoadSettleStock(User user, String carbaseinfo_ids) {
         settleStockView.showLoading();
-        queryModel.onQuerySettleStockInfo(requestTag,user,carBeanList,this);
+        queryModel.onQuerySettleStockInfo(requestTag,user,carbaseinfo_ids,this);
     }
 
     @Override

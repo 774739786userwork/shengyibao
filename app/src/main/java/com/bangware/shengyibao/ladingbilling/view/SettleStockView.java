@@ -2,6 +2,7 @@ package com.bangware.shengyibao.ladingbilling.view;
 
 import com.bangware.shengyibao.activity.BaseView;
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.StockPrinterBean;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ import java.util.List;
  */
 
 public interface SettleStockView extends BaseView{
-    void loadSettleStockData(List<CarBean> carList);
+    void loadSettleStockData(List<StockPrinterBean> stockPrinterBeanList);
 }

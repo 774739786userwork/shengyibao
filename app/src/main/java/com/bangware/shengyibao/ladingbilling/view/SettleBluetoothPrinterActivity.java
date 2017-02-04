@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,9 +32,11 @@ import android.widget.TextView;
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.StockPrinterBean;
 import com.bangware.shengyibao.ladingbilling.presenter.SettleStockPresenter;
 import com.bangware.shengyibao.ladingbilling.presenter.impl.SettleStockPresenterImpl;
 import com.bangware.shengyibao.main.view.MainActivity;
+import com.bangware.shengyibao.model.Product;
 import com.bangware.shengyibao.printer.BluetoothService;
 import com.bangware.shengyibao.printer.BtDevice;
 import com.bangware.shengyibao.user.model.entity.User;
@@ -77,9 +81,11 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
     private List<BtDevice> mNewDevices = new ArrayList<BtDevice>();
 
     private User user;
-    private CarBean carBean;
-    List<CarBean> carBeanList;
+    private List<CarBean> carBeanList;
     private SettleStockPresenter settleStockPresenter = null;
+    private List<StockPrinterBean> stockPrinterBeen = new ArrayList<StockPrinterBean>();
+    private Product[][] productList = null;
+    private int count;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,9 +202,13 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
         settleStockPresenter = new SettleStockPresenterImpl(this);
         //接收List<Object>集合方法
         carBeanList = (List<CarBean>) getIntent().getSerializableExtra("carList");
-        carBean = (CarBean) getIntent().getSerializableExtra("carNumber");
 
-//        settleStockPresenter.onLoadSettleStock(user,carBeanList);
+        String car_id = "";
+        for (CarBean p : carBeanList) {
+            car_id += p.getCar_id()+",";
+        }
+        car_id = car_id.substring(0,car_id.length()-1);
+        settleStockPresenter.onLoadSettleStock(user,car_id);
 
         Button scanButton = (Button) findViewById(R.id.SettleBluetoothPrinter_searchDevicesBtn);
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -244,8 +254,29 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
 
     //加载余货数据
     @Override
-    public void loadSettleStockData(List<CarBean> carList) {
+    public void loadSettleStockData(List<StockPrinterBean> printerBeanList) {
+        count = printerBeanList.size();
+        if (count > 0 ){
+            stockPrinterBeen.addAll(printerBeanList);
+            productList = new Product[count][];
+        }else {
+            showDialog();
+        }
+    }
 
+    private void showDialog(){
+        AlertDialog.Builder builer = new AlertDialog.Builder(this);
+        builer.setTitle("无余货数据,无法进行余货打印！");
+        builer.setCancelable(false);
+        builer.setPositiveButton("确定", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                finish();
+            }
+        });
+        builer.show();
     }
 
     private class MyOnClickListener implements View.OnClickListener {
@@ -337,15 +368,20 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
                     mService.write(hexStringToBytes("1D 21 00"));
                     mService.write(hexStringToBytes("1B 61 00"));
                     sendMessage("余货时间：" + sdf.format(new Date()) + "\n");
-                    sendMessage("送货人：" + user.getUser_realname() + "\n");
-                    sendMessage("车牌号：" + carBean.getCar_Number() + "\n");
+                    sendMessage("操作人：" + user.getUser_realname() + "\n");
                     mService.write(hexStringToBytes("1D 21 00"));
                     mService.write(hexStringToBytes("1B 61 00"));
-                    /*for (CarBean p : carBeanList) {
+
+                    for (int p = 0; p < count;p++) {
+                        StockPrinterBean bean = stockPrinterBeen.get(p);
+                        productList[p] = new Product[bean.getList().size()];
                         sendMessage("--------------------------------\n");
-                        sendMessage("产品名称：" + p.getName() + "\n");
-                        sendMessage("余货数量：" + p.getStock() + "\n");
-                    }*/
+                        sendMessage("车牌号：" + stockPrinterBeen.get(p).getCarBean().getCar_Number() + "\n");
+                        for (int k = 0;k<bean.getList().size();k++){
+                            sendMessage("产品名称：" + bean.getList().get(k).getName() + "\n");
+                            sendMessage("余货数量：" + bean.getList().get(k).getStock() + "\n");
+                        }
+                    }
                     sendMessage("\n");
                     sendMessage("仓管签名：___________________\n");
                     sendMessage("\n\n\n\n");

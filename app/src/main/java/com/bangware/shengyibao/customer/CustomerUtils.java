@@ -229,8 +229,6 @@ public class CustomerUtils {
 				customerTypes = new CustomerTypes();
 				customerTypes.setId(jobs.getInt("id"));
                 customerTypes.setGovernmentArea(jobs.getString("name"));
-				Log.e("zzzzzz",customerTypes.getId()+"   "+customerTypes.getGovernmentArea());
-
 
 				JSONArray  jArray=jobs.getJSONArray("customer_list");
 				for (int j=0;j<jArray.length();j++) {

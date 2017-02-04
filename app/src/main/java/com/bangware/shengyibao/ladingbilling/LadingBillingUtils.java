@@ -5,6 +5,8 @@ import android.util.Log;
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.ladingbilling.model.entity.QueryDisburdenBean;
+import com.bangware.shengyibao.ladingbilling.model.entity.StockPrinterBean;
+import com.bangware.shengyibao.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,5 +98,39 @@ public class LadingBillingUtils {
 		return list;
 	}
 
+	public static List<StockPrinterBean> getPrinterData(String jsonString){
+		List<StockPrinterBean> stockPrinterBeanList = new ArrayList<StockPrinterBean>();
+		try {
+			JSONObject jsonObject = new JSONObject(jsonString);
+			JSONArray jsonArray = jsonObject.getJSONArray("data");
+			StockPrinterBean stockPrinterBean = null;
+			CarBean carBean = null;
+			Product product = null;
+			for (int i = 0 ;i < jsonArray.length(); i++){
+				JSONObject obj = jsonArray.getJSONObject(i);
+				stockPrinterBean = new StockPrinterBean();
+
+				carBean = new CarBean();
+				carBean.setCar_id(obj.getString("carbaseinfo_id"));
+				carBean.setCar_Number(obj.getString("carnumber"));
+
+				JSONArray productArr = obj.getJSONArray("good_list");
+				for (int j = 0; j < productArr.length(); j++){
+					JSONObject proObj = productArr.getJSONObject(j);
+					product = new Product();
+					product.setId(proObj.getString("product_id"));
+					product.setName(proObj.getString("product_name"));
+					product.setStock(proObj.getInt("quantity"));
+
+					stockPrinterBean.addProducts(product);
+				}
+				stockPrinterBean.setCarBean(carBean);
+				stockPrinterBeanList.add(stockPrinterBean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return stockPrinterBeanList;
+	}
 
 }

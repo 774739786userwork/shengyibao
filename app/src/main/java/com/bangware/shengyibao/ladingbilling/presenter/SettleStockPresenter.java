@@ -1,9 +1,6 @@
 package com.bangware.shengyibao.ladingbilling.presenter;
 
-import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.user.model.entity.User;
-
-import java.util.List;
 
 /**
  * 结算余货调用接口
@@ -11,6 +8,6 @@ import java.util.List;
  */
 
 public interface SettleStockPresenter {
-    void onLoadSettleStock(User user, List<CarBean> carBeanList);
+    void onLoadSettleStock(User user, String carbaseinfo_ids);
     void destroy();
 }

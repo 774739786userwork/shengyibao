@@ -65,7 +65,7 @@ public class Model {
 		public static String STOCKQUERYURL = HTTPURL + "mobile_interfaces/mobile_info?method=get_ladingbill_product_list";
 
 		//余货结算查询接口
-		public static String SETTLESTOCKURL = HTTPURL + "";
+		public static String SETTLESTOCKURL = HTTPURL + "mobile_interfaces/mobile_info?method=get_car_inventory_goods";
 		
 		//送货单保存数据接口
 		public static String DELIVAERYNOTEURL = HTTPURL + "mobile_interfaces/get_mobile_info?method=add_delivery_order";
