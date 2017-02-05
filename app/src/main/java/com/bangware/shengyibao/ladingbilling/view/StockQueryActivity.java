@@ -173,7 +173,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
 
     private void showAlertDialog(){
         AlertDialog.Builder builer = new AlertDialog.Builder(this);
-        builer.setTitle("请选择你需要卸掉的产品！!!!!!!!!!!!!");
+        builer.setTitle("请选择你需要卸掉的产品！");
         builer.setCancelable(false);
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener()
         {
