@@ -200,15 +200,14 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
 
     private void init() {
         settleStockPresenter = new SettleStockPresenterImpl(this);
-        //接收List<Object>集合方法
+        //接收List<Object>集合方法,传递车牌信息
         carBeanList = (List<CarBean>) getIntent().getSerializableExtra("carList");
-
         String car_id = "";
         for (CarBean p : carBeanList) {
             car_id += p.getCar_id()+",";
         }
         car_id = car_id.substring(0,car_id.length()-1);
-        settleStockPresenter.onLoadSettleStock(user,car_id);
+        settleStockPresenter.onLoadSettleStock(user,car_id);//请求后台数据
 
         Button scanButton = (Button) findViewById(R.id.SettleBluetoothPrinter_searchDevicesBtn);
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -266,7 +265,7 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
 
     private void showDialog(){
         AlertDialog.Builder builer = new AlertDialog.Builder(this);
-        builer.setTitle("无余货数据,无法进行余货打印！");
+        builer.setTitle("未做销售清单结算,无法进行余货打印！");
         builer.setCancelable(false);
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener()
         {
