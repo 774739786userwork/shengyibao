@@ -1,8 +1,10 @@
 package com.bangware.shengyibao.ladingbilling.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,50 +14,42 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.ladingbilling.adapter.StockQueryAdapter;
 import com.bangware.shengyibao.ladingbilling.model.entity.CarBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenBean;
 import com.bangware.shengyibao.ladingbilling.model.entity.DisburdenGoods;
-import com.bangware.shengyibao.ladingbilling.model.entity.LadingbillingQuery;
 import com.bangware.shengyibao.ladingbilling.presenter.DisburdenPresenter;
 import com.bangware.shengyibao.ladingbilling.presenter.StockPresenter;
 import com.bangware.shengyibao.ladingbilling.presenter.impl.DisburenPresentImpl;
 import com.bangware.shengyibao.ladingbilling.presenter.impl.StockPresenterImpl;
 import com.bangware.shengyibao.model.Product;
-import com.bangware.shengyibao.shopcart.view.ProductPopupWindow;
-import com.bangware.shengyibao.shopcart.view.ShopCartAcitivity;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
-import com.nostra13.universalimageloader.utils.L;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
-
 /**
  * 余货查询
  */
 public class StockQueryActivity extends BaseActivity implements StockQueryView,DisburdenView{
     private ImageView backImg;
-    private Button printerStockTextview;
-    private TextView  query_disburden,disburden_cache;
+    private Button printerStockTextview,disburden_cache,printerSettleBtn;
+    private TextView  query_disburden;
     private ListView stocklistview;
     private StockQueryAdapter stockQueryAdapter;
     private List<Product> stocklist = new ArrayList<Product>();
     private User user;
     private CarBean carBean;
+    private List<CarBean> carBeanList;
+    private String  serial_numbers;
     private long mExitTime = System.currentTimeMillis();
     private DisburdenPopupWindow mPopupWindow;
-    private LadingbillingQuery ladingbillingQuery;
-    private String serial_numbers;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
     private StockPresenter stockPresenter;
     private DisburdenPresenter presenter;
     @Override
@@ -72,13 +66,17 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
     public void findViews(){
         backImg = (ImageView) findViewById(R.id.backImg);
         printerStockTextview = (Button) findViewById(R.id.printer_stock_textview);
+        disburden_cache= (Button) findViewById(R.id.disburden_cache);
+        printerSettleBtn = (Button) findViewById(R.id.print_balancesettle_btn);
         stocklistview = (ListView) findViewById(R.id.stockListView);
         query_disburden= (TextView) findViewById(R.id.query_disburden);
-        disburden_cache= (TextView) findViewById(R.id.disburden_cache);
 
         carBean=(CarBean)getIntent().getExtras().getSerializable("CarBean");
+        carBeanList = (List<CarBean>) getIntent().getExtras().getSerializable("carList");
         stockPresenter = new StockPresenterImpl(this);
         stockPresenter.onLoadStock(user,carBean.getCar_id());
+
+        serial_numbers=sdf.format(new Date());
 
         presenter=new DisburenPresentImpl(this);
         stockQueryAdapter = new StockQueryAdapter(this,stocklist,stockPresenter);
@@ -121,17 +119,17 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         printerStockTextview.setOnClickListener(listener);
         query_disburden.setOnClickListener(listener);
         disburden_cache.setOnClickListener(listener);
+        printerSettleBtn.setOnClickListener(listener);
     }
 
     @Override
-    public void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList,String serial_number) {
+    public void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList, String serial_number) {
         /**
          * 用intent传递List<Object>集合方法
          */
-        serial_numbers=serial_number;
         Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
         intent.putExtra("product", (Serializable) stocklist);
-        intent.putExtra("carNumber", (Serializable) ladingbillingQuery);
+        intent.putExtra("carNumber", (Serializable) carBean);
         intent.putExtra("serial_num",serial_numbers);
         intent.putExtra("DisburdenGoods",(Serializable) disburdenGoodsList);
         showToast("保存成功");
@@ -145,19 +143,13 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
             if (v.getId() == R.id.backImg){
                 finish();
             }
+            //卸货单打印并提交数据
             if (v.getId() == R.id.printer_stock_textview){
-                if (stockPresenter.getDisburdenBean().getAllGoodsList().size()==0)
+                if (stockPresenter.getDisburdenBean().getAllGoodsList().size()>0)
                 {
-                    Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
-                    intent.putExtra("product", (Serializable) stocklist);
-                    intent.putExtra("carNumber", (Serializable) ladingbillingQuery);
-                    intent.putExtra("serial_num",serial_numbers);
-
-                    intent.putExtra("DisburdenGoods",(Serializable) stockPresenter.getDisburdenBean().getAllGoodsList());
-                    showToast("保存成功");
-                    startActivity(intent);
+                    presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), carBean.getCar_id());
                 }else {
-                    presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), ladingbillingQuery.getCarId());
+                    showAlertDialog();
                 }
             }
             //卸货单查询
@@ -169,12 +161,33 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
             if (v.getId() == R.id.disburden_cache){
 
             }
+            //结算打印
+            if (v.getId() == R.id.print_balancesettle_btn){
+                Intent intent=new Intent(StockQueryActivity.this,SettleBluetoothPrinterActivity.class);
+                intent.putExtra("carList", (Serializable) carBeanList);
+                startActivity(intent);
+            }
         }
     }
 
+
+    private void showAlertDialog(){
+        AlertDialog.Builder builer = new AlertDialog.Builder(this);
+        builer.setTitle("请选择你需要卸掉的产品！!!!!!!!!!!!!");
+        builer.setCancelable(false);
+        builer.setPositiveButton("确定", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+            }
+        });
+        builer.show();
+    }
+
+
     @Override
     public void doProcuctChanged(DisburdenBean bean) {
-//        stocklist=bean.getAllGoodsList();
         stockQueryAdapter.notifyDataSetChanged();
     }
     /**
