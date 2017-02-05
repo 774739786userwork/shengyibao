@@ -52,12 +52,10 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
     private List<Product> stocklist = new ArrayList<Product>();
     private User user;
     private CarBean carBean;
-    private String  serial_numbers;
     private long mExitTime = System.currentTimeMillis();
     private DisburdenPopupWindow mPopupWindow;
     private LadingbillingQuery ladingbillingQuery;
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
-
+    private String serial_numbers;
     private StockPresenter stockPresenter;
     private DisburdenPresenter presenter;
     @Override
@@ -81,8 +79,6 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         carBean=(CarBean)getIntent().getExtras().getSerializable("CarBean");
         stockPresenter = new StockPresenterImpl(this);
         stockPresenter.onLoadStock(user,carBean.getCar_id());
-
-        serial_numbers=sdf.format(new Date());
 
         presenter=new DisburenPresentImpl(this);
         stockQueryAdapter = new StockQueryAdapter(this,stocklist,stockPresenter);
@@ -128,10 +124,11 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
     }
 
     @Override
-    public void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList) {
+    public void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList,String serial_number) {
         /**
          * 用intent传递List<Object>集合方法
         */
+        serial_numbers=serial_number;
         Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
         intent.putExtra("product", (Serializable) stocklist);
         intent.putExtra("carNumber", (Serializable) ladingbillingQuery);
@@ -160,7 +157,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
                     showToast("保存成功");
                     startActivity(intent);
                 }else {
-                    presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), ladingbillingQuery.getCarId(),serial_numbers);
+                    presenter.doDisburenSave(user, stockPresenter.getDisburdenBean().getAllGoodsList(), ladingbillingQuery.getCarId());
                 }
             }
             //卸货单查询

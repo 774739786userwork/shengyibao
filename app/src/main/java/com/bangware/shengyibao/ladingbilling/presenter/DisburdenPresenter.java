@@ -12,7 +12,7 @@ public interface DisburdenPresenter {
 	/**
 	 * 余货卸货保存
 	 */
-	public void doDisburenSave(User user, List<DisburdenGoods> disburdenGoodsList,String carId,String date);
+	public void doDisburenSave(User user, List<DisburdenGoods> disburdenGoodsList,String carId);
 	
 	public void destroy();
 }

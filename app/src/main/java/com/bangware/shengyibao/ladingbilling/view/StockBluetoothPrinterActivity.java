@@ -384,6 +384,8 @@ public class StockBluetoothPrinterActivity extends BaseActivity {
                     //时间加载完调用
                     @Override
                     public void onFinish() {
+
+                        
                         final Intent intent = new Intent(StockBluetoothPrinterActivity.this,MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//设置跳转时A页面的activity处于栈顶
                         startActivity(intent);

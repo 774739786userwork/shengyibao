@@ -11,5 +11,5 @@ import java.util.List;
  */
 
 public interface DisburdenView extends BaseView {
-    void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList);
+    void doSaveDisburdenSuccess(List<DisburdenGoods> disburdenGoodsList,String serial_number);
 }
