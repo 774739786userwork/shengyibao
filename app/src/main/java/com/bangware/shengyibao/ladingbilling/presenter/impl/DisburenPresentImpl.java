@@ -28,9 +28,9 @@ public class DisburenPresentImpl implements DisburdenPresenter,OnDisburenSaveLis
     }
 
     @Override
-    public void doDisburenSave(User user, List<DisburdenGoods> disburdenGoodsList,String carId,String date) {
+    public void doDisburenSave(User user, List<DisburdenGoods> disburdenGoodsList,String carId) {
         disburdenView.showLoading("正在提交,请稍等！");
-        disburenModel.save(user,requestTag,disburdenGoodsList,carId,date,this);
+        disburenModel.save(user,requestTag,disburdenGoodsList,carId,this);
     }
 
     @Override
@@ -39,9 +39,9 @@ public class DisburenPresentImpl implements DisburdenPresenter,OnDisburenSaveLis
     }
 
     @Override
-    public void onSaveSuccess(List<DisburdenGoods> disburdenGoodsList) {
+    public void onSaveSuccess(List<DisburdenGoods> disburdenGoodsList,String serial_number) {
         disburdenView.hideLoading();
-        disburdenView.doSaveDisburdenSuccess(disburdenGoodsList);
+        disburdenView.doSaveDisburdenSuccess(disburdenGoodsList,serial_number);
     }
 
     @Override
