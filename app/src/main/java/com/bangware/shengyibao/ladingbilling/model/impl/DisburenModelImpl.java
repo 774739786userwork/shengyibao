@@ -1,5 +1,7 @@
 package com.bangware.shengyibao.ladingbilling.model.impl;
 
+import android.util.Log;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.bangware.shengyibao.config.Model;
@@ -24,6 +26,7 @@ public class DisburenModelImpl implements DisburenModel {
     @Override
     public void save(User user, String requestTag, final List<DisburdenGoods> disburdenGoodsList,String carId, final OnDisburenSaveListener listener) {
         String disburen_url= Model.DISBUREN_SAVA+"token="+user.getLogin_token();
+        Log.e("disburen_url",disburen_url);
         JSONArray jsonArray = new JSONArray();
         try{
         JSONObject objectParams;
@@ -45,7 +48,9 @@ public class DisburenModelImpl implements DisburenModel {
                     if (jsonObject != null) {
                         try{
                             if(jsonObject.getInt("result")==0){
-                                String serial_number=jsonObject.getString("serial_number");
+                                JSONObject object=jsonObject.getJSONObject("data");
+                                String serial_number=object.getString("serial_numbers");
+                                Log.e("serial_number",serial_number);
                                 listener.onSaveSuccess(disburdenGoodsList,serial_number);
                             }else{
                                 listener.onError("数据保存失败！");
