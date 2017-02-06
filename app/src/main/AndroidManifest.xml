@@ -462,9 +462,6 @@
             android:name="com.bangware.shengyibao.daysaleaccount.view.SaleAccountProductActivity"
             android:screenOrientation="portrait" />
         <!-- 余货查询 -->
-        <activity
-            android:name="com.bangware.shengyibao.ladingbilling.view.StockQueryActivity"
-            android:screenOrientation="portrait" />
         <!-- 订货单 -->
         <activity
             android:name="com.bangware.shengyibao.purchaseorder.view.PurchaseOrderActivity"
@@ -577,6 +574,7 @@
             android:screenOrientation="portrait" />
         <activity android:name="com.bangware.shengyibao.ladingbilling.view.QueryDisburdenActivity" />
         <activity android:name="com.bangware.shengyibao.ladingbilling.view.SettleBluetoothPrinterActivity"></activity>
+        <activity android:name="com.bangware.shengyibao.ladingbilling.view.StockQueryActivity"/>
     </application>
 
 </manifest>

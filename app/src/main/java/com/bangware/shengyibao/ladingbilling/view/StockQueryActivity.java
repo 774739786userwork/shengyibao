@@ -49,7 +49,6 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
     private String  serial_numbers;
     private long mExitTime = System.currentTimeMillis();
     private DisburdenPopupWindow mPopupWindow;
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
     private StockPresenter stockPresenter;
     private DisburdenPresenter presenter;
     @Override
@@ -75,8 +74,6 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         carBeanList = (List<CarBean>) getIntent().getExtras().getSerializable("carList");
         stockPresenter = new StockPresenterImpl(this);
         stockPresenter.onLoadStock(user,carBean.getCar_id());
-
-        serial_numbers=sdf.format(new Date());
 
         presenter=new DisburenPresentImpl(this);
         stockQueryAdapter = new StockQueryAdapter(this,stocklist,stockPresenter);
@@ -127,6 +124,7 @@ public class StockQueryActivity extends BaseActivity implements StockQueryView,D
         /**
          * 用intent传递List<Object>集合方法
          */
+        serial_numbers=serial_number;
         Intent intent = new Intent(StockQueryActivity.this,StockBluetoothPrinterActivity.class);
         intent.putExtra("product", (Serializable) stocklist);
         intent.putExtra("carNumber", (Serializable) carBean);
