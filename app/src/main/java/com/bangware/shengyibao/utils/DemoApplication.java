@@ -1,11 +1,12 @@
 package com.bangware.shengyibao.utils;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.bangware.shengyibao.activity.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -33,6 +34,20 @@ public class DemoApplication extends Application {
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);
+    }
+
+    /**
+     * 解决DEX文件超过64K的方案
+     * 原因：引用库的增加和第三方框架的使用增多导致方法超过了65536
+     * 解决：1、在build.gradle   defaultConfig配置中增加multiDexEnabled true
+     * 2、在dependencies 配置中增加 compile 'com.android.support:multidex:1.0.1'
+     * 3、如果应用程序继承 Application , 那么你需要重写Application attachBaseContext方法
+     * @param base
+     */
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
 }

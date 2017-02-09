@@ -29,7 +29,7 @@
             android:layout_height="@dimen/w100dip"
             android:layout_marginLeft="45dp"
             android:layout_marginRight="45dp"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="15dp"
             android:text=""
             android:gravity="center"
             android:textSize="@dimen/f36sp"
@@ -44,7 +44,22 @@
             android:layout_height="@dimen/w100dip"
             android:layout_marginLeft="45dp"
             android:layout_marginRight="45dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
+            android:text=""
+            android:gravity="center"
+            android:textSize="@dimen/f36sp"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_a82626_corners_50"
+            android:lineSpacingExtra="@dimen/h10dip"/>
+
+        <!--@c拍摄小视频-->
+        <TextView
+            android:id="@+id/tv_dialog_common_recordVideo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/w100dip"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="15dp"
             android:text=""
             android:gravity="center"
             android:textSize="@dimen/f36sp"

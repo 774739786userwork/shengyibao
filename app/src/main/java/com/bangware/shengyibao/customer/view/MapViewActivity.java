@@ -163,7 +163,7 @@ public class MapViewActivity extends BaseActivity {
 			if(v.getId() == R.id.bdgetLocation){
                 if(Build.VERSION.SDK_INT >= 23) {
                     try{
-                        int checkSMSPermission = ContextCompat.checkSelfPermission(MapViewActivity.this, Manifest.permission.WRITE_CALENDAR);
+                        int checkSMSPermission = ContextCompat.checkSelfPermission(MapViewActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
                         if(checkSMSPermission != PackageManager.PERMISSION_GRANTED){
                             ActivityCompat.requestPermissions(MapViewActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
                             return;
@@ -172,6 +172,7 @@ public class MapViewActivity extends BaseActivity {
                         }
                     }catch (RuntimeException e){
                         showTipsDialog();
+                        return;
                     }
                 }else{
                     requestLocClick();

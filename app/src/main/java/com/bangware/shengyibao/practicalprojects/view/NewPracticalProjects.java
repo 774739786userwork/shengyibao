@@ -223,10 +223,12 @@ public class NewPracticalProjects extends BaseActivity {
         TextView tv_dialog_login_context = (TextView)customDialog.findViewById(R.id.tv_dialog_common_context);
         TextView tv_dialog_take_photo = (TextView)customDialog.findViewById(R.id.tv_dialog_common_takephoto);
         TextView tv_dialog_from_alum = (TextView)customDialog.findViewById(R.id.tv_dialog_common_fromAlum);
+        TextView tv_dialog_record_video = (TextView) customDialog.findViewById(R.id.tv_dialog_common_recordVideo);
         TextView tv_dialog_login_close = (TextView)customDialog.findViewById(R.id.tv_dialog_common_close);
         tv_dialog_login_context.setText("请选择！");
         tv_dialog_take_photo.setText("拍照");
         tv_dialog_from_alum.setText("从相册中选取");
+        tv_dialog_record_video.setText("小视频");
         customDialog.setCanceledOnTouchOutside(false);
         tv_dialog_take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +260,12 @@ public class NewPracticalProjects extends BaseActivity {
                 Intent intent_pick = new Intent(NewPracticalProjects.this, PickPictureActivity.class);
                 startActivityForResult(intent_pick, 1100);
                 customDialog.dismiss();
+            }
+        });
+        tv_dialog_record_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
         tv_dialog_login_close.setOnClickListener(new View.OnClickListener() {
