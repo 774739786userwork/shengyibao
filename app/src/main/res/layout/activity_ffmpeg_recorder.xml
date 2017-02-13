@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black" >
+
+    <RelativeLayout
+        android:id="@+id/recorder_flashlight_parent"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#222222"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txtTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp" />
+
+        <Button
+            android:id="@+id/recorder_flashlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="112dp"
+            android:background="@drawable/btn_recorder_flashlight"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/recorder_frontcamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="112dp"
+            android:layout_toLeftOf="@id/recorder_flashlight"
+            android:background="@drawable/btn_recorder_frontcamera"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/recorder_surface_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/recorder_bottom_rel" >
+
+        <SurfaceView
+            android:id="@+id/surfaceview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/recorder_bottom_rel"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:background="#222222"
+        android:paddingBottom="20dp" >
+
+        <com.bangware.shengyibao.utils.videoRecord.ProgressView
+            android:id="@+id/recorder_progress"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"/>
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:id="@+id/recorder_surface_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="18.0dip"/>
+        <Button
+            android:id="@+id/recorder_cancel"
+            android:layout_width="66dp"
+            android:layout_height="36dp"
+            android:background="@drawable/btn_recorder_cancel"
+            android:text="取消"
+            android:layout_centerVertical="true"
+            android:textColor="#bbbbbb"
+            android:textSize="14dp" />
+
+        <com.bangware.shengyibao.utils.videoRecord.CircleBackgroundTextView
+            android:id="@+id/btn_press"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:text="按住拍"
+            android:textColor="#ff00FF00"
+            android:textSize="14.0dp" />
+
+        <Button
+            android:id="@+id/recorder_next"
+            android:layout_width="66dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_recorder_next"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:text="确定"
+            android:textColor="#444444"
+            android:textSize="14dp" />
+    </RelativeLayout>
+
+</RelativeLayout>
