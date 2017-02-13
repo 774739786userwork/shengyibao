@@ -743,6 +743,8 @@ public class RefereeVisitActivity extends BaseActivity implements RefereeContact
         TextView tv_dialog_login_context = (TextView)customDialog.findViewById(R.id.tv_dialog_common_context);
         TextView tv_dialog_take_photo = (TextView)customDialog.findViewById(R.id.tv_dialog_common_takephoto);
         TextView tv_dialog_from_alum = (TextView)customDialog.findViewById(R.id.tv_dialog_common_fromAlum);
+        TextView tv_dialog_record_video = (TextView)customDialog.findViewById(R.id.tv_dialog_common_recordVideo);
+        tv_dialog_record_video.setVisibility(View.GONE);
         TextView tv_dialog_login_close = (TextView)customDialog.findViewById(R.id.tv_dialog_common_close);
         tv_dialog_login_context.setText("请选择！");
         tv_dialog_take_photo.setText("拍照");

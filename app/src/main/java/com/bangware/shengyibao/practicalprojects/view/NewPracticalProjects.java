@@ -3,9 +3,13 @@ package com.bangware.shengyibao.practicalprojects.view;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
@@ -13,13 +17,18 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bangware.shengyibao.activity.BaseActivity;
@@ -33,6 +42,7 @@ import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
 import com.bangware.shengyibao.utils.customdialog.CommonDialog;
+import com.bangware.shengyibao.utils.videoRecord.FFmpegRecorderActivity;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -50,7 +60,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-public class NewPracticalProjects extends BaseActivity {
+public class NewPracticalProjects extends BaseActivity implements MediaPlayer.OnCompletionListener {
     private ImageButton new_practicalprojects_Goback;
     private TextView new_practicalprojects_commit;
     private EditText new_practicalprojects_edit;
@@ -71,15 +81,27 @@ public class NewPracticalProjects extends BaseActivity {
 
     private CommonDialog customDialog;
     private PickPictureAdapter pictureAdapter;
+
+    /**
+     * 视频参数
+     */
+    private String path;
+    private TextureView surfaceView;
+    private MediaPlayer mediaPlayer;
+    private ImageView imagePlay;
+    private RelativeLayout preview_video_parent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         context = this;
+
         setContentView(R.layout.activity_new_practical_projects);
+
         SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
         user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
+
         findView();
         setLisenter();
     }
@@ -89,6 +111,9 @@ public class NewPracticalProjects extends BaseActivity {
         practicalprojects_caremaView= (GridView) findViewById(R.id.practicalprojects_caremaView);
         new_practicalprojects_Goback= (ImageButton) findViewById(R.id.new_practicalprojects_Goback);
         new_practicalprojects_commit= (TextView) findViewById(R.id.new_practicalprojects_commit);
+        surfaceView = (TextureView) findViewById(R.id.preview_video);
+        imagePlay = (ImageView) findViewById(R.id.previre_play);
+        preview_video_parent = (RelativeLayout)findViewById(R.id.preview_video_parent);
         //图片默认地址
         defaultPhotoAddress = CommonUtil.getSDPath() + File.separator + "default.jpg";
         //获取屏幕的分辨率
@@ -106,6 +131,16 @@ public class NewPracticalProjects extends BaseActivity {
         }else{
             photoFolderAddress = getIntent().getStringExtra("folderName");
         }
+
+        /**
+         *
+         */
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) preview_video_parent.getLayoutParams();
+        layoutParams.width = dm.widthPixels;
+        layoutParams.height = dm.widthPixels;
+        preview_video_parent.setLayoutParams(layoutParams);
+
+        mediaPlayer = new MediaPlayer();
     }
 
     private void setLisenter() {
@@ -123,12 +158,96 @@ public class NewPracticalProjects extends BaseActivity {
 
             }
         });
+
+        //拍照等功能操作点击事件
         practicalprojects_frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showTakePhotoAndPictureDialog();
             }
         });
+
+        //暂停视频播放点击事件
+        surfaceView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                    imagePlay.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        //点击播放按钮图片实现视频播放点击事件
+        imagePlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!mediaPlayer.isPlaying()){
+                    mediaPlayer.start();
+                }
+                imagePlay.setVisibility(View.GONE);
+            }
+        });
+
+        MySurfaceTextureListener textureListener = new MySurfaceTextureListener();
+        surfaceView.setSurfaceTextureListener(textureListener);
+        mediaPlayer.setOnCompletionListener(this);
+        surfaceView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                AlertDialog.Builder builer = new AlertDialog.Builder(NewPracticalProjects.this);
+                builer.setTitle("确定要删除本视频吗？");
+                builer.setCancelable(false);
+                builer.setPositiveButton("确定", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if(mediaPlayer.isPlaying()){
+                            mediaPlayer.pause();
+                        }
+                        CommonUtil.deleteFile(path);
+                        path = "";
+                        practicalprojects_frameLayout.setVisibility(View.VISIBLE);
+                        preview_video_parent.setVisibility(View.GONE);
+                    }
+                });
+                builer.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                    }
+                });
+                builer.show();
+                return true;
+            }
+        });
+    }
+
+    private class MySurfaceTextureListener implements TextureView.SurfaceTextureListener {
+
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture arg0, int arg1,
+                                              int arg2) {
+            prepare(new Surface(arg0));
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+//        stop();
+            return true;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+
+        }
     }
 
     @Override
@@ -136,6 +255,7 @@ public class NewPracticalProjects extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode)
         {
+            //拍照回传图片
             case  CRAEMA_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     //文件夹目录是否存在
@@ -161,6 +281,8 @@ public class NewPracticalProjects extends BaseActivity {
                     }
 
                     if (cadapter == null) {
+                        preview_video_parent.setVisibility(View.GONE);
+                        practicalprojects_caremaView.setVisibility(View.VISIBLE);
                         cadapter = new CaremaAdapter(context, screenWidth, listPhotoNames, candelete);
                         practicalprojects_caremaView.setAdapter(cadapter);
                     } else {
@@ -172,6 +294,8 @@ public class NewPracticalProjects extends BaseActivity {
         }
         // 回传图片文件
         if (requestCode == 1100 && resultCode == 1200){
+            preview_video_parent.setVisibility(View.GONE);
+            practicalprojects_caremaView.setVisibility(View.VISIBLE);
             listPhotoNames= data.getStringArrayListExtra("imageList");
             if(listPhotoNames.size() >= Constants_Camera.MAX_PRACTICAL){
                 practicalprojects_frameLayout.setVisibility(View.GONE);
@@ -182,6 +306,18 @@ public class NewPracticalProjects extends BaseActivity {
             practicalprojects_caremaView.setAdapter(pictureAdapter);
             pictureAdapter.notifyDataSetChanged();
             cadapter = null;
+        }
+        //回传视频文件
+        if (requestCode == 1300 && resultCode == 1400){
+            preview_video_parent.setVisibility(View.VISIBLE);
+            practicalprojects_caremaView.setVisibility(View.GONE);
+            path = data.getStringExtra("path");
+            File videoFile = new File(path);
+            if (videoFile.exists()){
+                practicalprojects_frameLayout.setVisibility(View.GONE);
+            }else {
+                practicalprojects_frameLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -215,7 +351,7 @@ public class NewPracticalProjects extends BaseActivity {
         }
     }
 
-    /**拍照和从相册中选择图片**/
+    /**拍照、从相册中选择图片,拍摄小视频**/
     private void showTakePhotoAndPictureDialog(){
         int srceenW =  ((BaseActivity)this).getWindowManager().getDefaultDisplay().getWidth();
         //联系人对话框
@@ -265,7 +401,9 @@ public class NewPracticalProjects extends BaseActivity {
         tv_dialog_record_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent videoIntent = new Intent(NewPracticalProjects.this, FFmpegRecorderActivity.class);
+                startActivityForResult(videoIntent,1300);
+                customDialog.dismiss();
             }
         });
         tv_dialog_login_close.setOnClickListener(new View.OnClickListener() {
@@ -335,15 +473,56 @@ public class NewPracticalProjects extends BaseActivity {
             }
         } catch (Exception e) {
             showToast("请求出错");
+
             loadingdialog.dismiss();
             e.printStackTrace();
         }
         return true;
-       }
+    }
+
+    public void prepare(Surface surface) {
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            // 设置需要播放的视频
+            mediaPlayer.setDataSource(path);
+            // 把视频画面输出到Surface
+            mediaPlayer.setSurface(surface);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.prepare();
+            mediaPlayer.seekTo(0);
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        /*if(mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+            imagePlay.setVisibility(View.GONE);
+        }*/
+        super.onStop();
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         loadingdialog.dismiss();
     }
+
+    private void stop(){
+        mediaPlayer.stop();
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        stop();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        imagePlay.setVisibility(View.VISIBLE);
+    }
+
 }

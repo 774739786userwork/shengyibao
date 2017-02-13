@@ -44,6 +44,16 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
+    <permission
+        android:name="android.permission.FLASHLIGHT"
+        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
+        android:protectionLevel="normal" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -559,7 +569,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.bangware.shengyibao.practicalprojects.view.NewPracticalProjects"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.bangware.shengyibao.practicalprojects.view.QueryPracticalProjects"
             android:screenOrientation="portrait" />
@@ -573,8 +583,9 @@
             android:name="com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.bangware.shengyibao.ladingbilling.view.QueryDisburdenActivity" />
-        <activity android:name="com.bangware.shengyibao.ladingbilling.view.SettleBluetoothPrinterActivity"></activity>
-        <activity android:name="com.bangware.shengyibao.ladingbilling.view.StockQueryActivity"/>
+        <activity android:name="com.bangware.shengyibao.ladingbilling.view.SettleBluetoothPrinterActivity" />
+        <activity android:name="com.bangware.shengyibao.ladingbilling.view.StockQueryActivity" />
+        <activity android:name="com.bangware.shengyibao.utils.videoRecord.FFmpegRecorderActivity"></activity>
     </application>
 
 </manifest>
