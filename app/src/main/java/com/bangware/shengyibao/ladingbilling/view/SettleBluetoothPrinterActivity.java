@@ -380,10 +380,10 @@ public class SettleBluetoothPrinterActivity extends BaseActivity implements Sett
                             sendMessage("产品名称：" + bean.getList().get(k).getName() + "\n");
                             sendMessage("余货数量：" + bean.getList().get(k).getStock() + "\n");
                         }
+                        sendMessage("\n");
+                        sendMessage("仓管签名：___________________\n");
+                        sendMessage("\n\n\n\n");
                     }
-                    sendMessage("\n");
-                    sendMessage("仓管签名：___________________\n");
-                    sendMessage("\n\n\n\n");
                 }
                 timer = new CountDownTimer(3000, 1000) {
                     //开始计时
