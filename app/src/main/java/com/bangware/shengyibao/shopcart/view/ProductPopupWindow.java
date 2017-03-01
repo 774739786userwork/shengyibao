@@ -163,6 +163,7 @@ public class ProductPopupWindow extends PopupWindow {
 			public void onTextChanged(CharSequence s, int start, int before,
 									  int count) {
 				// TODO Auto-generated method stub
+				//限制小数点只能输入一位
 				if (priceView.getText().toString().indexOf(".") >= 0) {
 					if (priceView.getText().toString().indexOf(".", priceView.getText().toString().indexOf(".") + 1) > 0) {
 						Log.e("TAG", "onTextChanged: 已经输入\\\".\\\"不能重复输入");
@@ -180,7 +181,14 @@ public class ProductPopupWindow extends PopupWindow {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-
+				//限定只能输入两位小数
+				String temp = s.toString();
+				int posDot = temp.indexOf(".");
+				if (posDot <= 0) return;
+				if (temp.length() - posDot - 1 > 2)
+				{
+					s.delete(posDot + 3, posDot + 4);
+				}
 			}
 		});
 
