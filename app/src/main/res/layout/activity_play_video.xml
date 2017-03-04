@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_play_video"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bangware.shengyibao.practicalprojects.view.PlayVideoActivity">
+
+    <RelativeLayout
+        android:id="@+id/play_video_parent"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_height="450dp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextureView
+                android:id="@+id/play_video_textureview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"/>
+
+            <ImageView
+                android:id="@+id/play_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icn_play_big"
+                android:layout_gravity="center"
+                android:scaleType="center"/>
+        </FrameLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
