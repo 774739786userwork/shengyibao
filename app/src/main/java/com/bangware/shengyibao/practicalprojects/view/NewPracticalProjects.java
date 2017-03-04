@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -43,6 +44,7 @@ import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
 import com.bangware.shengyibao.utils.customdialog.CommonDialog;
 import com.bangware.shengyibao.utils.videoRecord.FFmpegRecorderActivity;
+import com.bangware.shengyibao.utils.videoRecord.VideoUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -85,11 +87,12 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
     /**
      * 视频参数
      */
-    private String path;
+    private String path = "";
     private TextureView surfaceView;
     private MediaPlayer mediaPlayer;
     private ImageView imagePlay;
     private RelativeLayout preview_video_parent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -155,7 +158,6 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
             public void onClick(View view) {
                 loadingdialog.show();
               commitDataToServer();
-
             }
         });
 
@@ -206,7 +208,7 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
                         if(mediaPlayer.isPlaying()){
                             mediaPlayer.pause();
                         }
-                        CommonUtil.deleteFile(path);
+                        VideoUtils.deleteTempVideo(NewPracticalProjects.this);
                         path = "";
                         practicalprojects_frameLayout.setVisibility(View.VISIBLE);
                         preview_video_parent.setVisibility(View.GONE);
@@ -240,7 +242,6 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-//        stop();
             return true;
         }
 
@@ -250,6 +251,7 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
         }
     }
 
+    String video_time = "";
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -312,6 +314,7 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
             preview_video_parent.setVisibility(View.VISIBLE);
             practicalprojects_caremaView.setVisibility(View.GONE);
             path = data.getStringExtra("path");
+            video_time = data.getStringExtra("videoTime");
             File videoFile = new File(path);
             if (videoFile.exists()){
                 practicalprojects_frameLayout.setVisibility(View.GONE);
@@ -320,7 +323,6 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
             }
         }
     }
-
     //拍照调用
     private void takePhoto(){
         //验证sd卡是否可用
@@ -440,9 +442,18 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
                     mulentity.addPart("file[]",filebody);
                 }
             }else {
-                showToast("请上传图片！");
-                loadingdialog.dismiss();
-                return false;
+                if (!"".equals(path)){
+                    File getVideoFile = new File(path);
+                    if (getVideoFile.exists()){
+                        FileBody fileVideo = new FileBody(getVideoFile);
+                        mulentity.addPart("video", fileVideo);
+                        mulentity.addPart("duration",new StringBody(video_time));
+                    }
+                }else {
+                    showToast("请上传图片或拍摄小视频！");
+                    loadingdialog.dismiss();
+                    return false;
+                }
             }
             mulentity.addPart("employee_id",new StringBody(user.getEmployee_id()));
             httpPost.setEntity(mulentity);
@@ -485,6 +496,7 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
             mediaPlayer.reset();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             // 设置需要播放的视频
+            Log.e("tag", "prepare:播放 "+path);
             mediaPlayer.setDataSource(path);
             // 把视频画面输出到Surface
             mediaPlayer.setSurface(surface);
@@ -493,15 +505,6 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
             mediaPlayer.seekTo(0);
         } catch (Exception e) {
         }
-    }
-
-    @Override
-    protected void onStop() {
-        /*if(mediaPlayer.isPlaying()){
-            mediaPlayer.pause();
-            imagePlay.setVisibility(View.GONE);
-        }*/
-        super.onStop();
     }
 
     @Override

@@ -1221,6 +1221,7 @@ public class FFmpegRecorderActivity extends BaseActivity implements View.OnClick
             if(valid){
                 Intent intent = new Intent(FFmpegRecorderActivity.this, NewPracticalProjects.class);
                 intent.putExtra("path", strVideoPath);
+                intent.putExtra("videoTime",txtTimer.getText().toString());
                 setResult(1400,intent);
             }
         } catch (Throwable e)
@@ -1283,9 +1284,11 @@ public class FFmpegRecorderActivity extends BaseActivity implements View.OnClick
      * 求出录制的总时间
      */
     private synchronized void setTotalVideoTime(){
-        if(totalTime > 0)
-            txtTimer.setText(VideoUtils.getRecordingTimeFromMillis(totalTime));
-
+        if(totalTime > 0){
+            long videoTime = (long) (totalTime / 1000);
+//            txtTimer.setText(VideoUtils.getRecordingTimeFromMillis(totalTime));
+            txtTimer.setText(String.valueOf(videoTime));
+        }
     }
 
     /**
