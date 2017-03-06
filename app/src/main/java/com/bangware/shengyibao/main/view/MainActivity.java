@@ -86,15 +86,15 @@ public class MainActivity extends BaseActivity {
         }
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-            //FIXME modify by mouse
-            if (fm.findFragmentById(R.id.main_FrameLayout) != null) {
-                transaction.addToBackStack(null);
-                transaction.commit();
-            } else {
-                transaction.replace(R.id.main_FrameLayout, mContent);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+        //FIXME modify by mouse
+        if (fm.findFragmentById(R.id.main_FrameLayout) != null) {
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            transaction.replace(R.id.main_FrameLayout, mContent);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
     }
 
 

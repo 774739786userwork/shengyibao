@@ -24,7 +24,7 @@ import com.bangware.shengyibao.view.RefreshListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryPracticalProjects extends BaseActivity implements QueryPracticalProjectsView,OnCasesRefreshListener{
+public class QueryPracticalProjects extends BaseActivity implements QueryPracticalProjectsView,OnCasesRefreshListener,MyListAdapter.CallBackVideo{
     private ImageButton query_practicalprojects_Goback;
     private TextView query_practicalprojects_content;
     private CasesRefreshListView prctical_queryListView;
@@ -32,7 +32,7 @@ public class QueryPracticalProjects extends BaseActivity implements QueryPractic
     private List<MyBean> list = new ArrayList<MyBean>();
     private QueryPracticalProjectsPresenter projectsPresenter;
     private int nPage=1;
-    private int nSpage=10;
+    private int nSpage=5;
     public int totalSize = 0;
     private int MaxDateNum;
     private String content="";
@@ -69,7 +69,7 @@ public class QueryPracticalProjects extends BaseActivity implements QueryPractic
         query_practicalprojects_content= (TextView) findViewById(R.id.query_practicalprojects_content);
         prctical_queryListView= (CasesRefreshListView) findViewById(R.id.prctical_queryListView);
         projectsPresenter.loadPracticalProjects(user,nPage,nSpage,content);
-        adapter=new MyListAdapter(this,list);
+        adapter=new MyListAdapter(this,list,this);
         prctical_queryListView.setAdapter(adapter);
 
     }
@@ -87,8 +87,6 @@ public class QueryPracticalProjects extends BaseActivity implements QueryPractic
                 nPage=1;
                 totalSize=nSpage;
                 projectsPresenter.loadPracticalProjects(user,nPage,nSpage,content);
-
-                Log.e("回调","我是返回的值");
             }
         }
     }
@@ -140,5 +138,16 @@ public class QueryPracticalProjects extends BaseActivity implements QueryPractic
             projectsPresenter.onDestroy();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View item, View widget, int position, int which) {
+        switch (which){
+            case R.id.preview_video_relLayout:
+                Intent intent = new Intent(this,PlayVideoActivity.class);
+                intent.putExtra("videoPath",list.get(position).getVideo());
+                startActivity(intent);
+            break;
+        }
     }
 }

@@ -238,7 +238,7 @@ public class FragmentSaler extends Fragment implements MainView, VersionUpdateVi
 		SharedPreferences sharedPreferences=getActivity().getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
 		user= AppContext.getInstance().readFromSharedPreferences(sharedPreferences);
 		versionPresenter = new UpdateVersionPresenterImpl(this);
-		versionPresenter.versionUpdate(user);
+//		versionPresenter.versionUpdate(user);
 		findById();
 		setListener();
     }
@@ -315,7 +315,7 @@ public class FragmentSaler extends Fragment implements MainView, VersionUpdateVi
 			@Override
 			public void onClick(DialogInterface dialog, int which)
 			{
-				getActivity().finish();
+//				getActivity().finish();
 			}
 		});
 		builer.show();

@@ -35,14 +35,21 @@ public class QueryPracticalJosnUtils {
                 bean.setId(conObject.getInt("id"));
                 bean.setContent(conObject.getString("content"));
                 bean.setEmployee_name(conObject.getString("employee_name"));
-                JSONArray array=conObject.getJSONArray("case_images");
-                for (int j=0;j<array.length();j++)
-                {
-                    JSONObject imgObj = array.getJSONObject(j);
-                    image=new CustomerImage();
-                    image.setImg_id(imgObj.getString("id"));
-                    image.setImg_url(imgObj.getString("img_src"));
-                    bean.addImages(image);
+
+                if (conObject.getJSONArray("case_images").length() == 0){
+                    JSONObject videoObj =jsonArray.getJSONObject(i).getJSONObject("case_video");
+                    bean.setVideo(videoObj.getString("url"));
+                    bean.setVideoTime(videoObj.getString("duration"));
+                }else {
+                    JSONArray array=conObject.getJSONArray("case_images");
+                    for (int j=0;j<array.length();j++)
+                    {
+                        JSONObject imgObj = array.getJSONObject(j);
+                        image=new CustomerImage();
+                        image.setImg_id(imgObj.getString("id"));
+                        image.setImg_url(imgObj.getString("img_src"));
+                        bean.addImages(image);
+                    }
                 }
                bean.setTotal(jsonObject.getInt("total"));
                 list.add(bean);

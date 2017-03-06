@@ -13,6 +13,8 @@ public class MyBean implements Serializable {
 	private String employee_name;
 	private String content;
 	private List<CustomerImage> images = new ArrayList<CustomerImage>();
+	private String video;
+	private String videoTime;
 	private int total;
 
 	public int getId() {
@@ -49,6 +51,22 @@ public class MyBean implements Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getVideo() {
+		return video;
+	}
+
+	public void setVideo(String video) {
+		this.video = video;
+	}
+
+	public String getVideoTime() {
+		return videoTime;
+	}
+
+	public void setVideoTime(String videoTime) {
+		this.videoTime = videoTime;
 	}
 
 	public int getTotal() {

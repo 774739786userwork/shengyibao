@@ -2,17 +2,13 @@ package com.bangware.shengyibao.customer.view;
 /**
  * 编辑联系人界面
  */
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -30,9 +26,7 @@ import com.bangware.shengyibao.main.view.MainActivity;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.customdialog.CommonDialog;
-import com.bangware.shengyibao.utils.customdialog.CustomDialog;
 
-import static com.wch.wchusbdriver.CH34xAndroidDriver.TAG;
 
 public class UpdateContactsActivity extends BaseActivity implements UpdateContactsView {
 	private EditText mUpdateName,mUpdateMobile1,mUpdateMoblie2,mUpdatePosition;
