@@ -3,20 +3,13 @@ package com.bangware.shengyibao.customer.view;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,13 +28,12 @@ import com.bangware.shengyibao.activity.ProvinceCityAreaActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
 import com.bangware.shengyibao.config.Model;
-import com.bangware.shengyibao.customer.CustomerUtils;
-import com.bangware.shengyibao.customer.HttpUtils;
 import com.bangware.shengyibao.customer.adapter.CaremaAdapter;
 import com.bangware.shengyibao.customer.adapter.CustomerImageShowAdapter;
 import com.bangware.shengyibao.customer.model.entity.Customer;
-import com.bangware.shengyibao.customer.model.entity.CustomerShopType;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.view.FlowLayoutActivity;
+import com.bangware.shengyibao.net.ThreadPoolUtils;
+import com.bangware.shengyibao.thread.HttpPostThread;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
@@ -49,10 +41,7 @@ import com.bangware.shengyibao.utils.CommonUtil;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -61,7 +50,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -72,13 +62,11 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 客户编辑页面
@@ -119,10 +107,6 @@ public class CustomerEditActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
-		
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
 		
@@ -489,20 +473,19 @@ public class CustomerEditActivity extends BaseActivity {
 		String province = provice_editText.getText().toString();
 		String city = city_editText.getText().toString();
 		String district = district_editText.getText().toString();
+		//提交数据到后台的接口
+		String edit_actionUrl = Model.CUSTOMER_EDIT_URL+"&token="+ user.getLogin_token();
 		Log.d("TAG", "正在发送请求......");
-		try {//提交数据到后台的接口
-			String edit_actionUrl = Model.CUSTOMER_EDIT_URL+"&token="+ user.getLogin_token();
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost(edit_actionUrl);
+		try {
 			MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.forName("UTF-8"));
-		
+
 			int index = (listPhotoNames==null)? 0:listPhotoNames.size();
 			for (int i = 0; i < index; i++) {
 				File file = new File(listPhotoNames.get(i));
 				FileBody filebody = new FileBody(file);
 				multipartEntity.addPart("file[]", filebody);
 			}
-			
+
 			if(!"".equals(shop_name)){
 				multipartEntity.addPart("shop_name", new StringBody(shop_name,Charset.forName("UTF-8")));
 			}else{
@@ -524,21 +507,21 @@ public class CustomerEditActivity extends BaseActivity {
 				showToast("营销区域不能为空");
 				return false;
 			}
-			
+
 			if(!"".equals(contact)){
 				multipartEntity.addPart("contact_name", new StringBody(contact,Charset.forName("UTF-8")));
 			}else{
 				showToast("联系人姓名不能为空！");
 				return false;
 			}
-			
+
 			if(!"".equals(mobile) && isPhoneNumberValid(mobile)){
 				multipartEntity.addPart("mobile1", new StringBody(mobile));
 			}else{
 				showToast("手机号码1不能为空或号码格式不正确!");
 				return false;
 			}
-			
+
 			if("".equals(mobile_second)){
 				multipartEntity.addPart("mobile2", new StringBody(mobile_second));
 			}else if(mobile_second.length() == 11 && !"".equals(mobile_second)){
@@ -563,52 +546,57 @@ public class CustomerEditActivity extends BaseActivity {
 			}else{
 				multipartEntity.addPart("customer_id", new StringBody(customer.getId()));
 			}
-			httpPost.setEntity(multipartEntity);
-			
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			if(httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-				String strResult = EntityUtils.toString(httpResponse.getEntity());
-
-				JSONObject objresult = new JSONObject(strResult);
-				if (objresult != null){
-					switch (objresult.getInt("result")){
-						case 0:
-							showToast(objresult.getString("msg"));
-							Intent intent = new Intent(CustomerEditActivity.this, CustomerInfoActivity.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							Bundle bundle = new Bundle();
-							bundle.putSerializable("customer", customer);
-							intent.putExtras(bundle);
-							startActivity(intent);
-
-							store_name.setText("");
-							customer_address.setText("");
-							link_man.setText("");
-							mobile_et.setText("");
-							mobile_second_et.setText("");
-							break;
-						case 1:
-							showToast(objresult.getString("msg"));
-							break;
-						case 2:
-							showToast(objresult.getString("msg"));
-							break;
-					}
-				}else {
-					showToast("返回内容为空！");
-				}
-			}else{
-				showToast("请求失败！");
-				return false;
-			}
-			
+			ThreadPoolUtils.execute(new HttpPostThread(handler,edit_actionUrl,"utf-8",multipartEntity));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			showToast("请求出错！服务器异常......");
 			e.printStackTrace();
 		}
 		return true;
 	}
+
+	Handler handler = new Handler(){
+		public void handleMessage(Message msg) {
+			if(msg.what == 404){
+				showToast("服务器地址错误");
+			}
+			if(msg.what == 100){
+				showToast("网络传输失败");
+			}
+			if(msg.what == 200){
+				String result = (String) msg.obj;
+				if(result != null){
+					JSONObject response = null;
+					try {
+						response = new JSONObject(result);
+						int status = response.getInt("result");
+						if(response != null){
+							if(status == 0){
+								showToast(response.getString("msg"));
+								Intent intent = new Intent(CustomerEditActivity.this, CustomerInfoActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								Bundle bundle = new Bundle();
+								bundle.putSerializable("customer", customer);
+								intent.putExtras(bundle);
+								startActivity(intent);
+
+								store_name.setText("");
+								customer_address.setText("");
+								link_man.setText("");
+								mobile_et.setText("");
+								mobile_second_et.setText("");
+								finish();
+							}else{
+								showToast("服务器异常，请稍后再试！");
+							}
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}else{
+					showToast("服务器连接失败！");
+				}
+			}
+		};
+	};
 	
 	 
      // 验证号码 手机号 固话

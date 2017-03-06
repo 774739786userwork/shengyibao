@@ -40,26 +40,27 @@
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/preview_video_relLayout"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
         android:layout_below="@+id/content_relLayout">
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextureView
-                android:id="@+id/downSurface"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"/>
-
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icn_play_big"
-                android:layout_gravity="center"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:src="@drawable/icon_playvideo_bg"
                 android:scaleType="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="90dp"
+                android:text="点击播放视频"
+                android:gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/red"/>
         </FrameLayout>
     </RelativeLayout>
 </RelativeLayout>

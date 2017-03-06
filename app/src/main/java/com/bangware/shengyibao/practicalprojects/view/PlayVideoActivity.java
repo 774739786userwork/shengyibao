@@ -47,6 +47,9 @@ public class PlayVideoActivity extends BaseActivity implements MediaPlayer.OnCom
         layoutParams.width = dm.widthPixels;
         layoutParams.height = dm.widthPixels;
         playVideoRelLayout.setLayoutParams(layoutParams);*/
+
+        loadingdialog.show();
+        playVideoImage.setVisibility(View.GONE);
     }
 
     private void setListener(){
@@ -84,11 +87,13 @@ public class PlayVideoActivity extends BaseActivity implements MediaPlayer.OnCom
 
     //surfaceView播放视频事件
     private class PlaySurfaceTextureListener implements TextureView.SurfaceTextureListener{
-
         @Override
         public void onSurfaceTextureAvailable(final SurfaceTexture surfaceTexture, int i, int i1) {
+
             new Handler().postDelayed(new Runnable(){
                 public void run() {
+                    loadingdialog.dismiss();
+                    playVideoImage.setVisibility(View.VISIBLE);
                     preparePlay(new Surface(surfaceTexture));
                 }
             }, 500);
@@ -130,6 +135,7 @@ public class PlayVideoActivity extends BaseActivity implements MediaPlayer.OnCom
     protected void onDestroy() {
         super.onDestroy();
         playMedia.stop();
+        loadingdialog.dismiss();
     }
 
     @Override

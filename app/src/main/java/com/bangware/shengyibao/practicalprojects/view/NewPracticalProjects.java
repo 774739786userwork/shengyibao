@@ -502,7 +502,6 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
                     showToast("服务器连接失败！");
                 }
             }
-
         };
     };
 

@@ -8,13 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -27,9 +27,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -38,19 +36,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.model.LatLng;
 import com.bangware.shengyibao.activity.BaseActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
@@ -58,37 +45,25 @@ import com.bangware.shengyibao.config.Model;
 import com.bangware.shengyibao.customer.adapter.BillingCaremaAdapter;
 import com.bangware.shengyibao.customer.adapter.CaremaAdapter;
 import com.bangware.shengyibao.customer.adapter.MyContactAdapter;
-import com.bangware.shengyibao.customer.model.entity.Contacts;
-import com.bangware.shengyibao.customer.view.AddCustomerActivity;
-import com.bangware.shengyibao.customercontacts.CustomerContactAdapter;
-import com.bangware.shengyibao.customercontacts.presenter.CustomerContactsPresenter;
-import com.bangware.shengyibao.customercontacts.presenter.impl.CustomerContactsPresenterImpl;
-import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
 import com.bangware.shengyibao.customervisits.model.entity.VisitRecordBean;
-import com.bangware.shengyibao.customervisits.presenter.CustomerVisitStatusPresenter;
-import com.bangware.shengyibao.customervisits.presenter.impl.CustomerVisitStatusPresenterImpl;
 import com.bangware.shengyibao.customervisits.view.CustomerVisitRecordActivity;
-import com.bangware.shengyibao.customervisits.view.CustomerVisitStatusView;
-import com.bangware.shengyibao.customervisits.view.CustomerVisits;
 import com.bangware.shengyibao.customervisits.view.SpeechActivity;
+import com.bangware.shengyibao.net.ThreadPoolUtils;
 import com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity;
 import com.bangware.shengyibao.net.pickpicture.BillingPickPictureAdapter;
-import com.bangware.shengyibao.net.pickpicture.PickPictureActivity;
 import com.bangware.shengyibao.net.pickpicture.PickPictureAdapter;
 import com.bangware.shengyibao.net.pickpicture.VisitsPickPictureActivity;
-import com.bangware.shengyibao.practicalprojects.view.NewPracticalProjects;
 import com.bangware.shengyibao.refereevisit.RefereeContactAdapter;
 import com.bangware.shengyibao.refereevisit.model.entity.RefereeVisitor;
 import com.bangware.shengyibao.refereevisit.presenter.RefereeContactsPresenter;
 import com.bangware.shengyibao.refereevisit.presenter.impl.RefereeContactsPresenterImpl;
+import com.bangware.shengyibao.thread.HttpPostThread;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.ClearEditText;
 import com.bangware.shengyibao.utils.CommonUtil;
 import com.bangware.shengyibao.utils.customdialog.CommonDialog;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -96,7 +71,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -180,9 +155,6 @@ public class RefereeVisitActivity extends BaseActivity implements RefereeContact
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_referee_visit);
         context = this;
@@ -996,16 +968,37 @@ public class RefereeVisitActivity extends BaseActivity implements RefereeContact
 //                mulentity.addPart("is_owner",new StringBody(Boolean.toString(is_owner)));
                 mulentity.addPart("employee_id", new StringBody(user.getEmployee_id()));
                 mulentity.addPart("visit_type", new StringBody(String.valueOf(1)));
-                httpPost.setEntity(mulentity);
-                HttpResponse response = httpclient.execute(httpPost);
-                if(response.getStatusLine().getStatusCode()== HttpStatus.SC_OK){
-                    String strResult = EntityUtils.toString(response.getEntity());
-                    finish();
-                    JSONObject objresult = new JSONObject(strResult);
-                    if (objresult != null) {
-                        switch (objresult.getInt("result")) {
-                            case 0:
-                                showToast(objresult.getString("msg"));
+
+                ThreadPoolUtils.execute(new HttpPostThread(handler,actionUrl,"utf-8",mulentity));
+            }else {
+                showToast("你还没有选择推荐人！");
+                loadingdialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    Handler handler = new Handler(){
+        public void handleMessage(Message msg) {
+            if(msg.what == 404){
+                showToast("服务器地址错误");
+            }
+            if(msg.what == 100){
+                showToast("网络传输失败");
+            }
+            if(msg.what == 200){
+                String result = (String) msg.obj;
+                if(result != null){
+                    JSONObject response = null;
+                    try {
+                        response = new JSONObject(result);
+                        int status = response.getInt("result");
+                        if(response != null){
+                            if(status == 0){
+                                loadingdialog.dismiss();
+                                showToast(response.getString("msg"));
                                 String tempStr = "day";
                                 Intent intent = new Intent(RefereeVisitActivity.this, CustomerVisitRecordActivity.class);
                                 Bundle bundle =  new Bundle();
@@ -1013,33 +1006,19 @@ public class RefereeVisitActivity extends BaseActivity implements RefereeContact
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                                 finish();
-                                break;
-                            case 1:
-                                showToast(objresult.getString("msg"));
-                                loadingdialog.dismiss();
-                                break;
-                            case 2:
-                                showToast(objresult.getString("msg"));
-                                loadingdialog.dismiss();
-                                break;
+                            }else{
+                                showToast("服务器异常，请稍后再试！");
+                            }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }else {
-                    showToast("返回内容为空！");
+                }else{
+                    showToast("服务器连接失败！");
                 }
-            }else {
-                loadingdialog.dismiss();
-                showToast("你还没有选择推荐人！");
-                loadingdialog.dismiss();
             }
-        } catch (Exception e) {
-            showToast("请求出错！");
-            loadingdialog.dismiss();
-            e.printStackTrace();
-        }
-        return true;
-    }
-
+        };
+    };
 
     /**
      * 加载客户查询数据

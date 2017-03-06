@@ -7,27 +7,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -36,23 +25,18 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -72,25 +56,19 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.bangware.shengyibao.activity.BaseActivity;
-import com.bangware.shengyibao.activity.CustomProgressDialog;
 import com.bangware.shengyibao.activity.ProvinceCityAreaActivity;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
 import com.bangware.shengyibao.config.Model;
-import com.bangware.shengyibao.customer.CustomerUtils;
-import com.bangware.shengyibao.customer.HttpUtils;
 import com.bangware.shengyibao.customer.adapter.CaremaAdapter;
 import com.bangware.shengyibao.customer.model.entity.Contacts;
-import com.bangware.shengyibao.customer.model.entity.CustomerShopType;
-import com.bangware.shengyibao.customercontacts.QuickBillingAdapter;
 import com.bangware.shengyibao.customercontacts.presenter.CustomerContactsPresenter;
 import com.bangware.shengyibao.customercontacts.presenter.impl.CustomerContactsPresenterImpl;
 import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
-import com.bangware.shengyibao.customercontacts.view.QueryQuickBilingActivity;
-import com.bangware.shengyibao.customervisits.view.CustomerVisits;
 import com.bangware.shengyibao.main.view.MainActivity;
 import com.bangware.shengyibao.manager.shoptypeflowlayout.view.FlowLayoutActivity;
-import com.bangware.shengyibao.updateversion.service.UpdateVersionService;
+import com.bangware.shengyibao.net.ThreadPoolUtils;
+import com.bangware.shengyibao.thread.HttpPostThread;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
@@ -101,8 +79,6 @@ import com.bangware.shengyibao.utils.CommonUtil;
  * @author ccssll
  *
  */
-@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-@SuppressLint("NewApi")
 public class AddCustomerActivity extends BaseActivity implements CustomerContactsView {
 	//图片上传常量定义
 	private Context context;
@@ -140,13 +116,8 @@ public class AddCustomerActivity extends BaseActivity implements CustomerContact
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private boolean isFirstLoc = true; // 是否首次定位
-	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
-		
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);//去除标题
 		setContentView(R.layout.activity_addcustomer);
@@ -174,7 +145,6 @@ public class AddCustomerActivity extends BaseActivity implements CustomerContact
 
 	//初始化控件
 	private void init() {
-		// TODO Auto-generated method stub
 		caremaView = (GridView)findViewById(R.id.caremaView);
 		customer_add_back = (ImageView) findViewById(R.id.customer_add_back);
 		upload_image = (ImageView) findViewById(R.id.upload_img);
@@ -436,7 +406,6 @@ public class AddCustomerActivity extends BaseActivity implements CustomerContact
 	}
 	
 	//提交数据、图片到server端的方法
-	@SuppressWarnings("unused")
 	private boolean uploadFile(){
 		String cus_store = store_name.getText().toString().trim();
 		String customer_cell_phone = cellphone_et.getText().toString().trim();
@@ -454,15 +423,10 @@ public class AddCustomerActivity extends BaseActivity implements CustomerContact
 		String contact = contact_et.getText().toString().trim();
 		String mobile_two = mobile_two_et.getText().toString().trim();
 		System.out.print("正在发送请求！");
-
+		//提交数据到后台的接口
+		String actionUrl = Model.CUSTOMER_ADD_URL+"&token="+ user.getLogin_token();
 		try {
-
-			//提交数据到后台的接口
-			 String actionUrl = Model.CUSTOMER_ADD_URL+"&token="+ user.getLogin_token();
-			HttpClient httpclient= new DefaultHttpClient();  
-		    HttpPost httpPost= new HttpPost(actionUrl);  
-
-		    MultipartEntity mulentity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,Charset.forName("UTF-8"));  
+		    MultipartEntity mulentity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,Charset.forName("UTF-8"));
 		    int index = (listPhotoNames==null)? 0:listPhotoNames.size();
 //		    if(index > 0){
 		    	for(int i = 0;i <index; i++){
@@ -552,52 +516,57 @@ public class AddCustomerActivity extends BaseActivity implements CustomerContact
 		    mulentity.addPart("employee_id", new StringBody(user.getEmployee_id()));
 		    mulentity.addPart("organization_id", new StringBody(user.getOrg_id()));
 		    mulentity.addPart("user_id",new StringBody(user.getUser_id()));
-	        httpPost.setEntity(mulentity);  
-	        System.out.println("executing request " + httpPost.getRequestLine());
-	        
-	        HttpResponse response;
-			response = httpclient.execute(httpPost);
-	        if(response.getStatusLine().getStatusCode()==HttpStatus.SC_OK){
-	        	
-	        	String strResult = EntityUtils.toString(response.getEntity());
-				JSONObject objresult = new JSONObject(strResult);
-				if (objresult != null){
-					switch (objresult.getInt("result")){
-						case 0:
-							showToast(objresult.getString("msg"));
-							Intent intent = new Intent(AddCustomerActivity.this, MainActivity.class);
-							startActivity(intent);
-							finish();
-							//清空表单内容
-							store_name.setText("");
-							detailAddr_et.setText("");
-							add_saler_area.setText("");
-							kind_ids_et.setText("");
-							link_man.setText("");
-							mobile_et.setText("");
-							contact_et.setText("");
-							mobile_two_et.setText("");
-							break;
-						case 1:
-							showToast(objresult.getString("msg"));
-							break;
-						case 2:
-							showToast(objresult.getString("msg"));
-							break;
-					}
-				}else {
-					showToast("返回内容为空！");
-				}
-		    }else{
-	        	showToast("请求失败");
-	        }
+
+			ThreadPoolUtils.execute(new HttpPostThread(handler,actionUrl,"utf-8",mulentity));
 		}catch (Exception e) {
-			// TODO Auto-generated catch block
-			showToast("请求出错！");
-			e.printStackTrace();
 		}
 		return true;
 	}
+
+	Handler handler = new Handler(){
+		public void handleMessage(Message msg) {
+			if(msg.what == 404){
+				showToast("服务器地址错误");
+			}
+			if(msg.what == 100){
+				showToast("网络传输失败");
+			}
+			if(msg.what == 200){
+				String result = (String) msg.obj;
+				if(result != null){
+					JSONObject response = null;
+					try {
+						response = new JSONObject(result);
+						int status = response.getInt("result");
+						if(response != null){
+							if(status == 0){
+								showToast(response.getString("msg"));
+								Intent intent = new Intent(AddCustomerActivity.this, MainActivity.class);
+								startActivity(intent);
+								finish();
+								//清空表单内容
+								store_name.setText("");
+								detailAddr_et.setText("");
+								add_saler_area.setText("");
+								kind_ids_et.setText("");
+								link_man.setText("");
+								mobile_et.setText("");
+								contact_et.setText("");
+								mobile_two_et.setText("");
+							}else{
+								showToast("服务器异常，请稍后再试！");
+							}
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}else{
+					showToast("服务器连接失败！");
+				}
+			}
+		};
+	};
+
 	 /*
      * 验证号码 手机号 固话
      * 

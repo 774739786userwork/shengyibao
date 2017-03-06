@@ -8,14 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -53,7 +53,6 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.bangware.shengyibao.activity.BaseActivity;
-import com.bangware.shengyibao.activity.CustomProgressDialog;
 import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
 import com.bangware.shengyibao.config.Model;
@@ -69,13 +68,13 @@ import com.bangware.shengyibao.customercontacts.view.CustomerContactsView;
 import com.bangware.shengyibao.customervisits.model.entity.VisitRecordBean;
 import com.bangware.shengyibao.customervisits.presenter.CustomerVisitStatusPresenter;
 import com.bangware.shengyibao.customervisits.presenter.impl.CustomerVisitStatusPresenterImpl;
-import com.bangware.shengyibao.deliverynote.view.DeliveryNoteDetailActivity;
 import com.bangware.shengyibao.main.view.MainActivity;
+import com.bangware.shengyibao.net.ThreadPoolUtils;
 import com.bangware.shengyibao.net.pickpicture.BillingPickPictureActivity;
 import com.bangware.shengyibao.net.pickpicture.BillingPickPictureAdapter;
-import com.bangware.shengyibao.net.pickpicture.PickPictureActivity;
 import com.bangware.shengyibao.net.pickpicture.PickPictureAdapter;
 import com.bangware.shengyibao.net.pickpicture.VisitsPickPictureActivity;
+import com.bangware.shengyibao.thread.HttpPostThread;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.ClearEditText;
@@ -92,6 +91,7 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -99,8 +99,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -189,9 +187,6 @@ public class CustomerVisits extends BaseActivity implements CustomerContactsView
     private boolean isFirstLoc = true; // 是否首次定位
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_visits);
         context = this;
@@ -1073,8 +1068,6 @@ public class CustomerVisits extends BaseActivity implements CustomerContactsView
         //提交数据到后台的接口
         String actionUrl =Model.CUSTOMER_VISIT_URL+ "?token="+ user.getLogin_token();
         try {
-            HttpClient httpclient= new DefaultHttpClient();
-            HttpPost httpPost= new HttpPost(actionUrl);
             MultipartEntity mulentity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null, Charset.forName("UTF-8"));
 
             if (contact != null){
@@ -1188,16 +1181,35 @@ public class CustomerVisits extends BaseActivity implements CustomerContactsView
                 mulentity.addPart("is_owner",new StringBody(Boolean.toString(is_owner)));
                 mulentity.addPart("employee_id", new StringBody(user.getEmployee_id()));
                 mulentity.addPart("organization_id", new StringBody(user.getOrg_id()));
+                ThreadPoolUtils.execute(new HttpPostThread(handler,actionUrl,"utf-8",mulentity));
+            }else {
+                loadingdialog.dismiss();
+                showToast("你还没有选择拜访客户！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 
-                httpPost.setEntity(mulentity);
-                HttpResponse response = httpclient.execute(httpPost);
-                if(response.getStatusLine().getStatusCode()== HttpStatus.SC_OK){
-                    String strResult = EntityUtils.toString(response.getEntity());
-                    JSONObject objresult = new JSONObject(strResult);
-                    if (objresult != null) {
-                        switch (objresult.getInt("result")) {
-                            case 0:
-                                showToast(objresult.getString("msg"));
+    Handler handler = new Handler(){
+        public void handleMessage(Message msg) {
+            if(msg.what == 404){
+                showToast("服务器地址错误");
+            }
+            if(msg.what == 100){
+                showToast("网络传输失败");
+            }
+            if(msg.what == 200){
+                String result = (String) msg.obj;
+                if(result != null){
+                    JSONObject response = null;
+                    try {
+                        response = new JSONObject(result);
+                        int status = response.getInt("result");
+                        if(response != null){
+                            if(status == 0){
+                                showToast(response.getString("msg"));
                                 String tempStr = "day";
                                 Intent intent = new Intent(CustomerVisits.this, CustomerVisitRecordActivity.class);
                                 Bundle bundle =  new Bundle();
@@ -1205,31 +1217,19 @@ public class CustomerVisits extends BaseActivity implements CustomerContactsView
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                                 finish();
-                                break;
-                            case 1:
-                                showToast(objresult.getString("msg"));
-                                break;
-                            case 2:
-                                showToast(objresult.getString("msg"));
-                                break;
+                            }else{
+                                showToast("服务器异常，请稍后再试！");
+                            }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }else {
-                    loadingdialog.dismiss();
-                    showToast("返回内容为空！");
+                }else{
+                    showToast("服务器连接失败！");
                 }
-            }else {
-                loadingdialog.dismiss();
-                showToast("你还没有选择拜访客户！");
             }
-        } catch (Exception e) {
-            loadingdialog.dismiss();
-            showToast("请求出错！");
-            e.printStackTrace();
-        }
-        return true;
-    }
-
+        };
+    };
 
     public class MyLocationListenner implements BDLocationListener {
 
