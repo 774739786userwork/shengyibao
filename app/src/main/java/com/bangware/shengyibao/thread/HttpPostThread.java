@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 
+import org.apache.http.entity.mime.MultipartEntity;
 import com.bangware.shengyibao.net.MyPost;
 
 import org.json.JSONObject;
@@ -24,22 +25,31 @@ public class HttpPostThread implements Runnable {
 	private String encode;
 	private Map<String, String> value = null;
 	private JSONObject jsonValue=null;
+	private MultipartEntity multipartEntityData = null;
 	private MyPost myGet = new MyPost();
-	
-	
+
+
 	public HttpPostThread(Handler hand, String url, String encode, Map<String, String> value){
-		this.hand = hand;
-		//拼接访问服务器完整的地址
-		this.url = url;
-		this.encode = encode;
-		this.value = value;
-	}
+            this.hand = hand;
+            //拼接访问服务器完整的地址
+            this.url = url;
+            this.encode = encode;
+            this.value = value;
+        }
 	public HttpPostThread(Handler hand, String url, String encode, JSONObject jsonValue){
 		this.hand = hand;
 		//拼接访问服务器完整的地址
 		this.url = url;
 		this.encode = encode;
 		this.jsonValue = jsonValue;
+	}
+
+	public HttpPostThread(Handler hand, String url, String encode, MultipartEntity mulentity) {
+		this.hand = hand;
+		//拼接访问服务器完整的地址
+		this.url = url;
+		this.encode = encode;
+		this.multipartEntityData = mulentity;
 	}
 
 	@Override
@@ -52,6 +62,10 @@ public class HttpPostThread implements Runnable {
 			msg.obj = result;
 		}else if(jsonValue!=null){
 			String result = myGet.doPost(url, encode, jsonValue);
+			msg.what = 200;
+			msg.obj = result;
+		}else if (multipartEntityData != null){
+			String result = myGet.doPost(url,encode,multipartEntityData);
 			msg.what = 200;
 			msg.obj = result;
 		}else{

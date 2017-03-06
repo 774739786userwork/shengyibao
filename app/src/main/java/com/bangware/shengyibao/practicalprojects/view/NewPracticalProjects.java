@@ -2,6 +2,7 @@ package com.bangware.shengyibao.practicalprojects.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,8 +12,11 @@ import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -21,14 +25,18 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,8 +45,10 @@ import com.bangware.shengyibao.activity.R;
 import com.bangware.shengyibao.config.Constants_Camera;
 import com.bangware.shengyibao.config.Model;
 import com.bangware.shengyibao.customer.adapter.CaremaAdapter;
+import com.bangware.shengyibao.net.ThreadPoolUtils;
 import com.bangware.shengyibao.net.pickpicture.PickPictureActivity;
 import com.bangware.shengyibao.net.pickpicture.PickPictureAdapter;
+import com.bangware.shengyibao.thread.HttpPostThread;
 import com.bangware.shengyibao.user.model.entity.User;
 import com.bangware.shengyibao.utils.AppContext;
 import com.bangware.shengyibao.utils.CommonUtil;
@@ -56,9 +66,11 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -92,14 +104,11 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
     private MediaPlayer mediaPlayer;
     private ImageView imagePlay;
     private RelativeLayout preview_video_parent;
-
+    private String video_time = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         context = this;
-
         setContentView(R.layout.activity_new_practical_projects);
 
         SharedPreferences sharedPreferences=this.getSharedPreferences(User.SHARED_NAME, MODE_PRIVATE);
@@ -250,8 +259,6 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
 
         }
     }
-
-    String video_time = "";
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -416,15 +423,14 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
         });
         customDialog.show();
     }
+
     private boolean commitDataToServer()
     {
         String rank=new_practicalprojects_edit.getText().toString();
         //提交数据到后台的接口
         String actionUrl = Model.NEW_PRACTICAL_PROJECT_URL+ "?token="+ user.getLogin_token();
-        HttpClient httpclient= new DefaultHttpClient();
-        HttpPost httpPost= new HttpPost(actionUrl);
-        MultipartEntity mulentity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null, Charset.forName("UTF-8"));
         try {
+            MultipartEntity mulentity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null, Charset.forName("UTF-8"));
             if (!"".equals(rank))
             {
                 mulentity.addPart("content",new StringBody(rank,Charset.forName("UTF-8")));
@@ -456,40 +462,49 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
                 }
             }
             mulentity.addPart("employee_id",new StringBody(user.getEmployee_id()));
-            httpPost.setEntity(mulentity);
-            HttpResponse response = httpclient.execute(httpPost);
-            if(response.getStatusLine().getStatusCode()== HttpStatus.SC_OK){
-                String strResult = EntityUtils.toString(response.getEntity());
-                finish();
-                JSONObject objresult = new JSONObject(strResult);
-                if (objresult != null) {
-                    switch (objresult.getInt("result")) {
-                        case 0:
-                            showToast(objresult.getString("msg"));
-                            Intent intent = new Intent(NewPracticalProjects.this, QueryPracticalProjects.class);
-                            startActivity(intent);
-                            finish();
-                            break;
-                        case 1:
-                            showToast(objresult.getString("msg"));
-                            break;
-                        case 2:
-                            showToast(objresult.getString("msg"));
-                            break;
-                    }
-                }
-            }else {
-                showToast("返回内容为空！");
-                loadingdialog.dismiss();
-            }
-        } catch (Exception e) {
-            showToast("请求出错");
-
-            loadingdialog.dismiss();
+            ThreadPoolUtils.execute(new HttpPostThread(handler,actionUrl,"utf-8",mulentity));
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return true;
     }
+
+    Handler handler = new Handler(){
+        public void handleMessage(Message msg) {
+            if(msg.what == 404){
+                showToast("服务器地址错误");
+            }
+            if(msg.what == 100){
+                showToast("网络传输失败");
+            }
+            if(msg.what == 200){
+                String result = (String) msg.obj;
+                if(result != null){
+                    JSONObject response = null;
+                    try {
+                        response = new JSONObject(result);
+                        int status = response.getInt("result");
+                        if(response != null){
+                            if(status == 0){
+                                loadingdialog.dismiss();
+                                showToast("请求成功！");
+                                Intent intent = new Intent(NewPracticalProjects.this, QueryPracticalProjects.class);
+                                startActivity(intent);
+                                finish();
+                            }else{
+                                showToast("服务器异常，请稍后再试！");
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    showToast("服务器连接失败！");
+                }
+            }
+
+        };
+    };
 
     public void prepare(Surface surface) {
         try {
@@ -527,5 +542,4 @@ public class NewPracticalProjects extends BaseActivity implements MediaPlayer.On
     public void onCompletion(MediaPlayer mediaPlayer) {
         imagePlay.setVisibility(View.VISIBLE);
     }
-
 }

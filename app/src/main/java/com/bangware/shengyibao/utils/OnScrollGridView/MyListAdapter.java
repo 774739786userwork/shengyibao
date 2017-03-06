@@ -23,12 +23,8 @@ public class MyListAdapter extends BaseAdapter{
 	private LayoutInflater mInflater;
 	private Context mContext;
 	private CallBackVideo callbackvideo;
-	String url = "";
-
 	/**
 	 * 自定义回调接口
-	 * @param context
-	 * @param list
      */
 	public interface CallBackVideo{
 		void onClick(View item, View widget, int position, int which);
@@ -67,7 +63,6 @@ public class MyListAdapter extends BaseAdapter{
 			holder.content = (TextView) convertView.findViewById(R.id.content);
 			holder.gridView=(NoScrollGridView)convertView.findViewById(R.id.gridView);
 			holder.previewVideo_relLayout =(RelativeLayout) convertView.findViewById(R.id.preview_video_relLayout);
-			holder.surfaceDown = (TextureView) convertView.findViewById(R.id.downSurface);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -88,7 +83,6 @@ public class MyListAdapter extends BaseAdapter{
 				}
 			});
 		}else{
-			url = bean.getVideo();
 			holder.gridView.setVisibility(View.GONE);
 			holder.previewVideo_relLayout.setVisibility(View.VISIBLE);
 			/**
@@ -99,7 +93,7 @@ public class MyListAdapter extends BaseAdapter{
 			final int v_id = holder.previewVideo_relLayout.getId();
 			holder.previewVideo_relLayout.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View view) {
+				public void onClick(View v) {
 					callbackvideo.onClick(view,parent,pos,v_id);
 				}
 			});
@@ -112,7 +106,6 @@ public class MyListAdapter extends BaseAdapter{
 		public  TextView name;
 		private TextView content;
 		private NoScrollGridView gridView;
-		private TextureView surfaceDown;
 		private RelativeLayout previewVideo_relLayout;
 	}
 
